@@ -1,4 +1,4 @@
-import CaseDetail from '@/components/dashboard/cases/CaseDetail';
+import CaseDetail from '@/components/dashboard/cases/case-detail';
 import type { Case } from '@/types/case';
 
 // Mock data - Replace with actual API call

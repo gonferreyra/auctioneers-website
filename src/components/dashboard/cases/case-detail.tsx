@@ -1,8 +1,8 @@
 'use client';
 
-import CaseHeader from './CaseHeader';
-import CaseInfo from './CaseInfo';
-import CaseMovements from './CaseMovements';
+import CaseHeader from './case-header';
+import CaseInfo from './case-info';
+import CaseMovements from './case-movements';
 import type { Case } from '@/types/case';
 
 interface CaseDetailProps {

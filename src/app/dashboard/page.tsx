@@ -1,6 +1,6 @@
-import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import DashboardCalendar from '@/components/dashboard/DashboardCalendar';
-import CaseSearch from '@/components/dashboard/cases/CaseSearch';
+import DashboardHeader from '@/components/dashboard/dashboard-header';
+import DashboardCalendar from '@/components/dashboard/dashboard-calendar';
+import CaseSearch from '@/components/dashboard/cases/case-search';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
