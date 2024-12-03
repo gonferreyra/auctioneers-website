@@ -6,52 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { FileText, Calendar, User } from 'lucide-react';
 import Link from 'next/link';
-import type { Case } from '@/types/case';
-
-// Mock data - Replace with actual API call
-const cases: Case[] = [
-  {
-    id: '1',
-    fileNumber: '2024-CV-001',
-    title: 'Smith vs Johnson Property Dispute',
-    parties: [
-      { name: 'John Smith', role: 'plaintiff' },
-      { name: 'Robert Johnson', role: 'defendant' },
-    ],
-    status: 'active',
-    filingDate: '2024-01-15',
-    court: 'District Court of Miami',
-    judge: 'Hon. Sarah Williams',
-    movements: [
-      {
-        id: 'm1',
-        date: '2024-01-15',
-        description: 'Initial filing',
-        type: 'filing',
-      },
-    ],
-  },
-  {
-    id: '2',
-    fileNumber: '2024-CV-002',
-    title: 'Martinez Estate Auction',
-    parties: [
-      { name: 'Elena Martinez', role: 'plaintiff' },
-      { name: 'Carlos Rodriguez', role: 'defendant' },
-    ],
-    status: 'pending',
-    filingDate: '2024-02-01',
-    court: 'Circuit Court of Miami-Dade',
-    movements: [
-      {
-        id: 'm2',
-        date: '2024-02-01',
-        description: 'Petition filed',
-        type: 'filing',
-      },
-    ],
-  },
-];
+import { cases } from '@/lib/data/cases';
+// import type { Case } from "@/types/case";
 
 export default function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -63,22 +19,22 @@ export default function CaseSearch() {
     const searchLower = searchTerm.toLowerCase();
 
     if (searchType === 'fileNumber') {
-      return case_.fileNumber.toLowerCase().includes(searchLower);
+      return case_.recordNumber.toLowerCase().includes(searchLower);
     }
 
     if (searchType === 'party') {
-      return case_.parties.some((party) =>
-        party.name.toLowerCase().includes(searchLower),
+      return (
+        case_.plaintiff.toLowerCase().includes(searchLower) ||
+        case_.defendant.toLowerCase().includes(searchLower)
       );
     }
 
     // Search all fields
     return (
-      case_.fileNumber.toLowerCase().includes(searchLower) ||
+      case_.recordNumber.toLowerCase().includes(searchLower) ||
       case_.title.toLowerCase().includes(searchLower) ||
-      case_.parties.some((party) =>
-        party.name.toLowerCase().includes(searchLower),
-      )
+      case_.plaintiff.toLowerCase().includes(searchLower) ||
+      case_.defendant.toLowerCase().includes(searchLower)
     );
   });
 
@@ -124,14 +80,14 @@ export default function CaseSearch() {
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium text-muted-foreground">
-                      {case_.fileNumber}
+                      {case_.recordNumber}
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold">{case_.title}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <User className="h-4 w-4" />
-                      {case_.parties.map((party) => party.name).join(' vs ')}
+                      {case_.plaintiff} vs {case_.defendant}
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
@@ -143,7 +99,7 @@ export default function CaseSearch() {
                   className={`rounded-full px-2 py-1 text-sm font-medium ${
                     case_.status === 'active'
                       ? 'bg-green-100 text-green-800'
-                      : case_.status === 'pending'
+                      : case_.status === 'paralyzed'
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-gray-100 text-gray-800'
                   }`}
