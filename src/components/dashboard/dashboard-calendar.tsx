@@ -9,7 +9,7 @@ const events = [
   {
     id: 1,
     title: 'Luxury Apartment Viewing',
-    date: new Date(2024, 3, 15),
+    date: new Date(2024, 12, 3),
     type: 'viewing',
   },
   {

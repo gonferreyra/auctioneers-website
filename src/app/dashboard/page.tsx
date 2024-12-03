@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="mt-16 min-h-screen bg-gray-50">
       <DashboardHeader />
 
       <main className="p-4 sm:p-6 lg:p-8">
