@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/dialog';
 import { Plus, Calendar } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 interface CaseMovementsProps {
   caseData: Case;
@@ -49,7 +50,8 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
               Add Movement
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent aria-describedby="case-movements">
+            <DialogDescription>case movements</DialogDescription>
             <DialogHeader>
               <DialogTitle>Add New Movement</DialogTitle>
             </DialogHeader>
