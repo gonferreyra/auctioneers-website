@@ -133,12 +133,12 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
 
       <CaseMovements
         caseData={editedCase}
-        isEditing={isEditing}
-        onUpdate={(movement) => {
-          handleUpdate({
-            movements: [...editedCase.movements, movement],
-          });
-        }}
+        // isEditing={isEditing}
+        // onUpdate={(movement) => {
+        //   handleUpdate({
+        //     movements: [...editedCase.movements, movement],
+        //   });
+        // }}
       />
     </div>
   );
