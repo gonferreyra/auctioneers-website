@@ -8,8 +8,11 @@ export function generateStaticParams() {
   }));
 }
 
-export default function CasePage({ params }: { params: { id: string } }) {
-  const caseData = cases.find((case_) => case_.id === params.id);
+export default async function CasePage({ params }: { params: { id: string } }) {
+  // warning error fix params should be awaited
+  const { id } = await params;
+
+  const caseData = cases.find((case_) => case_.id === id);
 
   if (!caseData) {
     return <div>Case not found</div>;
