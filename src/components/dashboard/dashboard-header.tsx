@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Gavel, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function DashboardHeader() {
@@ -12,9 +12,9 @@ export default function DashboardHeader() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Gavel className="h-8 w-8 text-primary" />
+            {/* <Gavel className="h-8 w-8 text-primary" /> */}
             <span className="ml-2 text-xl font-bold text-primary">
-              Auctioneer Dashboard
+              Welcome back Gonzalo
             </span>
           </div>
 
