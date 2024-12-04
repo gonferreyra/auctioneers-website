@@ -4,7 +4,7 @@ import { Search, Shield, Handshake, Building } from 'lucide-react';
 
 export default function ServicesSection() {
   return (
-    <section className="bg-white py-20">
+    <section className="bg-white py-20" id="services">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold">
@@ -61,7 +61,9 @@ export default function ServicesSection() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button size="lg">List Your Property</Button>
+          <a href="#contact" className="text-primary underline">
+            <Button size="lg">List Your Property</Button>
+          </a>
         </div>
       </div>
     </section>

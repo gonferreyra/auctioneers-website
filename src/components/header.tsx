@@ -28,8 +28,8 @@ export default function Header() {
             <a href="#contact" className="text-gray-600 hover:text-gray-900">
               Contact
             </a>
-            <Link href="/sell">
-              <Button>Sell</Button>
+            <Link href="/login">
+              <Button>Login</Button>
             </Link>
           </nav>
 

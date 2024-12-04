@@ -13,12 +13,12 @@ export default function Hero() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="from-primary/95 to-primary/70 absolute inset-0 bg-gradient-to-r" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/95 to-primary/70" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <span className="text-secondary mb-4 block text-lg font-semibold">
+          <span className="mb-4 block text-lg font-semibold text-secondary">
             Premium Real Estate Auctions
           </span>
           <h1 className="mb-6 text-4xl font-bold text-white md:text-6xl">
