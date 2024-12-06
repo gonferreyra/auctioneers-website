@@ -9,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Gavel, Plus } from 'lucide-react';
 import { useState } from 'react';
+import AuctionSearch from '@/components/dashboard/auctions/auction-search';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function DashboardPage() {
               <TabsList>
                 <TabsTrigger value="calendar">Calendar</TabsTrigger>
                 <TabsTrigger value="cases">Cases</TabsTrigger>
+                <TabsTrigger value="auctions">Auctions</TabsTrigger>
               </TabsList>
             </Tabs>
             <div className="flex gap-2">
@@ -49,9 +51,13 @@ export default function DashboardPage() {
               <Card className="p-6">
                 <DashboardCalendar />
               </Card>
-            ) : (
+            ) : activeTab === 'cases' ? (
               <Card className="p-6">
                 <CaseSearch />
+              </Card>
+            ) : (
+              <Card className="p-6">
+                <AuctionSearch />
               </Card>
             )}
           </div>
