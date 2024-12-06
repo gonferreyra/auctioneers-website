@@ -6,11 +6,13 @@ import DashboardCalendar from '@/components/dashboard/dashboard-calendar';
 import CaseSearch from '@/components/dashboard/cases/case-search';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Gavel, Plus } from 'lucide-react';
+import { useState } from 'react';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState('calendar');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -19,7 +21,12 @@ export default function DashboardPage() {
       <main className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-4 flex items-center justify-between">
-            <Tabs defaultValue="calendar" className="flex-1">
+            <Tabs
+              defaultValue="calendar"
+              className="flex-1"
+              value={activeTab}
+              onValueChange={setActiveTab}
+            >
               <TabsList>
                 <TabsTrigger value="calendar">Calendar</TabsTrigger>
                 <TabsTrigger value="cases">Cases</TabsTrigger>
@@ -37,19 +44,17 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <Tabs defaultValue="calendar" className="space-y-4">
-            <TabsContent value="calendar">
+          <div className="mt-4">
+            {activeTab === 'calendar' ? (
               <Card className="p-6">
                 <DashboardCalendar />
               </Card>
-            </TabsContent>
-
-            <TabsContent value="cases">
+            ) : (
               <Card className="p-6">
                 <CaseSearch />
               </Card>
-            </TabsContent>
-          </Tabs>
+            )}
+          </div>
         </div>
       </main>
     </div>

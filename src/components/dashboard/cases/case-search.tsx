@@ -29,7 +29,6 @@ export default function CaseSearch() {
       );
     }
 
-    // Search all fields
     return (
       case_.recordNumber.toLowerCase().includes(searchLower) ||
       case_.title.toLowerCase().includes(searchLower) ||

@@ -1,6 +1,6 @@
 import CaseDetail from '@/components/dashboard/cases/case-detail';
 import { cases } from '@/lib/data/cases';
-// import type { Case } from '@/types/case';
+// import type { Case } from "@/types/case";
 
 export function generateStaticParams() {
   return cases.map((case_) => ({
@@ -8,19 +8,35 @@ export function generateStaticParams() {
   }));
 }
 
-export default async function CasePage({ params }: { params: { id: string } }) {
+interface CasePageProps {
+  params: { id: string };
+}
+
+export default async function CasePage({ params }: CasePageProps) {
   // warning error fix params should be awaited
   const { id } = await params;
 
   const caseData = cases.find((case_) => case_.id === id);
-
   if (!caseData) {
-    return <div>Case not found</div>;
+    return (
+      <div className="p-6">
+        <div className="mx-auto max-w-4xl">
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+            <h2 className="font-semibold text-red-800">Case Not Found</h2>
+            <p className="text-red-600">
+              The requested case could not be found.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="mt-16 p-6">
-      <CaseDetail caseData={caseData} />
+    <div className="p-6">
+      <div className="mx-auto max-w-4xl">
+        <CaseDetail caseData={caseData} />
+      </div>
     </div>
   );
 }
