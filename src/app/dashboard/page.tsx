@@ -21,7 +21,7 @@ export default function DashboardPage() {
 
       <main className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col justify-between sm:flex-row sm:items-center">
             <Tabs
               defaultValue="calendar"
               className="flex-1"
