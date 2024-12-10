@@ -6,17 +6,19 @@ const user = DB_USER;
 const password = DB_PASSWORD;
 const host = DB_HOST;
 
-const sequelize = new Sequelize(database, user, password, {
+export const DB = new Sequelize(database, user, password, {
   host: host,
   dialect: 'postgres',
   // show SQL commands on console - add logger to see the sql scripts
-  logging: console.log,
+  // logging: console.log,
+  logging: false,
 });
 
 // connection
 async function dbConnection() {
   try {
-    await sequelize.sync();
+    await DB.sync(); // sync models in development
+    // await DB.authenticate();
     console.log('Successfully connected to DB');
   } catch (error) {
     throw new Error(`Error connecting to DB: ${(error as Error).message}`);
