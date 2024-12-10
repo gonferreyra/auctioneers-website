@@ -24,3 +24,7 @@ export const DB_USER = getEnv('DB_USER');
 export const DB_PASSWORD = getEnv('DB_PASSWORD');
 export const DB_PORT = getEnv('DB_PORT');
 export const DB_HOST = getEnv('DB_HOST');
+
+// JWT
+export const JWT_SECRET = getEnv('JWT_SECRET');
+export const JWT_REFRESH_SECRET = getEnv('JWT_REFRESH_SECRET');
