@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
+import * as services from '../services/auth.service';
+import { setAuthenticationCookies } from '../utils/cookies';
 
 const registerSchema = z
   .object({
@@ -25,8 +27,16 @@ export const registerHandler = async (
       userAgent: req.headers['user-agent'],
     });
     // call service
-
+    const { user, accessToken, refreshToken } = await services.createAccount(
+      request
+    );
     // response
+    setAuthenticationCookies({ res, accessToken, refreshToken })
+      .status(201)
+      .json({
+        user,
+      });
+    // res.status(201).json(user);
   } catch (error) {
     next(error);
   }
