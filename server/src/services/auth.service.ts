@@ -6,6 +6,7 @@ import VerificationCodeModel from '../models/verificationCode.model';
 import { oneYearFromNow } from '../utils/date';
 import jwt from 'jsonwebtoken';
 import { JWT_REFRESH_SECRET, JWT_SECRET } from '../constants/env';
+import CustomError from '../utils/customError';
 
 type createAccoutParams = {
   email: string;
@@ -22,7 +23,7 @@ export const createAccount = async (data: createAccoutParams) => {
   });
 
   if (existingUser) {
-    throw new Error('User already exists');
+    throw new CustomError(409, 'Email already in use');
   }
 
   // create user
