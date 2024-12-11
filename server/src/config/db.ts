@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER } from '../constants/env';
+import logger from './logger';
 
 const database = DB_NAME;
 const user = DB_USER;
@@ -19,7 +20,7 @@ async function dbConnection() {
   try {
     await DB.sync(); // sync models in development
     // await DB.authenticate();
-    console.log('Successfully connected to DB');
+    logger.info('Successfully connected to DB');
   } catch (error) {
     throw new Error(`Error connecting to DB: ${(error as Error).message}`);
   }

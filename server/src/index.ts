@@ -42,7 +42,6 @@ const Server = async () => {
   app.use(errorHandler);
 
   app.listen(SERVER_PORT, async () => {
-    // console.log(`Server running on port ${SERVER_PORT} in ${NODE_ENV} mode`);
     logger.info(`Server running on port ${SERVER_PORT} in ${NODE_ENV} mode`);
     await dbConnection();
   });
