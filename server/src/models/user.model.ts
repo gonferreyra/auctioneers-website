@@ -6,7 +6,6 @@ import {
   Optional,
 } from 'sequelize';
 import { DB } from '../config/db';
-import bcrypt from 'bcrypt';
 import { hashValue } from '../utils/bcrypt';
 import VerificationCodeModel from './verificationCode.model';
 import SessionModel from './session.model';
@@ -67,8 +66,23 @@ const UserModel = DB.define<IUserModel>(
         user.password = hashedPassword;
       },
     },
+    defaultScope: {
+      attributes: { exclude: ['password'] },
+    },
+    // we keep this code for future use if needed
+    // scopes: {
+    //   withPassword: {} // scope to include password if needed
+    // }
   }
 );
+
+// Custom method on the model instance
+UserModel.prototype.toJSON = function () {
+  const values = { ...this.get() };
+
+  delete values.password; // delete password
+  return values;
+};
 
 // Relations User => Session
 UserModel.hasMany(SessionModel, {
