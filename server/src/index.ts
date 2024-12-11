@@ -6,6 +6,8 @@ import { APP_ORIGIN, NODE_ENV, SERVER_PORT } from './constants/env';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middleware/errorHandler';
 import authRoutes from './routes/auth.route';
+import logger from './config/logger';
+import { loggerMiddleware } from './middleware/loggerHandler';
 
 const app = express();
 
@@ -24,6 +26,9 @@ const Server = async () => {
   // Cookie Parser Middleware
   app.use(cookieParser()); // parse cookies - req.cookies available
 
+  // Logger Middleware
+  app.use(loggerMiddleware);
+
   app.get('/', (req, res) => {
     res.status(200).json({
       status: 'healthy',
@@ -37,7 +42,8 @@ const Server = async () => {
   app.use(errorHandler);
 
   app.listen(SERVER_PORT, async () => {
-    console.log(`Server running on port ${SERVER_PORT} in ${NODE_ENV} mode`);
+    // console.log(`Server running on port ${SERVER_PORT} in ${NODE_ENV} mode`);
+    logger.info(`Server running on port ${SERVER_PORT} in ${NODE_ENV} mode`);
     await dbConnection();
   });
 };

@@ -1,5 +1,6 @@
 import { ErrorRequestHandler, Response } from 'express';
 import { z, ZodError } from 'zod';
+import logger from '../config/logger';
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -13,7 +14,9 @@ const handleZodError = (res: Response, error: z.ZodError) => {
 };
 
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
-  console.log(`PATH: ${req.path}`, error);
+  logger.error(
+    `Error - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - ERROR: [${error.message}]`
+  );
 
   if (error instanceof ZodError) {
     handleZodError(res, error);
