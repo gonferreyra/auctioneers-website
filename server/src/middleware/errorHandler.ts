@@ -8,14 +8,14 @@ const handleZodError = (res: Response, error: z.ZodError) => {
     path: err.path.join('.'),
     message: err.message,
   }));
-  return res.status(400).json({
+  res.status(400).json({
     // message: error.message,
     errors,
   });
 };
 
 const handleCustomError = (res: Response, error: CustomError) => {
-  return res.status(error.statusCode).json({
+  res.status(error.statusCode).json({
     message: error.message,
     errorCode: error.errorCode,
   });
@@ -27,11 +27,11 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   );
 
   if (error instanceof ZodError) {
-    handleZodError(res, error);
+    return handleZodError(res, error);
   }
 
   if (error instanceof CustomError) {
-    handleCustomError(res, error);
+    return handleCustomError(res, error);
   }
 
   res.status(500).send('Internal Server Error');
