@@ -21,7 +21,7 @@ export const setAuthenticationCookies = ({
       secure,
       expires: fifteenMinutesFromNow(),
     })
-    .cookie('refrshToken', refreshToken, {
+    .cookie('refreshToken', refreshToken, {
       sameSite: 'strict',
       httpOnly: true,
       secure,
