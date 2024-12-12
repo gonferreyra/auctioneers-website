@@ -22,19 +22,24 @@ const handleCustomError = (res: Response, error: CustomError) => {
 };
 
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
-  logger.error(
-    `Error - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - ERROR: [${error.message}]`
-  );
+  if (error) {
+    res.statusCode = error.statusCode || 500; // sets the correct status code on error
+    logger.error(
+      `Error - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - ERROR: [${error.message}]`
+    );
 
-  if (error instanceof ZodError) {
-    return handleZodError(res, error);
+    if (error instanceof ZodError) {
+      return handleZodError(res, error);
+    }
+
+    if (error instanceof CustomError) {
+      return handleCustomError(res, error);
+    }
+
+    res.send('Internal Server Error');
+  } else {
+    next();
   }
-
-  if (error instanceof CustomError) {
-    return handleCustomError(res, error);
-  }
-
-  res.status(500).send('Internal Server Error');
 };
 
 export default errorHandler;
