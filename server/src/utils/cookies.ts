@@ -29,3 +29,9 @@ export const setAuthenticationCookies = ({
       path: '/auth/refresh',
     });
 };
+
+export const clearAuthenticationCookies = (res: Response) => {
+  return res.clearCookie('accessToken').clearCookie('refreshToken', {
+    path: '/auth/refresh',
+  });
+};
