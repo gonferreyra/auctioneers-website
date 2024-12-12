@@ -1,19 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
 import * as services from '../services/auth.service';
 import { setAuthenticationCookies } from '../utils/cookies';
-
-const registerSchema = z
-  .object({
-    email: z.string().email().min(1).max(255),
-    password: z.string().min(6).max(255),
-    confirmPassword: z.string().min(6).max(255),
-    userAgent: z.string().optional(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+import { loginSchema, registerSchema } from '../validations/schemas';
 
 export const registerHandler = async (
   req: Request,
@@ -33,10 +21,33 @@ export const registerHandler = async (
     // response
     setAuthenticationCookies({ res, accessToken, refreshToken })
       .status(201)
+      .json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const loginHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const request = loginSchema.parse({
+      ...req.body,
+      userAgent: req.headers['user-agent'],
+    });
+
+    const { user, refreshToken, accessToken } = await services.loginUser(
+      request
+    );
+
+    setAuthenticationCookies({ res, accessToken, refreshToken })
+      .status(200)
       .json({
         user,
+        message: 'Login succesfull',
       });
-    // res.status(201).json(user);
   } catch (error) {
     next(error);
   }
