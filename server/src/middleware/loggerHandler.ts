@@ -32,6 +32,11 @@ export function loggerMiddleware(
       response.data = data;
     }
 
+    // only log if status code is 4xx or 5xx
+    if (!res.statusCode || res.statusCode >= 400) {
+      return originalSend.call(res, data);
+    }
+
     logger.info(
       `Incoming - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}]`
     );
