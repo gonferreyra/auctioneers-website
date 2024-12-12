@@ -45,7 +45,6 @@ export const loginHandler = async (
     setAuthenticationCookies({ res, accessToken, refreshToken })
       .status(200)
       .json({
-        user,
         message: 'Login succesfull',
       });
   } catch (error) {
