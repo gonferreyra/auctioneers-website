@@ -66,17 +66,20 @@ const UserModel = DB.define<IUserModel>(
         user.password = hashedPassword;
       },
     },
+    // scope to exclude password by default
     defaultScope: {
       attributes: { exclude: ['password'] },
     },
-    // we keep this code for future use if needed
-    // scopes: {
-    //   withPassword: {} // scope to include password if needed
-    // }
+    // scope to invlude password if needed
+    scopes: {
+      withPassword: {
+        attributes: { include: ['password'] },
+      },
+    },
   }
 );
 
-// Custom method on the model instance
+// Custom method to hide password from response
 UserModel.prototype.toJSON = function () {
   const values = { ...this.get() };
 
