@@ -8,6 +8,11 @@ import jwt from 'jsonwebtoken';
 import { JWT_REFRESH_SECRET, JWT_SECRET } from '../constants/env';
 import CustomError from '../utils/customError';
 import { compareValue } from '../utils/bcrypt';
+import {
+  accessTokenSignOptions,
+  refreshTokenSignOptions,
+  signToken,
+} from '../utils/jwt';
 
 type CreateAccoutParams = {
   email: string;
@@ -46,19 +51,19 @@ export const createAccount = async (data: CreateAccoutParams) => {
     userAgent: data.userAgent,
   });
 
-  // sign access token & refresh token
-  const refreshToken = jwt.sign({ sessionId: session.id }, JWT_REFRESH_SECRET, {
-    audience: ['user'],
-    expiresIn: '30d',
-  });
+  if (user.id === undefined || session.id === undefined) {
+    throw new Error('Error creating user or session');
+  }
 
-  const accessToken = jwt.sign(
+  // sign access token & refresh token
+  const refreshToken = signToken(
+    { sessionId: session.id },
+    refreshTokenSignOptions
+  );
+
+  const accessToken = signToken(
     { userId: user.id, sessionId: session.id },
-    JWT_SECRET,
-    {
-      audience: ['user'],
-      expiresIn: '15m',
-    }
+    accessTokenSignOptions
   );
 
   // return user & tokens
@@ -103,28 +108,18 @@ export const loginUser = async ({
     userAgent,
   });
 
-  // sign access token & refresh token
-  const refreshToken = jwt.sign(
-    {
-      sessionId: session.id,
-    },
-    JWT_REFRESH_SECRET,
-    {
-      audience: ['user'],
-      expiresIn: '30d',
-    }
+  if (user.id === undefined || session.id === undefined) {
+    throw new Error('Error creating user or session');
+  }
+
+  const refreshToken = signToken(
+    { sessionId: session.id },
+    refreshTokenSignOptions
   );
 
-  const accessToken = jwt.sign(
-    {
-      sessionId: session.id,
-      userId: user.id,
-    },
-    JWT_SECRET,
-    {
-      audience: ['user'],
-      expiresIn: '15m',
-    }
+  const accessToken = signToken(
+    { sessionId: session.id, userId: user.id },
+    accessTokenSignOptions
   );
 
   return {
