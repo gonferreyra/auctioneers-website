@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import * as services from '../services/auth.service';
-import { setAuthenticationCookies } from '../utils/cookies';
+import {
+  clearAuthenticationCookies,
+  setAuthenticationCookies,
+} from '../utils/cookies';
 import { loginSchema, registerSchema } from '../validations/schemas';
+import { verifyToken } from '../utils/jwt';
+import SessionModel from '../models/session.model';
 
 export const registerHandler = async (
   req: Request,
@@ -47,6 +52,34 @@ export const loginHandler = async (
       .json({
         message: 'Login succesfull',
       });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logoutHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // validate request
+    const accessToken = req.cookies.accessToken;
+    const { payload } = verifyToken(accessToken);
+
+    // delete session
+    if (payload) {
+      await SessionModel.destroy({
+        where: {
+          id: payload.sessionId,
+        },
+      });
+    }
+
+    // clear cookies
+    clearAuthenticationCookies(res).status(200).json({
+      message: 'Logout successful',
+    });
   } catch (error) {
     next(error);
   }
