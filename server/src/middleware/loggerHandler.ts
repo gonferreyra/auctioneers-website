@@ -38,7 +38,7 @@ export function loggerMiddleware(
     }
 
     logger.info(
-      `Incoming - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}]`
+      `Incoming - METHOD: [${req.method}] - URL: [${req.originalUrl}] - STATUS: [${res.statusCode}]`
     );
 
     return originalSend.call(res, data);
