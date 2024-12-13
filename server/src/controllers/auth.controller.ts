@@ -7,6 +7,10 @@ import {
 import { loginSchema, registerSchema } from '../validations/schemas';
 import { verifyToken } from '../utils/jwt';
 import SessionModel from '../models/session.model';
+import CustomError from '../utils/customError';
+import { fifteenMinutesFromNow, thirtyDaysFromNow } from '../utils/date';
+
+const secure = process.env.NODE_ENV === 'production';
 
 export const registerHandler = async (
   req: Request,
@@ -64,8 +68,8 @@ export const logoutHandler = async (
 ) => {
   try {
     // validate request
-    const accessToken = req.cookies.accessToken;
-    const { payload } = verifyToken(accessToken);
+    const accessToken = req.cookies.accessToken as string | undefined;
+    const { payload } = verifyToken(accessToken || '');
 
     // delete session
     if (payload) {
@@ -80,6 +84,49 @@ export const logoutHandler = async (
     clearAuthenticationCookies(res).status(200).json({
       message: 'Logout successful',
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const refreshHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // validate request
+    const refreshToken = req.cookies.refreshToken as string | undefined;
+
+    if (!refreshToken) {
+      throw new CustomError(401, 'Missing refresh token');
+    }
+
+    // call service
+    const { accessToken, newRefreshToken } =
+      await services.refreshUserAccessToken(refreshToken);
+
+    if (newRefreshToken) {
+      res.cookie('refreshToken', newRefreshToken, {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure,
+        expires: thirtyDaysFromNow(),
+        path: '/auth/refresh',
+      });
+    }
+
+    res
+      .status(200)
+      .cookie('accessToken', accessToken, {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure,
+        expires: fifteenMinutesFromNow(),
+      })
+      .json({
+        message: 'Access token refreshed',
+      });
   } catch (error) {
     next(error);
   }

@@ -1,17 +1,16 @@
-import { JsonWebTokenError } from 'jsonwebtoken';
 import VerificationCodeType from '../constants/verificationCodeType';
 import SessionModel from '../models/session.model';
 import UserModel from '../models/user.model';
 import VerificationCodeModel from '../models/verificationCode.model';
-import { oneYearFromNow } from '../utils/date';
-import jwt from 'jsonwebtoken';
-import { JWT_REFRESH_SECRET, JWT_SECRET } from '../constants/env';
+import { ONE_DAY_MS, oneYearFromNow, thirtyDaysFromNow } from '../utils/date';
 import CustomError from '../utils/customError';
 import { compareValue } from '../utils/bcrypt';
 import {
   accessTokenSignOptions,
+  RefreshTokenPayload,
   refreshTokenSignOptions,
   signToken,
+  verifyToken,
 } from '../utils/jwt';
 
 type CreateAccoutParams = {
@@ -126,5 +125,60 @@ export const loginUser = async ({
     user,
     refreshToken,
     accessToken,
+  };
+};
+
+export const refreshUserAccessToken = async (refreshToken: string) => {
+  // validate token - get sessionId from payload
+  const { payload } = verifyToken<RefreshTokenPayload>(refreshToken, {
+    secret: refreshTokenSignOptions.secret,
+  });
+
+  if (!payload) {
+    throw new CustomError(401, 'Invalid refresh token');
+  }
+
+  // validate session is not expired
+  const session = await SessionModel.findByPk(payload.sessionId);
+
+  if (!session) {
+    throw new CustomError(401, 'Session not found');
+  }
+
+  if (
+    session?.expiresAt !== undefined &&
+    session.expiresAt.getTime() < Date.now()
+  ) {
+    throw new CustomError(401, 'Session expired');
+  }
+
+  // refresh the session if it expires in the next 24 hours
+  const sessionNeedsRefresh = session?.expiresAt
+    ? session.expiresAt.getTime() - Date.now() <= ONE_DAY_MS
+    : false;
+
+  if (sessionNeedsRefresh) {
+    session.expiresAt = thirtyDaysFromNow();
+    await session.save();
+  }
+
+  // sign new tokens
+  const newRefreshToken = sessionNeedsRefresh
+    ? signToken(
+        {
+          sessionId: session.id!,
+        },
+        refreshTokenSignOptions
+      )
+    : undefined;
+
+  const accessToken = signToken({
+    sessionId: session.id!,
+    userId: session.userId,
+  });
+
+  return {
+    accessToken,
+    newRefreshToken,
   };
 };
