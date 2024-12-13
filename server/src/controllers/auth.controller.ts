@@ -4,7 +4,11 @@ import {
   clearAuthenticationCookies,
   setAuthenticationCookies,
 } from '../utils/cookies';
-import { loginSchema, registerSchema } from '../validations/schemas';
+import {
+  loginSchema,
+  registerSchema,
+  verificationCodeSchema,
+} from '../validations/schemas';
 import { verifyToken } from '../utils/jwt';
 import SessionModel from '../models/session.model';
 import CustomError from '../utils/customError';
@@ -127,6 +131,24 @@ export const refreshHandler = async (
       .json({
         message: 'Access token refreshed',
       });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyEmailHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const verificationCode = verificationCodeSchema.parse(req.params.code);
+
+    await services.verifyEmail(verificationCode);
+
+    res.status(200).json({
+      message: 'Email verified',
+    });
   } catch (error) {
     next(error);
   }

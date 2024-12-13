@@ -12,6 +12,7 @@ import {
   signToken,
   verifyToken,
 } from '../utils/jwt';
+import { Op } from 'sequelize';
 
 type CreateAccoutParams = {
   email: string;
@@ -180,5 +181,47 @@ export const refreshUserAccessToken = async (refreshToken: string) => {
   return {
     accessToken,
     newRefreshToken,
+  };
+};
+
+export const verifyEmail = async (verificationCode: string) => {
+  // get verification code
+  const validCode = await VerificationCodeModel.findOne({
+    where: {
+      id: verificationCode,
+      type: VerificationCodeType.EmailVerification,
+      expiresAt: {
+        // grater or equal to current time
+        [Op.gte]: Date.now(),
+      },
+    },
+  });
+
+  if (!validCode) {
+    throw new CustomError(404, 'Invalid verification code');
+  }
+
+  // update user to verified true
+  const updatedUser = await UserModel.update(
+    {
+      verified: true,
+    },
+    {
+      where: {
+        id: validCode.userId,
+      },
+    }
+  );
+
+  if (!updatedUser) {
+    throw new CustomError(500, 'Failed to verify email');
+  }
+
+  //delete verification code
+  await validCode.destroy();
+
+  // return user
+  return {
+    user: updatedUser,
   };
 };
