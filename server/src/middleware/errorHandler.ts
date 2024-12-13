@@ -2,6 +2,7 @@ import { ErrorRequestHandler, Response } from 'express';
 import { z, ZodError } from 'zod';
 import logger from '../config/logger';
 import CustomError from '../utils/customError';
+import { clearAuthenticationCookies } from '../utils/cookies';
 
 const handleZodError = (res: Response, error: z.ZodError) => {
   const errors = error.issues.map((err) => ({
@@ -24,8 +25,13 @@ const handleCustomError = (res: Response, error: CustomError) => {
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   if (error) {
     res.statusCode = error.statusCode || 500; // sets the correct status code on error
+    // clear all cookies on path refresh if there's an error
+    if (req.path === '/auth/refresh') {
+      clearAuthenticationCookies(res);
+    }
+
     logger.error(
-      `Error - METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - ERROR: [${error.message}]`
+      `Error - METHOD: [${req.method}] - URL: [${req.originalUrl}] - STATUS: [${res.statusCode}] - ERROR: [${error.message}]`
     );
 
     if (error instanceof ZodError) {
