@@ -13,6 +13,9 @@ import {
   verifyToken,
 } from '../utils/jwt';
 import { Op } from 'sequelize';
+import { sendMail } from '../utils/sendMail';
+import { getVerifyEmailTemplate } from '../utils/emailTemplates';
+import { APP_ORIGIN } from '../constants/env';
 
 type CreateAccoutParams = {
   email: string;
@@ -44,7 +47,19 @@ export const createAccount = async (data: CreateAccoutParams) => {
     type: VerificationCodeType.EmailVerification,
     expiresAt: oneYearFromNow(),
   });
+
+  const url = `${APP_ORIGIN}/email/verify/${verificationCode.id}`;
+
   // send verification email
+  const { error } = await sendMail({
+    to: user.email,
+    ...getVerifyEmailTemplate(url),
+  });
+
+  if (error) {
+    console.log(error);
+  }
+
   // create session
   const session = await SessionModel.create({
     userId: user.id!,
