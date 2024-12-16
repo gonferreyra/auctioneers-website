@@ -61,6 +61,7 @@ const UserModel = DB.define<IUserModel>(
     tableName: 'users',
     timestamps: true,
     hooks: {
+      // execute only before creating a new user
       beforeCreate: async (user) => {
         const hashedPassword = await hashValue(user.password);
         user.password = hashedPassword;
