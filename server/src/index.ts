@@ -10,6 +10,7 @@ import logger from './config/logger';
 import { loggerMiddleware } from './middleware/loggerHandler';
 import authenticate from './middleware/authenticate';
 import userRoutes from './routes/user.route';
+import sessionRoutes from './routes/session.route';
 
 const app = express();
 
@@ -40,8 +41,9 @@ const Server = async () => {
   // Authentication routes
   app.use('/auth', authRoutes);
 
-  // User routes - protected
+  // Protected routes
   app.use('/user', authenticate, userRoutes);
+  app.use('/sessions', authenticate, sessionRoutes);
 
   // Error Handler Middleware
   app.use(errorHandler);
