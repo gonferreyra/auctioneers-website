@@ -5,8 +5,10 @@ import {
   setAuthenticationCookies,
 } from '../utils/cookies';
 import {
+  emailSchema,
   loginSchema,
   registerSchema,
+  resetPasswordSchema,
   verificationCodeSchema,
 } from '../validations/schemas';
 import { verifyToken } from '../utils/jwt';
@@ -148,6 +150,24 @@ export const verifyEmailHandler = async (
 
     res.status(200).json({
       message: 'Email verified',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendPasswordResetHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const request = emailSchema.parse(req.body.email);
+
+    await services.sendPasswordResetEmail(request);
+
+    clearAuthenticationCookies(res).status(200).json({
+      message: 'Password reset email sent',
     });
   } catch (error) {
     next(error);

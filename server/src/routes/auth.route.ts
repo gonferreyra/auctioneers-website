@@ -8,5 +8,6 @@ authRoutes.post('/login', controllers.loginHandler);
 authRoutes.get('/logout', controllers.logoutHandler);
 authRoutes.get('/refresh', controllers.refreshHandler);
 authRoutes.get('/email/verify/:code', controllers.verifyEmailHandler);
+authRoutes.post('/password/forgot', controllers.sendPasswordResetHandler);
 
 export default authRoutes;
