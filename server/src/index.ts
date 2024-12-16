@@ -8,6 +8,8 @@ import errorHandler from './middleware/errorHandler';
 import authRoutes from './routes/auth.route';
 import logger from './config/logger';
 import { loggerMiddleware } from './middleware/loggerHandler';
+import authenticate from './middleware/authenticate';
+import userRoutes from './routes/user.route';
 
 const app = express();
 
@@ -37,6 +39,9 @@ const Server = async () => {
 
   // Authentication routes
   app.use('/auth', authRoutes);
+
+  // User routes - protected
+  app.use('/user', authenticate, userRoutes);
 
   // Error Handler Middleware
   app.use(errorHandler);
