@@ -173,3 +173,21 @@ export const sendPasswordResetHandler = async (
     next(error);
   }
 };
+
+export const resetPasswordHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const request = resetPasswordSchema.parse(req.body);
+
+    await services.resetPassword(request);
+
+    clearAuthenticationCookies(res).status(200).json({
+      message: 'Password reset successful',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

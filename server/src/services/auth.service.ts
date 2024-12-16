@@ -4,7 +4,7 @@ import UserModel from '../models/user.model';
 import VerificationCodeModel from '../models/verificationCode.model';
 import { ONE_DAY_MS, oneYearFromNow, thirtyDaysFromNow } from '../utils/date';
 import CustomError from '../utils/customError';
-import { compareValue } from '../utils/bcrypt';
+import { compareValue, hashValue } from '../utils/bcrypt';
 import {
   accessTokenSignOptions,
   RefreshTokenPayload,
@@ -299,5 +299,65 @@ export const sendPasswordResetEmail = async (email: string) => {
   return {
     url,
     emailId: data.id,
+  };
+};
+
+type ResetPasswordParams = {
+  password: string;
+  verificationCode: string;
+};
+
+export const resetPassword = async ({
+  password,
+  verificationCode,
+}: ResetPasswordParams) => {
+  // get the verification code
+  const validCode = await VerificationCodeModel.findOne({
+    where: {
+      id: verificationCode,
+      type: VerificationCodeType.PasswordReset,
+      expiresAt: {
+        // grater or equal to current time
+        [Op.gte]: Date.now(),
+      },
+    },
+  });
+
+  if (!validCode) {
+    throw new CustomError(404, 'Invalid or expired verification code');
+  }
+  // find user and update password
+  const user = await UserModel.findByPk(validCode.userId);
+  if (!user) {
+    throw new CustomError(404, 'User not found');
+  }
+
+  const updatedUser = await UserModel.update(
+    {
+      password: await hashValue(password),
+    },
+    {
+      where: {
+        id: user.id,
+      },
+    }
+  );
+
+  if (!updatedUser) {
+    throw new CustomError(500, 'Failed to reset password');
+  }
+
+  // delete verification code
+  await validCode.destroy();
+
+  // delete all sessions
+  await SessionModel.destroy({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  return {
+    user,
   };
 };

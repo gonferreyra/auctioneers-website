@@ -9,5 +9,6 @@ authRoutes.get('/logout', controllers.logoutHandler);
 authRoutes.get('/refresh', controllers.refreshHandler);
 authRoutes.get('/email/verify/:code', controllers.verifyEmailHandler);
 authRoutes.post('/password/forgot', controllers.sendPasswordResetHandler);
+authRoutes.post('/password/reset', controllers.resetPasswordHandler);
 
 export default authRoutes;
