@@ -80,3 +80,30 @@ EMAIL_SENDER=
 | -------- | --------------- | -------------------------- |
 | `GET`    | `/sessions`     | Get all the user sessions. |
 | `DELETE` | `/sessions/:id` | Delete the user session.   |
+
+### Case
+
+| Method | URL                                                           | Description                                                                       |
+| ------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `GET`  | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                |
+| `GET`  | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order. |
+
+Examples
+
+```bash
+Order by ID ascending (by default):
+
+GET /cases?page=1&limit=10&sortBy=id&sortOrder=asc
+```
+
+```bash
+Order by intern_number descending:
+
+GET /cases?page=1&limit=10&sortBy=intern_number&sortOrder=desc
+```
+
+```bash
+Order by recent movements:
+
+GET /cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc
+```
