@@ -12,7 +12,7 @@ import authenticate from './middleware/authenticate';
 import userRoutes from './routes/user.route';
 import sessionRoutes from './routes/session.route';
 import caseRoutes from './routes/case.route';
-import movementRoutes from './routes/movements.route';
+import movementRoutes from './routes/movement.route';
 
 const app = express();
 
