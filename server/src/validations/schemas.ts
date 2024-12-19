@@ -31,3 +31,13 @@ export const movementSchema = z.object({
   case_id: z.number(),
   description: z.string(),
 });
+
+// Cases
+export const getCasesPaginatedSchema = z.object({
+  page: z.string().optional().default('1'),
+  limit: z.string().optional().default('10'),
+  sortBy: z.string().optional().default('id'),
+  sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
+});
+
+export const caseIdSchema = z.string();
