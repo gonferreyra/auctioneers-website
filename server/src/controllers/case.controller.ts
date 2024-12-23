@@ -7,6 +7,7 @@ import {
   caseIdSchema,
   createCaseSchema,
   getCasesPaginatedSchema,
+  updateCaseSchema,
 } from '../validations/schemas';
 
 export const getCasesHandler = async (
@@ -70,6 +71,27 @@ export const createCaseHandler = async (
     const { newCase } = await services.createCase(request);
 
     res.status(201).json(newCase);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateCaseHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const caseId = caseIdSchema.parse(req.params.id);
+    const request = updateCaseSchema.parse(req.body);
+    // const data = updateCaseSchema.shape(request)
+
+    const { updatedCase } = await services.updateCase({
+      caseId,
+      data: request,
+    });
+
+    res.status(200).json(updatedCase);
   } catch (error) {
     next(error);
   }

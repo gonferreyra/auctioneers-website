@@ -1,6 +1,8 @@
+import z from 'zod';
 import CaseModel from '../models/case.model';
 import MovementModel from '../models/movement.model';
 import CustomError from '../utils/customError';
+import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
 
 type GetCasesParams = {
   page: number;
@@ -75,24 +77,7 @@ export const getCasesPaginated = async ({
   };
 };
 
-type createCaseParams = {
-  intern_number: string;
-  status?: 'active' | 'paralyzed' | 'inactive';
-  record: string;
-  plaintiff: string;
-  defendant: string;
-  type: string;
-  court: string;
-  law_office?: string;
-  debt?: number;
-  aps?: Date;
-  // aps_expiresAt?: Date;
-  is_executed: string;
-  address?: string;
-  account_dgr?: string;
-  nomenclature?: string;
-  description?: string;
-};
+type createCaseParams = z.infer<typeof createCaseSchema>;
 
 export const createCase = async (data: createCaseParams) => {
   // check if case already exists
@@ -116,4 +101,21 @@ export const createCase = async (data: createCaseParams) => {
   });
 
   return { newCase };
+};
+
+type updateCaseParams = {
+  caseId: string;
+  data: z.infer<typeof updateCaseSchema>;
+};
+
+export const updateCase = async ({ caseId, data }: updateCaseParams) => {
+  const caseToUpdate = await CaseModel.findByPk(caseId);
+
+  if (!caseToUpdate) {
+    throw new CustomError(404, 'Case not found');
+  }
+
+  const updatedCase = await caseToUpdate.update(data);
+
+  return { updatedCase };
 };
