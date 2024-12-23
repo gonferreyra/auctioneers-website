@@ -2,9 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import * as services from '../services/case.service';
 import CaseModel from '../models/case.model';
 import CustomError from '../utils/customError';
-// import z from 'zod';
 import MovementModel from '../models/movement.model';
-import { caseIdSchema, getCasesPaginatedSchema } from '../validations/schemas';
+import {
+  caseIdSchema,
+  createCaseSchema,
+  getCasesPaginatedSchema,
+} from '../validations/schemas';
 
 export const getCasesHandler = async (
   req: Request,
@@ -51,6 +54,22 @@ export const getCaseByIdHandler = async (
     }
 
     res.status(200).json(caseWithMovements);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createCaseHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const request = createCaseSchema.parse(req.body);
+
+    const { newCase } = await services.createCase(request);
+
+    res.status(201).json(newCase);
   } catch (error) {
     next(error);
   }
