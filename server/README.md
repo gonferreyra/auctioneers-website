@@ -86,11 +86,13 @@ EMAIL_SENDER=
 
 ### Case
 
-| Method | URL                                                           | Description                                                                       |
-| ------ | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `GET`  | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                |
-| `GET`  | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order. |
-|        |
+| Method  | URL                                                           | Description                                                                       |
+| ------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `GET`   | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                |
+| `GET`   | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order. |
+| `POST`  | `/cases`                                                      | Add a new Case                                                                    |
+| `PATCH` | `/cases/:id`                                                  | Update cases                                                                      |
+|         |
 
 Examples
 
