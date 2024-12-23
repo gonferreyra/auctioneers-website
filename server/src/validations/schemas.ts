@@ -44,7 +44,7 @@ export const caseIdSchema = z.string();
 
 export const createCaseSchema = z.object({
   intern_number: z.string().min(6).max(6),
-  status: z.enum(['active', 'paralyzed', 'inactive']).optional(),
+  status: z.enum(['active', 'paralyzed', 'closed']).optional(),
   record: z.string().min(5).max(8),
   plaintiff: z.string(),
   defendant: z.string(),
@@ -59,3 +59,5 @@ export const createCaseSchema = z.object({
   nomenclature: z.string().optional(),
   description: z.string().optional(),
 });
+
+export const updateCaseSchema = createCaseSchema.partial();
