@@ -20,18 +20,17 @@ interface ICaseModel
   defendant: string; // demandado
   type: string; // tipo de juicio
   court: string; // juzgado
-  law_office: string; // estudio
+  law_office?: string; // estudio
   debt?: number; // deuda
-  aps: Date; // fecha preventiva de subasta
-  aps_expiresAt: Date; // fecha caducidad preventiva
-  is_executed: boolean; // se ejecuta
-  address: string; // domicilio
-  account_dgr: string; // cuenta dgr
-  nomenclature: string; // nomenclatura
-  description: string; // descripcion
+  aps?: Date; // fecha preventiva de subasta
+  aps_expiresAt?: Date; // fecha caducidad preventiva
+  is_executed: string; // que se ejecuta (matricula tanto, auto dominio tanto)
+  address?: string; // domicilio
+  account_dgr?: string; // cuenta dgr
+  nomenclature?: string; // nomenclatura
+  description?: string; // descripcion de lo que se ejecuta (matricula completa)
   createdAt?: Date;
   updatedAt?: Date;
-  // movements: CaseMovement[]; // movimientos
 }
 
 const CaseModel = DB.define<ICaseModel>(
@@ -130,6 +129,23 @@ const CaseModel = DB.define<ICaseModel>(
   {
     tableName: 'cases',
     timestamps: true,
+    hooks: {
+      beforeCreate: (caseInstance) => {
+        if (caseInstance.aps) {
+          const apsDate = new Date(caseInstance.aps);
+          apsDate.setDate(apsDate.getDate() + 150);
+          caseInstance.aps_expiresAt = apsDate;
+        }
+        caseInstance.intern_number = caseInstance.intern_number.toUpperCase();
+      },
+      beforeUpdate: (caseInstance) => {
+        if (caseInstance.aps) {
+          const apsDate = new Date(caseInstance.aps);
+          apsDate.setDate(apsDate.getDate() + 150);
+          caseInstance.aps_expiresAt = apsDate;
+        }
+      },
+    },
   }
 );
 
