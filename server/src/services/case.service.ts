@@ -119,3 +119,17 @@ export const updateCase = async ({ caseId, data }: updateCaseParams) => {
 
   return { updatedCase };
 };
+
+export const deleteCase = async (caseId: string) => {
+  const deletedCase = await CaseModel.destroy({
+    where: {
+      id: caseId,
+    },
+  });
+
+  if (!deletedCase) {
+    throw new CustomError(404, 'Case not found');
+  }
+
+  return { deletedCase };
+};

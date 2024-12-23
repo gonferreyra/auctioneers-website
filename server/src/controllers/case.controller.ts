@@ -84,7 +84,6 @@ export const updateCaseHandler = async (
   try {
     const caseId = caseIdSchema.parse(req.params.id);
     const request = updateCaseSchema.parse(req.body);
-    // const data = updateCaseSchema.shape(request)
 
     const { updatedCase } = await services.updateCase({
       caseId,
@@ -92,6 +91,24 @@ export const updateCaseHandler = async (
     });
 
     res.status(200).json(updatedCase);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteCaseHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const caseId = caseIdSchema.parse(req.params.id);
+
+    const { deletedCase } = await services.deleteCase(caseId);
+
+    res.status(200).json({
+      message: 'Case deleted successfully',
+    });
   } catch (error) {
     next(error);
   }
