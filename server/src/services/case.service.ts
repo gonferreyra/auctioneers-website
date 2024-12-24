@@ -77,6 +77,24 @@ export const getCasesPaginated = async ({
   };
 };
 
+export const getCaseById = async (caseId: string) => {
+  const caseWithMovements = await CaseModel.findByPk(caseId, {
+    include: [
+      {
+        model: MovementModel,
+        as: 'movements',
+        attributes: ['description'],
+      },
+    ],
+  });
+
+  if (!caseWithMovements) {
+    throw new CustomError(404, 'Case not found');
+  }
+
+  return { caseWithMovements };
+};
+
 type createCaseParams = z.infer<typeof createCaseSchema>;
 
 export const createCase = async (data: createCaseParams) => {

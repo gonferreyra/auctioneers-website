@@ -40,19 +40,8 @@ export const getCaseByIdHandler = async (
 ) => {
   try {
     const caseId = caseIdSchema.parse(req.params.id);
-    const caseWithMovements = await CaseModel.findByPk(caseId, {
-      include: [
-        {
-          model: MovementModel,
-          as: 'movements',
-          attributes: ['id', 'description'],
-        },
-      ],
-    });
 
-    if (!caseWithMovements) {
-      throw new CustomError(404, 'Case not found');
-    }
+    const { caseWithMovements } = await services.getCaseById(caseId);
 
     res.status(200).json(caseWithMovements);
   } catch (error) {
