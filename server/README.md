@@ -117,8 +117,10 @@ GET /cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc
 
 ### Movement
 
-| Method | URL          | Description          |
-| ------ | ------------ | -------------------- |
-| `GET`  | `/movements` | Get all movements.   |
-| `POST` | `/movements` | Create new movement. |
-|        |
+| Method   | URL              | Description          |
+| -------- | ---------------- | -------------------- |
+| `GET`    | `/movements`     | Get all movements.   |
+| `POST`   | `/movements`     | Create new movement. |
+| `PATCH`  | `/movements/:id` | Update movement.     |
+| `DELETE` | `/movements/:id` | Delete movement.     |
+|          |
