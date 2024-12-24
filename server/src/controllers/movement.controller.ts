@@ -57,3 +57,21 @@ export const updateMovementHandler = async (
     next(error);
   }
 };
+
+export const deleteMovementHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const movementId = movementIdSchema.parse(req.params.id);
+
+    await services.deleteMovement(movementId);
+
+    res.status(200).json({
+      message: 'Movement deleted successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

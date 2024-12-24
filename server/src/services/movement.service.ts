@@ -70,3 +70,17 @@ export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
 
   return { updatedMovement };
 };
+
+export const deleteMovement = async (movementId: string) => {
+  const deletedMovement = await MovementModel.destroy({
+    where: {
+      id: movementId,
+    },
+  });
+
+  if (!deletedMovement) {
+    throw new CustomError(404, 'Movement not found');
+  }
+
+  return { deletedMovement };
+};
