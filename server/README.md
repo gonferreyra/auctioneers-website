@@ -67,12 +67,14 @@ EMAIL_SENDER=
 | `GET`  | `/auth/email/verify/:code` | Verify a user's email.       |
 | `POST` | `/auth/password/forgot`    | Send a password reset email. |
 | `POST` | `/auth/password/reset`     | Reset a user's password.     |
+|        |
 
 ### User
 
 | Method | URL     | Description           |
 | ------ | ------- | --------------------- |
 | `GET`  | `/user` | Get the current user. |
+|        |
 
 ### Session
 
@@ -80,3 +82,45 @@ EMAIL_SENDER=
 | -------- | --------------- | -------------------------- |
 | `GET`    | `/sessions`     | Get all the user sessions. |
 | `DELETE` | `/sessions/:id` | Delete the user session.   |
+|          |
+
+### Case
+
+| Method   | URL                                                           | Description                                                                       |
+| -------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `GET`    | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                |
+| `GET`    | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order. |
+| `POST`   | `/cases`                                                      | Add a new Case                                                                    |
+| `PATCH`  | `/cases/:id`                                                  | Update cases                                                                      |
+| `DELETE` | `/cases/:id`                                                  | Delete case                                                                       |
+|          |
+
+Examples
+
+```bash
+Order by ID ascending (by default):
+
+GET /cases?page=1&limit=10&sortBy=id&sortOrder=asc
+```
+
+```bash
+Order by intern_number descending:
+
+GET /cases?page=1&limit=10&sortBy=intern_number&sortOrder=desc
+```
+
+```bash
+Order by recent movements:
+
+GET /cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc
+```
+
+### Movement
+
+| Method   | URL              | Description          |
+| -------- | ---------------- | -------------------- |
+| `GET`    | `/movements`     | Get all movements.   |
+| `POST`   | `/movements`     | Create new movement. |
+| `PATCH`  | `/movements/:id` | Update movement.     |
+| `DELETE` | `/movements/:id` | Delete movement.     |
+|          |

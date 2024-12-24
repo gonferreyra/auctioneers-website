@@ -11,6 +11,8 @@ import { loggerMiddleware } from './middleware/loggerHandler';
 import authenticate from './middleware/authenticate';
 import userRoutes from './routes/user.route';
 import sessionRoutes from './routes/session.route';
+import caseRoutes from './routes/case.route';
+import movementRoutes from './routes/movement.route';
 
 const app = express();
 
@@ -44,6 +46,8 @@ const Server = async () => {
   // Protected routes
   app.use('/user', authenticate, userRoutes);
   app.use('/sessions', authenticate, sessionRoutes);
+  app.use('/cases', authenticate, caseRoutes);
+  app.use('/movements', authenticate, movementRoutes);
 
   // Error Handler Middleware
   app.use(errorHandler);
