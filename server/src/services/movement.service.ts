@@ -1,5 +1,8 @@
+import z from 'zod';
 import MovementModel from '../models/movement.model';
 import CustomError from '../utils/customError';
+import { updateMovementSchema } from '../validations/schemas';
+import CaseModel from '../models/case.model';
 
 type CreateMovementParams = {
   case_id: number;
@@ -10,6 +13,16 @@ export const createMovement = async ({
   case_id,
   description,
 }: CreateMovementParams) => {
+  const caseExist = await CaseModel.findOne({
+    where: {
+      id: case_id,
+    },
+  });
+
+  if (!caseExist) {
+    throw new CustomError(404, 'Case not found');
+  }
+
   const newMovement = await MovementModel.create({
     case_id,
     description,
@@ -25,4 +38,35 @@ export const createMovement = async ({
   return {
     newMovement,
   };
+};
+
+type UpdateMovementParams = {
+  id: string;
+  data: z.infer<typeof updateMovementSchema>;
+};
+
+export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
+  const caseExist = await CaseModel.findOne({
+    where: {
+      id: data.case_id,
+    },
+  });
+
+  if (!caseExist) {
+    throw new CustomError(404, 'Case not found');
+  }
+
+  const movementToUpdate = await MovementModel.findOne({
+    where: {
+      id,
+    },
+  });
+
+  if (!movementToUpdate) {
+    throw new CustomError(404, 'Movement not found');
+  }
+
+  const updatedMovement = await movementToUpdate.update(data);
+
+  return { updatedMovement };
 };
