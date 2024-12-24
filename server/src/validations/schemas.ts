@@ -27,10 +27,14 @@ export const resetPasswordSchema = z.object({
 });
 
 // Movements
-export const movementSchema = z.object({
+export const movementIdSchema = z.string();
+
+export const newMovementSchema = z.object({
   case_id: z.number(),
   description: z.string(),
 });
+
+export const updateMovementSchema = newMovementSchema;
 
 // Cases
 export const getCasesPaginatedSchema = z.object({
