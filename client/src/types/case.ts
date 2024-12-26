@@ -17,5 +17,4 @@ export interface CaseMovement {
   id: string;
   date: string;
   description: string;
-  type: 'filing' | 'hearing' | 'motion' | 'decision' | 'other';
 }
