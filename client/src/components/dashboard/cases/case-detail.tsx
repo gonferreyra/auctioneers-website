@@ -29,6 +29,15 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   const [originalCase] = useState<Case>(caseData);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
+  const handleUpdateMovement = (movementId: string, description: string) => {
+    const updatedMovements = editedCase.movements.map((movement) =>
+      movement.id === movementId ? { ...movement, description } : movement,
+    );
+
+    handleUpdate({ movements: updatedMovements });
+    toast.success('Movement updated successfully');
+  };
+
   const handleUpdate = (updates: Partial<Case>) => {
     setEditedCase((prev) => {
       const updated = { ...prev, ...updates };
@@ -133,12 +142,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
 
       <CaseMovements
         caseData={editedCase}
-        // isEditing={isEditing}
-        // onUpdate={(movement) => {
-        //   handleUpdate({
-        //     movements: [...editedCase.movements, movement],
-        //   });
-        // }}
+        onUpdateMovement={handleUpdateMovement}
       />
     </div>
   );

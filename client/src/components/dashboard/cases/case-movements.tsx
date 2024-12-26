@@ -12,19 +12,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus, Calendar } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
-import { DialogDescription } from '@radix-ui/react-dialog';
+import MovementItem from './movement-items';
 
 interface CaseMovementsProps {
   caseData: Case;
+  onUpdateMovement: (movementId: string, description: string) => void;
 }
 
-export default function CaseMovements({ caseData }: CaseMovementsProps) {
+export default function CaseMovements({
+  caseData,
+  onUpdateMovement,
+}: CaseMovementsProps) {
   const [isAddingMovement, setIsAddingMovement] = useState(false);
   const [newMovement, setNewMovement] = useState<Partial<CaseMovement>>({
     date: new Date().toISOString().split('T')[0],
-    type: 'other',
     description: '',
   });
 
@@ -34,7 +37,6 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
     setIsAddingMovement(false);
     setNewMovement({
       date: new Date().toISOString().split('T')[0],
-      type: 'other',
       description: '',
     });
   };
@@ -50,8 +52,7 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
               Add Movement
             </Button>
           </DialogTrigger>
-          <DialogContent aria-describedby="case-movements">
-            <DialogDescription>case movements</DialogDescription>
+          <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New Movement</DialogTitle>
             </DialogHeader>
@@ -65,25 +66,6 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
                     setNewMovement({ ...newMovement, date: e.target.value })
                   }
                 />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Type</label>
-                <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2"
-                  value={newMovement.type}
-                  onChange={(e) =>
-                    setNewMovement({
-                      ...newMovement,
-                      type: e.target.value as CaseMovement['type'],
-                    })
-                  }
-                >
-                  <option value="filing">Filing</option>
-                  <option value="hearing">Hearing</option>
-                  <option value="motion">Motion</option>
-                  <option value="decision">Decision</option>
-                  <option value="other">Other</option>
-                </select>
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">
@@ -110,24 +92,13 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
 
       <div className="space-y-4">
         {caseData.movements.map((movement) => (
-          <div
+          <MovementItem
             key={movement.id}
-            className="flex items-start gap-4 rounded-lg border p-4"
-          >
-            <div className="flex-1">
-              <div className="mb-2 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  {new Date(movement.date).toLocaleDateString()}
-                </span>
-                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-sm font-medium">
-                  {movement.type.charAt(0).toUpperCase() +
-                    movement.type.slice(1)}
-                </span>
-              </div>
-              <p className="text-sm">{movement.description}</p>
-            </div>
-          </div>
+            movement={movement}
+            onUpdateDescription={(description) =>
+              onUpdateMovement(movement.id, description)
+            }
+          />
         ))}
       </div>
     </Card>
