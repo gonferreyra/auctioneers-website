@@ -3,6 +3,8 @@ import localFont from 'next/font/local';
 import './globals.css';
 import HeaderWrapper from '@/components/header-wrapper';
 import FooterWrapper from '@/components/footer-wrapper';
+import ReactQueryProvider from '@/components/react-query-provider';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -26,14 +28,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <HeaderWrapper />
-        {children}
-        <FooterWrapper />
-      </body>
-    </html>
+    <ReactQueryProvider>
+      <html lang="en" className="scroll-smooth">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <HeaderWrapper />
+          {children}
+          <FooterWrapper />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </body>
+      </html>
+    </ReactQueryProvider>
   );
 }
