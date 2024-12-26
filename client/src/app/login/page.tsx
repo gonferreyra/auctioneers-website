@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { Gavel } from 'lucide-react';
+import { Gavel, Loader2 } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
+import { login } from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,12 +17,21 @@ export default function LoginPage() {
     password: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you would handle authentication here
-    // For demo purposes, we'll just redirect to the dashboard
-    router.push('/dashboard');
-  };
+  const {
+    mutate: signIn,
+    isPending,
+    isError,
+    error,
+  } = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      console.log('submit');
+      router.push('/dashboard');
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
@@ -35,7 +46,13 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            signIn({ email: formData.email, password: formData.password });
+          }}
+        >
           <div className="space-y-4">
             <div>
               <Label htmlFor="email">Email address</Label>
@@ -61,15 +78,32 @@ export default function LoginPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
+                onKeyDown={(e) =>
+                  e.key === 'Enter' &&
+                  signIn({ email: formData.email, password: formData.password })
+                }
                 className="mt-1"
               />
             </div>
           </div>
+          {/* Handle errors */}
+
+          {isError && (
+            <div className="rounded border border-red-500 p-2 text-center text-red-500 transition">
+              <p>{error.message}</p>
+              {/* <p>Test error</p> */}
+            </div>
+          )}
 
           <Button
             type="submit"
             className="w-full bg-primary hover:bg-primary/90"
+            disabled={isPending}
           >
+            <Loader2
+              className="animate-spin"
+              style={{ display: isPending ? 'inline-block' : 'none' }}
+            />
             Sign in
           </Button>
         </form>
