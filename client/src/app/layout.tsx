@@ -1,21 +1,12 @@
 import type { Metadata } from 'next';
-import localFont from 'next/font/local';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import HeaderWrapper from '@/components/header-wrapper';
 import FooterWrapper from '@/components/footer-wrapper';
 import ReactQueryProvider from '@/components/react-query-provider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-  weight: '100 900',
-});
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-  weight: '100 900',
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Auctioners',
@@ -30,9 +21,7 @@ export default function RootLayout({
   return (
     <ReactQueryProvider>
       <html lang="en" className="scroll-smooth">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={inter.className}>
           <HeaderWrapper />
           {children}
           <FooterWrapper />
