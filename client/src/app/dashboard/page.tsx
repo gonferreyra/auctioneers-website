@@ -29,19 +29,19 @@ export default function DashboardPage() {
               onValueChange={setActiveTab}
             >
               <TabsList>
-                <TabsTrigger value="calendar">Calendar</TabsTrigger>
-                <TabsTrigger value="cases">Cases</TabsTrigger>
-                <TabsTrigger value="auctions">Auctions</TabsTrigger>
+                <TabsTrigger value="calendar">Calendario</TabsTrigger>
+                <TabsTrigger value="cases">Causas</TabsTrigger>
+                <TabsTrigger value="auctions">Subastas</TabsTrigger>
               </TabsList>
             </Tabs>
             <div className="flex gap-2">
               <Button onClick={() => router.push('/dashboard/cases/new')}>
                 <Plus className="mr-2 h-4 w-4" />
-                New Case
+                Nuevo Caso
               </Button>
               <Button onClick={() => router.push('/dashboard/auctions/new')}>
                 <Gavel className="mr-2 h-4 w-4" />
-                New Auction
+                Nueva Subasta
               </Button>
             </div>
           </div>
