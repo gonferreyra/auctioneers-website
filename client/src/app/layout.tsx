@@ -5,6 +5,7 @@ import HeaderWrapper from '@/components/header-wrapper';
 import FooterWrapper from '@/components/footer-wrapper';
 import ReactQueryProvider from '@/components/react-query-provider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
           <FooterWrapper />
           <ReactQueryDevtools initialIsOpen={false} />
+          <Toaster />
         </body>
       </html>
     </ReactQueryProvider>
