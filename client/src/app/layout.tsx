@@ -27,7 +27,7 @@ export default function RootLayout({
           {children}
           <FooterWrapper />
           <ReactQueryDevtools initialIsOpen={false} />
-          <Toaster />
+          <Toaster position="top-right" />
         </body>
       </html>
     </ReactQueryProvider>
