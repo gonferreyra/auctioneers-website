@@ -5,17 +5,17 @@ import { updateMovementSchema } from '../validations/schemas';
 import CaseModel from '../models/case.model';
 
 type CreateMovementParams = {
-  case_id: number;
+  caseId: number;
   description: string;
 };
 
 export const createMovement = async ({
-  case_id,
+  caseId,
   description,
 }: CreateMovementParams) => {
   const caseExist = await CaseModel.findOne({
     where: {
-      id: case_id,
+      id: caseId,
     },
   });
 
@@ -24,7 +24,7 @@ export const createMovement = async ({
   }
 
   const newMovement = await MovementModel.create({
-    case_id,
+    caseId,
     description,
   });
 

@@ -34,7 +34,7 @@ export const getCasesPaginated = async ({
     order,
     attributes: [
       'id',
-      'intern_number',
+      'internNumber',
       'status',
       'record',
       'plaintiff',
@@ -43,13 +43,7 @@ export const getCasesPaginated = async ({
       'court',
       'law_office',
       'debt',
-      'aps',
-      'aps_expiresAt',
-      'is_executed',
-      'address',
-      'account_dgr',
-      'nomenclature',
-      'description',
+      'caseType',
       'createdAt',
       'updatedAt',
     ],
@@ -101,14 +95,14 @@ export const createCase = async (data: createCaseParams) => {
   // check if case already exists
   const previusCase = await CaseModel.findOne({
     where: {
-      intern_number: data.intern_number,
+      internNumber: data.internNumber,
     },
   });
 
   if (previusCase) {
     throw new CustomError(
       400,
-      `Case with number ${data.intern_number} already exists on database`
+      `Case with number ${data.internNumber} already exists on database`
     );
   }
 
