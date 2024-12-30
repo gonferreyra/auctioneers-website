@@ -1,22 +1,41 @@
-import BackButton from '@/components/dashboard/back-button';
-import CaseDetail from '@/components/dashboard/cases/case-detail';
-import { cases } from '@/lib/data/cases';
+'use client';
 
-export function generateStaticParams() {
-  return cases.map((case_) => ({
-    id: case_.id,
-  }));
-}
+import { use } from 'react';
+import BackButton from '@/components/dashboard/back-button';
+import { getCaseById } from '@/lib/api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import type { Case } from '@/types/case';
+import CaseDetail from '@/components/dashboard/cases/case-detail';
 
 interface CasePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function CasePage({ params }: CasePageProps) {
-  // warning error fix - params should be awaited
-  const { id } = await params;
+export default function CasePage({ params }: CasePageProps) {
+  const queryClient = useQueryClient();
+  const { id: caseId } = use(params);
 
-  const caseData = cases.find((case_) => case_.id === id);
+  // try to get data from cache
+  const cachedCase = queryClient
+    .getQueryData(['cases'])
+    ?.data.cases.find((case_: Case) => case_.id === caseId);
+
+  // If the case is not on cache, fetch it
+  const { data: caseData, isLoading } = useQuery({
+    queryKey: ['cases', caseId],
+    queryFn: () => getCaseById(caseId),
+    initialData: cachedCase || undefined,
+    staleTime: 1000 * 60 * 60, // 1 hora
+    refetchOnWindowFocus: false,
+    retry: false,
+  });
+
+  // console.log(data);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
   if (!caseData) {
     return (
       <div className="p-6">

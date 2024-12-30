@@ -29,3 +29,8 @@ export const getCasesPaginated = async ({
   // change response to return cases directly
   return response;
 };
+
+export const getCaseById = async (id: string) => {
+  const response = await API.get(`/cases/${id}`);
+  return response.data;
+};
