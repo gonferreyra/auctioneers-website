@@ -13,7 +13,7 @@ import AuctionSearch from '@/components/dashboard/auctions/auction-search';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('calendar');
+  const [activeTab, setActiveTab] = useState('cases');
 
   return (
     <div className="min-h-screen bg-gray-50">

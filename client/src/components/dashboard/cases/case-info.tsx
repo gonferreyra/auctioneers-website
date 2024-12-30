@@ -20,12 +20,12 @@ export default function CaseInfo({
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-semibold">Case Details</h2>
+        <h2 className="mb-4 text-lg font-semibold">Detalles</h2>
         <div className="space-y-4">
           {isEditing ? (
             <>
               <div className="space-y-2">
-                <Label htmlFor="court">Court</Label>
+                <Label htmlFor="court">Juzgado</Label>
                 <Input
                   id="court"
                   value={caseData.court}
@@ -34,7 +34,7 @@ export default function CaseInfo({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="type">Case Type</Label>
+                <Label htmlFor="type">Tipo</Label>
                 <Input
                   id="type"
                   value={caseData.type}
@@ -43,12 +43,12 @@ export default function CaseInfo({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="filingDate">Filing Date</Label>
+                <Label htmlFor="filingDate">Numero de Expediente</Label>
                 <Input
-                  id="filingDate"
-                  type="date"
-                  value={caseData.filingDate}
-                  onChange={(e) => onUpdate({ filingDate: e.target.value })}
+                  id="record"
+                  type="text"
+                  value={caseData.record}
+                  onChange={(e) => onUpdate({ record: e.target.value })}
                 />
               </div>
             </>
@@ -74,12 +74,12 @@ export default function CaseInfo({
       </Card>
 
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-semibold">Parties</h2>
+        <h2 className="mb-4 text-lg font-semibold">Partes</h2>
         <div className="space-y-4">
           {isEditing ? (
             <>
               <div className="space-y-2">
-                <Label htmlFor="plaintiff">Plaintiff</Label>
+                <Label htmlFor="plaintiff">Actor</Label>
                 <Input
                   id="plaintiff"
                   value={caseData.plaintiff}
@@ -88,7 +88,7 @@ export default function CaseInfo({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="defendant">Defendant</Label>
+                <Label htmlFor="defendant">Demandado</Label>
                 <Input
                   id="defendant"
                   value={caseData.defendant}
@@ -103,14 +103,43 @@ export default function CaseInfo({
                 <User className="mt-1 h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="font-medium">{caseData.plaintiff}</p>
-                  <p className="text-sm text-muted-foreground">Plaintiff</p>
+                  <p className="text-sm text-muted-foreground">Actor</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <User className="mt-1 h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="font-medium">{caseData.defendant}</p>
-                  <p className="text-sm text-muted-foreground">Defendant</p>
+                  <p className="text-sm text-muted-foreground">Demandado</p>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </Card>
+
+      <Card className="p-6">
+        <h2 className="mb-4 text-lg font-semibold">Datos</h2>
+        <div className="space-y-4">
+          {isEditing ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="plaintiff">Actor</Label>
+                <Input
+                  id="plaintiff"
+                  value={caseData.plaintiff}
+                  onChange={(e) => onUpdate({ plaintiff: e.target.value })}
+                  placeholder="Enter plaintiff name"
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-start gap-2">
+                <User className="mt-1 h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="font-medium">{caseData.plaintiff}</p>
+                  <p className="text-sm text-muted-foreground">Actor</p>
                 </div>
               </div>
             </>

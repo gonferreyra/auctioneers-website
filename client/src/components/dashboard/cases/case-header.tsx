@@ -30,27 +30,28 @@ export default function CaseHeader({
           {isEditing ? (
             <>
               <div className="space-y-2">
-                <Label htmlFor="title">Case Title</Label>
+                <Label htmlFor="title">Autos caratulados</Label>
+                {/* Este campo no debe ser editado, lo tenemos que editar abajo en las partes */}
                 <Input
                   id="title"
-                  value={caseData.title}
-                  onChange={(e) => onUpdate({ title: e.target.value })}
+                  value={`${caseData.plaintiff} c/ ${caseData.defendant} - ${caseData.type}`}
+                  disabled
                   placeholder="e.g., Banco Suquia c/ Daniel Blanco - Ejecucion hipotecaria"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="internalNumber">Internal Number</Label>
+                  <Label htmlFor="internalNumber">Numero interno</Label>
                   <Input
                     id="internalNumber"
-                    value={caseData.internalNumber}
+                    value={caseData.intern_number}
                     onChange={(e) =>
-                      onUpdate({ internalNumber: e.target.value })
+                      onUpdate({ intern_number: e.target.value })
                     }
                     placeholder="e.g., 2024-001"
                   />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="recordNumber">Record Number</Label>
                   <Input
                     id="recordNumber"
@@ -58,20 +59,22 @@ export default function CaseHeader({
                     onChange={(e) => onUpdate({ recordNumber: e.target.value })}
                     placeholder="e.g., 123456/2024"
                   />
-                </div>
+                </div> */}
               </div>
             </>
           ) : (
             <>
-              <h1 className="text-2xl font-bold">{caseData.title}</h1>
+              <h1 className="text-2xl font-bold">
+                {caseData.plaintiff} c/ {caseData.defendant} - {caseData.type} -
+              </h1>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  <span>Internal: {caseData.internalNumber}</span>
+                  <span>Internal: {caseData.intern_number}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Scale className="h-4 w-4" />
-                  <span>Record: {caseData.recordNumber}</span>
+                  <span>Expediente: {caseData.record}</span>
                 </div>
               </div>
             </>
