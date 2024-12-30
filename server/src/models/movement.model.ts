@@ -12,7 +12,7 @@ interface IMovementModel
     InferCreationAttributes<IMovementModel>
   > {
   id?: number;
-  case_id: number;
+  caseId: number;
   description: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -27,7 +27,7 @@ const MovementModel = DB.define<IMovementModel>(
       autoIncrement: true,
       allowNull: false,
     },
-    case_id: {
+    caseId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
