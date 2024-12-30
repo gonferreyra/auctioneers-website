@@ -6,6 +6,8 @@ import {
 } from 'sequelize';
 import { DB } from '../config/db';
 import MovementModel from './movement.model';
+import VehicleCaseModel from './vehicleCase.mode';
+import PropertyCaseModel from './propertyCase.model';
 
 interface ICaseModel
   extends Model<
@@ -22,6 +24,7 @@ interface ICaseModel
   court: string; // juzgado
   lawOffice?: string; // estudio
   debt?: number; // deuda
+  caseType: 'car' | 'property' | 'appraisal';
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -36,7 +39,7 @@ const CaseModel = DB.define<ICaseModel>(
       allowNull: false,
     },
     internNumber: {
-      type: DataTypes.STRING(6),
+      type: DataTypes.STRING(4),
       allowNull: false,
     },
     status: {
@@ -78,6 +81,9 @@ const CaseModel = DB.define<ICaseModel>(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    caseType: {
+      type: DataTypes.ENUM('car', 'property', 'appraisal'),
+    },
     createdAt: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -99,6 +105,24 @@ const CaseModel = DB.define<ICaseModel>(
     },
   }
 );
+
+CaseModel.hasOne(VehicleCaseModel, {
+  foreignKey: 'caseId',
+  as: 'vehicleDetails',
+});
+
+VehicleCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseId',
+});
+
+CaseModel.hasOne(PropertyCaseModel, {
+  foreignKey: 'caseId',
+  as: 'propertyDetails',
+});
+
+PropertyCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseId',
+});
 
 CaseModel.hasMany(MovementModel, {
   foreignKey: 'caseId',
