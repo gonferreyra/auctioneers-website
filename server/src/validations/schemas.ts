@@ -47,21 +47,22 @@ export const getCasesPaginatedSchema = z.object({
 export const caseIdSchema = z.string();
 
 export const createCaseSchema = z.object({
-  intern_number: z.string().min(6).max(6),
+  internNumber: z.string().min(4).max(6),
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),
   record: z.string().min(5).max(8),
   plaintiff: z.string(),
   defendant: z.string(),
   type: z.string(),
   court: z.string(),
-  law_office: z.string().optional(),
+  lawOffice: z.string().optional(),
   debt: z.number().optional(),
-  aps: z.date().optional(), // verify how we send the date from the frontend
-  is_executed: z.string(),
-  address: z.string().optional(),
-  account_dgr: z.string().optional(),
-  nomenclature: z.string().optional(),
-  description: z.string().optional(),
+  caseType: z.enum(['car', 'property', 'appraisal']),
+  // aps: z.date().optional(), // verify how we send the date from the frontend
+  // is_executed: z.string(),
+  // address: z.string().optional(),
+  // account_dgr: z.string().optional(),
+  // nomenclature: z.string().optional(),
+  // description: z.string().optional(),
 });
 
 export const updateCaseSchema = createCaseSchema.partial();
