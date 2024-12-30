@@ -29,6 +29,7 @@ export default function LoginPage() {
     onSuccess: () => {
       router.replace('/dashboard');
     },
+    // server errrors
     onError: (error) => {
       toast.error(error.message);
     },
@@ -38,7 +39,7 @@ export default function LoginPage() {
     signIn(data);
   };
 
-  // client side validation errors
+  // client side validation errors - client errors
   const onError = () => {
     (Object.keys(errors) as Array<keyof TLoginSchema>).forEach((key) => {
       const error = errors[key];
