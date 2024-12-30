@@ -9,3 +9,23 @@ export const login = async (data: LoginData) => {
   const response = await API.post('/auth/login', data);
   return response;
 };
+
+type CasesPaginatedParams = {
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+};
+
+export const getCasesPaginated = async ({
+  page,
+  limit,
+  sortBy,
+  sortOrder,
+}: CasesPaginatedParams) => {
+  const response = await API.get(
+    `/cases?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+  );
+  // change response to return cases directly
+  return response;
+};
