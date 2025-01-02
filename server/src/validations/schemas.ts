@@ -30,7 +30,7 @@ export const resetPasswordSchema = z.object({
 export const movementIdSchema = z.string();
 
 export const newMovementSchema = z.object({
-  case_id: z.number(),
+  caseId: z.number(),
   description: z.string(),
 });
 
@@ -46,8 +46,8 @@ export const getCasesPaginatedSchema = z.object({
 
 export const caseIdSchema = z.string();
 
-export const createCaseSchema = z.object({
-  internNumber: z.string().min(4).max(6),
+export const baseCaseSchema = z.object({
+  internNumber: z.string(),
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),
   record: z.string().min(5).max(8),
   plaintiff: z.string(),
@@ -56,13 +56,49 @@ export const createCaseSchema = z.object({
   court: z.string(),
   lawOffice: z.string().optional(),
   debt: z.number().optional(),
-  caseType: z.enum(['car', 'property', 'appraisal']),
-  // aps: z.date().optional(), // verify how we send the date from the frontend
-  // is_executed: z.string(),
-  // address: z.string().optional(),
-  // account_dgr: z.string().optional(),
-  // nomenclature: z.string().optional(),
-  // description: z.string().optional(),
+  caseType: z.enum(['vehicle', 'property', 'appraisal']),
 });
+
+export const vehicleCaseSchema = z.object({
+  caseId: z.number().optional(),
+  licensePlate: z.string().optional(),
+  brand: z.string().optional(),
+  model: z.string().optional(),
+  year: z.number().optional(),
+  chassisBrand: z.string().optional(),
+  chassisNumber: z.string().optional(),
+  engineBrand: z.string().optional(),
+  engineNumber: z.string().optional(),
+});
+
+export const propertyCaseSchema = z.object({
+  caseId: z.number().optional(),
+  propertyRegistration: z.string().optional(),
+  percentage: z.number().optional(),
+  address: z.string().optional(),
+  description: z.string().optional(),
+  aps: z.date().optional(),
+  apsExpiresAt: z.date().optional(),
+  accountDgr: z.string().optional(),
+  nomenclature: z.string().optional(),
+});
+
+export const createCaseSchema = z.object({
+  internNumber: z.string().max(6),
+  status: z.enum(['active', 'paralyzed', 'closed']).optional(),
+  record: z.string().min(5).max(8),
+  plaintiff: z.string(),
+  defendant: z.string(),
+  type: z.string(),
+  court: z.string(),
+  lawOffice: z.string().optional(),
+  debt: z.number().optional(),
+  caseType: z.enum(['vehicle', 'property', 'appraisal']),
+  specificData: z.union([vehicleCaseSchema, propertyCaseSchema]),
+});
+
+// export const appraisalCaseSchema = z.object({
+
+// })
 
 export const updateCaseSchema = createCaseSchema.partial();
