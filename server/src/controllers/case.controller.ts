@@ -5,10 +5,10 @@ import CustomError from '../utils/customError';
 import MovementModel from '../models/movement.model';
 import {
   caseIdSchema,
-  createCaseSchema,
   getCasesPaginatedSchema,
   updateCaseSchema,
 } from '../validations/schemas';
+import { validateCase } from '../validations/validateCase';
 
 export const getCasesHandler = async (
   req: Request,
@@ -55,7 +55,8 @@ export const createCaseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const request = createCaseSchema.parse(req.body);
+    const request = validateCase(req.body);
+    console.log(request);
 
     const { newCase } = await services.createCase(request);
 
