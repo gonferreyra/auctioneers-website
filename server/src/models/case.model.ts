@@ -24,7 +24,7 @@ interface ICaseModel
   court: string; // juzgado
   lawOffice?: string; // estudio
   debt?: number; // deuda
-  caseType: 'car' | 'property' | 'appraisal';
+  caseType: 'vehicle' | 'property' | 'appraisal';
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -39,7 +39,7 @@ const CaseModel = DB.define<ICaseModel>(
       allowNull: false,
     },
     internNumber: {
-      type: DataTypes.STRING(4),
+      type: DataTypes.STRING,
       allowNull: false,
     },
     status: {
@@ -82,7 +82,7 @@ const CaseModel = DB.define<ICaseModel>(
       allowNull: true,
     },
     caseType: {
-      type: DataTypes.ENUM('car', 'property', 'appraisal'),
+      type: DataTypes.ENUM('vehicle', 'property', 'appraisal'),
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -100,7 +100,13 @@ const CaseModel = DB.define<ICaseModel>(
     timestamps: true,
     hooks: {
       beforeCreate: (caseInstance) => {
-        caseInstance.internNumber = caseInstance.internNumber.toUpperCase();
+        if (caseInstance.caseType === 'vehicle') {
+          caseInstance.internNumber = 'JR' + caseInstance.internNumber;
+        } else if (caseInstance.caseType === 'property') {
+          caseInstance.internNumber = 'JI' + caseInstance.internNumber;
+        } else if (caseInstance.internNumber === 'appraisal') {
+          caseInstance.internNumber = 'T' + caseInstance.internNumber;
+        }
       },
     },
   }
