@@ -48,7 +48,7 @@ type UpdateMovementParams = {
 export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
   const caseExist = await CaseModel.findOne({
     where: {
-      id: data.case_id,
+      id: data.caseId,
     },
   });
 
