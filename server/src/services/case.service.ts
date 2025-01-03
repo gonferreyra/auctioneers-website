@@ -5,6 +5,7 @@ import CustomError from '../utils/customError';
 import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
 import VehicleCaseModel from '../models/vehicleCase.mode';
 import PropertyCaseModel from '../models/propertyCase.model';
+import AppraisalCaseModel from '../models/appraisalCase.model';
 
 type GetCasesParams = {
   page: number;
@@ -123,6 +124,10 @@ export const createCase = async (data: createCaseParams) => {
     await PropertyCaseModel.create({
       caseId: newCase.id!,
       ...data.specificData,
+    });
+  } else if (data.caseType === 'appraisal') {
+    await AppraisalCaseModel.create({
+      caseId: newCase.id,
     });
   }
 

@@ -56,7 +56,6 @@ export const createCaseHandler = async (
 ) => {
   try {
     const request = validateCase(req.body);
-    console.log(request);
 
     const { newCase } = await services.createCase(request);
 
