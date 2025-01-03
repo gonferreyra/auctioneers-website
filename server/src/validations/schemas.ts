@@ -83,6 +83,10 @@ export const propertyCaseSchema = z.object({
   nomenclature: z.string().optional(),
 });
 
+export const appraisalCaseSchema = z.object({
+  caseId: z.number().optional(),
+});
+
 export const createCaseSchema = z.object({
   internNumber: z.string().max(6),
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),
@@ -94,11 +98,11 @@ export const createCaseSchema = z.object({
   lawOffice: z.string().optional(),
   debt: z.number().optional(),
   caseType: z.enum(['vehicle', 'property', 'appraisal']),
-  specificData: z.union([vehicleCaseSchema, propertyCaseSchema]),
+  specificData: z.union([
+    vehicleCaseSchema,
+    propertyCaseSchema,
+    appraisalCaseSchema,
+  ]),
 });
-
-// export const appraisalCaseSchema = z.object({
-
-// })
 
 export const updateCaseSchema = createCaseSchema.partial();
