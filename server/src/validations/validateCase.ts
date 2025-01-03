@@ -15,7 +15,9 @@ export const validateCase = (data: any) => {
       break;
     case 'property':
       specificData = propertyCaseSchema.parse(data.specificData);
-
+    case 'appraisal':
+      specificData = {};
+      break;
     default:
       throw new Error('Invalid case type');
   }
