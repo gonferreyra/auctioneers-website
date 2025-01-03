@@ -73,7 +73,7 @@ const VehicleCaseModel = DB.define<IVehicleCaseModel>(
     },
   },
   {
-    tableName: 'vehicle_case',
+    tableName: 'vehicle_cases',
     timestamps: true,
   }
 );
