@@ -8,6 +8,7 @@ import { DB } from '../config/db';
 import MovementModel from './movement.model';
 import VehicleCaseModel from './vehicleCase.mode';
 import PropertyCaseModel from './propertyCase.model';
+import AppraisalCaseModel from './appraisalCase.model';
 
 interface ICaseModel
   extends Model<
@@ -104,7 +105,7 @@ const CaseModel = DB.define<ICaseModel>(
           caseInstance.internNumber = 'JR' + caseInstance.internNumber;
         } else if (caseInstance.caseType === 'property') {
           caseInstance.internNumber = 'JI' + caseInstance.internNumber;
-        } else if (caseInstance.internNumber === 'appraisal') {
+        } else if (caseInstance.caseType === 'appraisal') {
           caseInstance.internNumber = 'T' + caseInstance.internNumber;
         }
       },
@@ -127,6 +128,15 @@ CaseModel.hasOne(PropertyCaseModel, {
 });
 
 PropertyCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseId',
+});
+
+CaseModel.hasOne(AppraisalCaseModel, {
+  foreignKey: 'caseId',
+  as: 'appraisalDetails',
+});
+
+AppraisalCaseModel.belongsTo(CaseModel, {
   foreignKey: 'caseId',
 });
 
