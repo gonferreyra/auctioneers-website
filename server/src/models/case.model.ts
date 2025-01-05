@@ -17,7 +17,7 @@ interface ICaseModel
   > {
   id?: number;
   internNumber?: string;
-  status: 'active' | 'paralyzed' | 'closed';
+  status?: 'active' | 'paralyzed' | 'closed';
   record: string; // expte
   plaintiff: string; // actor
   defendant: string; // demandado
@@ -46,7 +46,8 @@ const CaseModel = DB.define<ICaseModel>(
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // check if on allowNull true with default value is ok
+      allowNull: true,
       defaultValue: 'active',
     },
     record: {
