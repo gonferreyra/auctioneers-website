@@ -16,7 +16,7 @@ interface ICaseModel
     InferCreationAttributes<ICaseModel>
   > {
   id?: number;
-  internNumber: string;
+  internNumber?: string;
   status: 'active' | 'paralyzed' | 'closed';
   record: string; // expte
   plaintiff: string; // actor
@@ -41,7 +41,8 @@ const CaseModel = DB.define<ICaseModel>(
     },
     internNumber: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      unique: true,
     },
     status: {
       type: DataTypes.STRING,
@@ -100,13 +101,28 @@ const CaseModel = DB.define<ICaseModel>(
     tableName: 'cases',
     timestamps: true,
     hooks: {
-      beforeCreate: (caseInstance) => {
-        if (caseInstance.caseType === 'vehicle') {
-          caseInstance.internNumber = 'JR' + caseInstance.internNumber;
-        } else if (caseInstance.caseType === 'property') {
-          caseInstance.internNumber = 'JI' + caseInstance.internNumber;
-        } else if (caseInstance.caseType === 'appraisal') {
-          caseInstance.internNumber = 'T' + caseInstance.internNumber;
+      beforeCreate: async (caseInstance) => {
+        // get last internNumber
+        const lastCase = await CaseModel.findOne({
+          order: [['createdAt', 'DESC']],
+        });
+
+        const lastNumber = lastCase?.internNumber
+          ? parseInt(lastCase.internNumber.replace(/\D/g, '')) || 0
+          : 0;
+
+        // Generate new internNumber
+        const prefix =
+          caseInstance.caseType === 'vehicle'
+            ? 'JR'
+            : caseInstance.caseType === 'property'
+            ? 'JI'
+            : 'T';
+
+        caseInstance.internNumber = `${prefix}${lastNumber + 1}`;
+
+        if (!caseInstance.internNumber) {
+          throw new Error('Failed to generate internNumber');
         }
       },
     },
@@ -114,39 +130,39 @@ const CaseModel = DB.define<ICaseModel>(
 );
 
 CaseModel.hasOne(VehicleCaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
   as: 'vehicleDetails',
 });
 
 VehicleCaseModel.belongsTo(CaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
 });
 
 CaseModel.hasOne(PropertyCaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
   as: 'propertyDetails',
 });
 
 PropertyCaseModel.belongsTo(CaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
 });
 
 CaseModel.hasOne(AppraisalCaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
   as: 'appraisalDetails',
 });
 
 AppraisalCaseModel.belongsTo(CaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
 });
 
 CaseModel.hasMany(MovementModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
   as: 'movements', // Alias para incluir los movimientos en consultas
 });
 
 MovementModel.belongsTo(CaseModel, {
-  foreignKey: 'caseId',
+  foreignKey: 'caseInternNumber',
   as: 'case', // Alias para incluir el caso en consultas
 });
 

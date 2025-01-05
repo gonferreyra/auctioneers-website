@@ -12,7 +12,7 @@ interface IVehicleCaseModel
     InferCreationAttributes<IVehicleCaseModel>
   > {
   id?: number;
-  caseId: number;
+  caseInternNumber: string;
   licensePlate?: string;
   brand?: string;
   model?: string;
@@ -31,12 +31,12 @@ const VehicleCaseModel = DB.define<IVehicleCaseModel>(
       primaryKey: true,
       autoIncrement: true,
     },
-    caseId: {
-      type: DataTypes.INTEGER,
+    caseInternNumber: {
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'cases',
-        key: 'id',
+        key: 'internNumber',
       },
     },
     licensePlate: {

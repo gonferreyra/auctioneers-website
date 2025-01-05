@@ -12,7 +12,7 @@ interface IPropertyCaseModel
     InferCreationAttributes<IPropertyCaseModel>
   > {
   id?: number;
-  caseId: number;
+  caseInternNumber: string;
   propertyRegistration?: string;
   percentage?: number;
   address?: string;
@@ -34,12 +34,12 @@ const PropertyCaseModel = DB.define<IPropertyCaseModel>(
       autoIncrement: true,
       allowNull: false,
     },
-    caseId: {
-      type: DataTypes.INTEGER,
+    caseInternNumber: {
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'cases',
-        key: 'id',
+        key: 'internNumber',
       },
     },
     propertyRegistration: {

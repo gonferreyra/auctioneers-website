@@ -12,7 +12,7 @@ interface IAppraisalCaseModel
     InferCreationAttributes<IAppraisalCaseModel>
   > {
   id?: number;
-  caseId: number;
+  caseInternNumber: string;
 }
 
 const AppraisalCaseModel = DB.define(
@@ -23,12 +23,12 @@ const AppraisalCaseModel = DB.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    caseId: {
-      type: DataTypes.INTEGER,
+    caseInternNumber: {
+      type: DataTypes.STRING,
       allowNull: false,
       references: {
         model: 'cases',
-        key: 'id',
+        key: 'internNumber',
       },
     },
   },
