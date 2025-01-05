@@ -15,6 +15,7 @@ export const validateCase = (data: any) => {
       break;
     case 'property':
       specificData = propertyCaseSchema.parse(data.specificData);
+      break;
     case 'appraisal':
       specificData = {};
       break;

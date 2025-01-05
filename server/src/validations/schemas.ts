@@ -47,7 +47,6 @@ export const getCasesPaginatedSchema = z.object({
 export const caseIdSchema = z.string();
 
 export const baseCaseSchema = z.object({
-  internNumber: z.string(),
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),
   record: z.string().min(5).max(8),
   plaintiff: z.string(),
@@ -60,7 +59,6 @@ export const baseCaseSchema = z.object({
 });
 
 export const vehicleCaseSchema = z.object({
-  caseId: z.number().optional(),
   licensePlate: z.string().optional(),
   brand: z.string().optional(),
   model: z.string().optional(),
@@ -72,7 +70,6 @@ export const vehicleCaseSchema = z.object({
 });
 
 export const propertyCaseSchema = z.object({
-  caseId: z.number().optional(),
   propertyRegistration: z.string().optional(),
   percentage: z.number().optional(),
   address: z.string().optional(),
@@ -84,11 +81,11 @@ export const propertyCaseSchema = z.object({
 });
 
 export const appraisalCaseSchema = z.object({
-  caseId: z.number().optional(),
+  caseInternNumber: z.string().optional(),
 });
 
 export const createCaseSchema = z.object({
-  internNumber: z.string().max(6),
+  internNumber: z.string().optional(),
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),
   record: z.string().min(5).max(8),
   plaintiff: z.string(),

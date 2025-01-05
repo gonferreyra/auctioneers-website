@@ -95,41 +95,57 @@ export const getCaseById = async (caseId: string) => {
 type createCaseParams = z.infer<typeof createCaseSchema>;
 
 export const createCase = async (data: createCaseParams) => {
-  // check if case already exists
+  // check if case already exists by record number (numero de expediente)
   const previusCase = await CaseModel.findOne({
     where: {
-      internNumber: data.internNumber,
+      record: data.record,
     },
   });
 
   if (previusCase) {
     throw new CustomError(
       400,
-      `Case with number ${data.internNumber} already exists on database`
+      `Case with record number ${data.record} already exists on database`
     );
   }
 
-  // create new case
+  // create new base case
   const newCase = await CaseModel.create({
     ...data,
-    status: 'active',
+    // status: 'active',
   });
+
+  // Ensure internNumber is generated
+  if (!newCase.internNumber) {
+    throw new Error('Failed to generate internNumber');
+  }
 
   if (data.caseType === 'vehicle') {
     await VehicleCaseModel.create({
-      caseId: newCase.id!,
+      caseInternNumber: newCase.internNumber,
       ...data.specificData,
     });
   } else if (data.caseType === 'property') {
     await PropertyCaseModel.create({
-      caseId: newCase.id!,
+      caseInternNumber: newCase.internNumber,
       ...data.specificData,
     });
   } else if (data.caseType === 'appraisal') {
     await AppraisalCaseModel.create({
-      caseId: newCase.id,
+      caseInternNumber: newCase.internNumber,
+      // ...data.specificData,
     });
   }
+  // else if (data.caseType === 'property') {
+  //   await PropertyCaseModel.create({
+  //     caseId: newCase.id!,
+  //     ...data.specificData,
+  //   });
+  // } else if (data.caseType === 'appraisal') {
+  //   await AppraisalCaseModel.create({
+  //     caseId: newCase.id,
+  //   });
+  // }
 
   return { newCase };
 };
