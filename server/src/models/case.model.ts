@@ -132,38 +132,46 @@ const CaseModel = DB.define<ICaseModel>(
 
 CaseModel.hasOne(VehicleCaseModel, {
   foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
   as: 'vehicleDetails',
 });
 
 VehicleCaseModel.belongsTo(CaseModel, {
   foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
 });
 
 CaseModel.hasOne(PropertyCaseModel, {
   foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
   as: 'propertyDetails',
 });
 
 PropertyCaseModel.belongsTo(CaseModel, {
   foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
 });
 
 CaseModel.hasOne(AppraisalCaseModel, {
   foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
   as: 'appraisalDetails',
 });
 
 AppraisalCaseModel.belongsTo(CaseModel, {
   foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
 });
 
 CaseModel.hasMany(MovementModel, {
   foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
   as: 'movements', // Alias para incluir los movimientos en consultas
 });
 
 MovementModel.belongsTo(CaseModel, {
   foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
   as: 'case', // Alias para incluir el caso en consultas
 });
 
