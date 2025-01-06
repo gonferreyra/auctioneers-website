@@ -44,7 +44,7 @@ export const getCasesPaginatedSchema = z.object({
   sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
 });
 
-export const caseIdSchema = z.string();
+export const idSchema = z.number();
 
 export const baseCaseSchema = z.object({
   status: z.enum(['active', 'paralyzed', 'closed']).optional(),

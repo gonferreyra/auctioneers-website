@@ -44,7 +44,7 @@ export const getCasesPaginated = async ({
       'defendant',
       'type',
       'court',
-      'law_office',
+      'lawOffice',
       'debt',
       'caseType',
       'createdAt',
@@ -74,8 +74,8 @@ export const getCasesPaginated = async ({
   };
 };
 
-export const getCaseById = async (caseId: string) => {
-  const caseWithMovements = await CaseModel.findByPk(caseId, {
+export const getCaseById = async (id: number) => {
+  const caseWithMovements = await CaseModel.findByPk(id, {
     include: [
       {
         model: MovementModel,
@@ -86,7 +86,7 @@ export const getCaseById = async (caseId: string) => {
   });
 
   if (!caseWithMovements) {
-    throw new CustomError(404, 'Case not found');
+    throw new CustomError(404, `Case with id ${id} not found`);
   }
 
   return { caseWithMovements };

@@ -1,11 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import * as services from '../services/case.service';
-import CaseModel from '../models/case.model';
-import CustomError from '../utils/customError';
-import MovementModel from '../models/movement.model';
 import {
-  caseIdSchema,
   getCasesPaginatedSchema,
+  idSchema,
   updateCaseSchema,
 } from '../validations/schemas';
 import { validateCase } from '../validations/validateCase';
@@ -39,9 +36,13 @@ export const getCaseByIdHandler = async (
   next: NextFunction
 ) => {
   try {
-    const caseId = caseIdSchema.parse(req.params.id);
+    const id = idSchema.parse(Number(req.params.id));
 
-    const { caseWithMovements } = await services.getCaseById(caseId);
+    if (isNaN(id)) {
+      throw new Error('Invalid case ID');
+    }
+
+    const { caseWithMovements } = await services.getCaseById(id);
 
     res.status(200).json(caseWithMovements);
   } catch (error) {
@@ -59,46 +60,46 @@ export const createCaseHandler = async (
 
     const { newCase } = await services.createCase(request);
 
-    res.status(201).json(newCase);
+    res
+      .status(201)
+      .json({ message: `Case ${newCase.internNumber} created successfully` });
   } catch (error) {
     next(error);
   }
 };
 
-export const updateCaseHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const caseId = caseIdSchema.parse(req.params.id);
-    const request = updateCaseSchema.parse(req.body);
+// export const updateCaseHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const caseId = caseIdSchema.parse(req.params.id);
+//     const request = updateCaseSchema.parse(req.body);
+//     const { updatedCase } = await services.updateCase({
+//       caseId,
+//       data: request,
+//     });
+//     res.status(200).json(updatedCase);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-    const { updatedCase } = await services.updateCase({
-      caseId,
-      data: request,
-    });
+// export const deleteCaseHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const caseId = caseIdSchema.parse(req.params.id);
 
-    res.status(200).json(updatedCase);
-  } catch (error) {
-    next(error);
-  }
-};
+//     const { deletedCase } = await services.deleteCase(caseId);
 
-export const deleteCaseHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const caseId = caseIdSchema.parse(req.params.id);
-
-    const { deletedCase } = await services.deleteCase(caseId);
-
-    res.status(200).json({
-      message: 'Case deleted successfully',
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json({
+//       message: 'Case deleted successfully',
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
