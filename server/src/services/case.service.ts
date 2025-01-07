@@ -136,16 +136,6 @@ export const createCase = async (data: createCaseParams) => {
       ...data.specificData,
     });
   }
-  // else if (data.caseType === 'property') {
-  //   await PropertyCaseModel.create({
-  //     caseId: newCase.id!,
-  //     ...data.specificData,
-  //   });
-  // } else if (data.caseType === 'appraisal') {
-  //   await AppraisalCaseModel.create({
-  //     caseId: newCase.id,
-  //   });
-  // }
 
   return { newCase };
 };
