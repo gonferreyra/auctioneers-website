@@ -13,6 +13,7 @@ interface IAppraisalCaseModel
   > {
   id?: number;
   caseInternNumber: string;
+  itemToAppraise?: string;
 }
 
 const AppraisalCaseModel = DB.define(
@@ -30,6 +31,14 @@ const AppraisalCaseModel = DB.define(
         model: 'cases',
         key: 'internNumber',
       },
+    },
+    itemToAppraise: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {

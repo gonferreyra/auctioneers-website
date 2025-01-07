@@ -82,6 +82,8 @@ export const propertyCaseSchema = z.object({
 
 export const appraisalCaseSchema = z.object({
   caseInternNumber: z.string().optional(),
+  itemToAppraise: z.string().optional(),
+  description: z.string().optional(),
 });
 
 export const createCaseSchema = z.object({
