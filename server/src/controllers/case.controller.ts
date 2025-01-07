@@ -5,7 +5,7 @@ import {
   idSchema,
   updateCaseSchema,
 } from '../validations/schemas';
-import { validateCase } from '../validations/validateCase';
+import { validateCase, validateUpdateCase } from '../validations/validateCase';
 
 export const getCasesHandler = async (
   req: Request,
@@ -68,23 +68,25 @@ export const createCaseHandler = async (
   }
 };
 
-// export const updateCaseHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const caseId = caseIdSchema.parse(req.params.id);
-//     const request = updateCaseSchema.parse(req.body);
-//     const { updatedCase } = await services.updateCase({
-//       caseId,
-//       data: request,
-//     });
-//     res.status(200).json(updatedCase);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+export const updateCaseHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = idSchema.parse(Number(req.params.id));
+
+    const request = validateUpdateCase(req.body);
+
+    const { updatedCase } = await services.updateCase({
+      id,
+      data: request,
+    });
+    res.status(200).json(updatedCase);
+  } catch (error) {
+    next(error);
+  }
+};
 
 // export const deleteCaseHandler = async (
 //   req: Request,

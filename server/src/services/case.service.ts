@@ -133,7 +133,7 @@ export const createCase = async (data: createCaseParams) => {
   } else if (data.caseType === 'appraisal') {
     await AppraisalCaseModel.create({
       caseInternNumber: newCase.internNumber,
-      // ...data.specificData,
+      ...data.specificData,
     });
   }
   // else if (data.caseType === 'property') {
@@ -151,18 +151,76 @@ export const createCase = async (data: createCaseParams) => {
 };
 
 type updateCaseParams = {
-  caseId: string;
+  id: number;
   data: z.infer<typeof updateCaseSchema>;
 };
 
-export const updateCase = async ({ caseId, data }: updateCaseParams) => {
-  const caseToUpdate = await CaseModel.findByPk(caseId);
+export const updateCase = async ({ id, data }: updateCaseParams) => {
+  const caseToUpdate = await CaseModel.findByPk(id);
 
   if (!caseToUpdate) {
     throw new CustomError(404, 'Case not found');
   }
 
-  const updatedCase = await caseToUpdate.update(data);
+  if (!data) {
+    throw new Error('Data to update is required');
+  }
+
+  // omit caseType field to avoid updating it
+  const { caseType, ...updateData } = data;
+
+  // update basecase
+  const updatedCase = await caseToUpdate.update(updateData);
+
+  if (caseToUpdate.caseType === 'vehicle' && data.specificData) {
+    await VehicleCaseModel.update(
+      data.specificData as {
+        licensePlate?: string;
+        brand?: string;
+        model?: string;
+        year?: number;
+        chassisBrand?: string;
+        chassisNumber?: string;
+        engineBrand?: string;
+        engineNumber?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  } else if (caseToUpdate.caseType === 'property' && data.specificData) {
+    await PropertyCaseModel.update(
+      data.specificData as {
+        propertyRegistration?: string;
+        percentage?: number;
+        address?: string;
+        description?: string;
+        aps?: Date;
+        apsExpiresAt?: Date;
+        acccountDgr?: string;
+        nomenclature?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  } else if (caseToUpdate.caseType === 'appraisal' && data.specificData) {
+    await AppraisalCaseModel.update(
+      data.specificData as {
+        itemToAppraise?: string;
+        description?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  }
 
   return { updatedCase };
 };
