@@ -58,20 +58,20 @@ export const updateMovementHandler = async (
   }
 };
 
-export const deleteMovementHandler = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const movementId = movementIdSchema.parse(req.params.id);
+// export const deleteMovementHandler = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//   try {
+//     const movementId = movementIdSchema.parse(req.params.id);
 
-    await services.deleteMovement(movementId);
+//     await services.deleteMovement(movementId);
 
-    res.status(200).json({
-      message: 'Movement deleted successfully',
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+//     res.status(200).json({
+//       message: 'Movement deleted successfully',
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
