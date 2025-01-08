@@ -5,17 +5,17 @@ import { updateMovementSchema } from '../validations/schemas';
 import CaseModel from '../models/case.model';
 
 type CreateMovementParams = {
-  caseId: number;
+  caseInternNumber: string;
   description: string;
 };
 
 export const createMovement = async ({
-  caseId,
+  caseInternNumber,
   description,
 }: CreateMovementParams) => {
   const caseExist = await CaseModel.findOne({
     where: {
-      id: caseId,
+      internNumber: caseInternNumber,
     },
   });
 
@@ -24,7 +24,7 @@ export const createMovement = async ({
   }
 
   const newMovement = await MovementModel.create({
-    caseId,
+    caseInternNumber,
     description,
   });
 
@@ -40,36 +40,36 @@ export const createMovement = async ({
   };
 };
 
-type UpdateMovementParams = {
-  id: string;
-  data: z.infer<typeof updateMovementSchema>;
-};
+// type UpdateMovementParams = {
+//   id: string;
+//   data: z.infer<typeof updateMovementSchema>;
+// };
 
-export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
-  const caseExist = await CaseModel.findOne({
-    where: {
-      id: data.caseId,
-    },
-  });
+// export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
+//   const caseExist = await CaseModel.findOne({
+//     where: {
+//       id: data.caseId,
+//     },
+//   });
 
-  if (!caseExist) {
-    throw new CustomError(404, 'Case not found');
-  }
+//   if (!caseExist) {
+//     throw new CustomError(404, 'Case not found');
+//   }
 
-  const movementToUpdate = await MovementModel.findOne({
-    where: {
-      id,
-    },
-  });
+//   const movementToUpdate = await MovementModel.findOne({
+//     where: {
+//       id,
+//     },
+//   });
 
-  if (!movementToUpdate) {
-    throw new CustomError(404, 'Movement not found');
-  }
+//   if (!movementToUpdate) {
+//     throw new CustomError(404, 'Movement not found');
+//   }
 
-  const updatedMovement = await movementToUpdate.update(data);
+//   const updatedMovement = await movementToUpdate.update(data);
 
-  return { updatedMovement };
-};
+//   return { updatedMovement };
+// };
 
 export const deleteMovement = async (movementId: string) => {
   const deletedMovement = await MovementModel.destroy({
