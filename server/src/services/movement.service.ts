@@ -71,10 +71,10 @@ export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
   return { updatedMovement };
 };
 
-export const deleteMovement = async (movementId: string) => {
+export const deleteMovement = async (id: string) => {
   const deletedMovement = await MovementModel.destroy({
     where: {
-      id: movementId,
+      id,
     },
   });
 
