@@ -55,34 +55,3 @@ export const validateUpdateCase = (data: any) => {
     specificData,
   };
 };
-
-// export const validateCase = (data: any, options = { partial: false }) => {
-//   const baseData = options.partial
-//     ? baseCaseSchema.partial().parse(data)
-//     : baseCaseSchema.parse(data);
-
-//   let specificData;
-
-//   switch (baseData.caseType) {
-//     case 'vehicle':
-//       specificData = options.partial
-//         ? vehicleCaseSchema.partial().parse(data.specificData)
-//         : vehicleCaseSchema.parse(data.specificData);
-//       break;
-//     case 'property':
-//       specificData = options.partial
-//         ? propertyCaseSchema.parse(data.specificData)
-//         : propertyCaseSchema.parse(data.specificData);
-//       break;
-//     case 'appraisal':
-//       specificData = {};
-//       break;
-//     default:
-//       throw new Error('Invalid case type');
-//   }
-
-//   return {
-//     ...baseData,
-//     specificData,
-//   };
-// };
