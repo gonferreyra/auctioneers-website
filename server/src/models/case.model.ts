@@ -6,6 +6,9 @@ import {
 } from 'sequelize';
 import { DB } from '../config/db';
 import MovementModel from './movement.model';
+import VehicleCaseModel from './vehicleCase.mode';
+import PropertyCaseModel from './propertyCase.model';
+import AppraisalCaseModel from './appraisalCase.model';
 
 interface ICaseModel
   extends Model<
@@ -13,22 +16,16 @@ interface ICaseModel
     InferCreationAttributes<ICaseModel>
   > {
   id?: number;
-  intern_number: string;
-  status: 'active' | 'paralyzed' | 'closed';
+  internNumber?: string;
+  status?: 'active' | 'paralyzed' | 'closed';
   record: string; // expte
   plaintiff: string; // actor
   defendant: string; // demandado
   type: string; // tipo de juicio
   court: string; // juzgado
-  law_office?: string; // estudio
+  lawOffice?: string; // estudio
   debt?: number; // deuda
-  aps?: Date; // fecha preventiva de subasta
-  aps_expiresAt?: Date; // fecha caducidad preventiva
-  is_executed: string; // que se ejecuta (matricula tanto, auto dominio tanto)
-  address?: string; // domicilio
-  account_dgr?: string; // cuenta dgr
-  nomenclature?: string; // nomenclatura
-  description?: string; // descripcion de lo que se ejecuta (matricula completa)
+  caseType: 'vehicle' | 'property' | 'appraisal';
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -42,13 +39,15 @@ const CaseModel = DB.define<ICaseModel>(
       autoIncrement: true,
       allowNull: false,
     },
-    intern_number: {
-      type: DataTypes.STRING(6),
-      allowNull: false,
+    internNumber: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
     },
     status: {
       type: DataTypes.STRING,
-      allowNull: false,
+      // check if on allowNull true with default value is ok
+      allowNull: true,
       defaultValue: 'active',
     },
     record: {
@@ -77,7 +76,7 @@ const CaseModel = DB.define<ICaseModel>(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    law_office: {
+    lawOffice: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -85,35 +84,8 @@ const CaseModel = DB.define<ICaseModel>(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    aps: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    aps_expiresAt: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    is_executed: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    address: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    account_dgr: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      // validar el length
-    },
-    nomenclature: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      // validar el length
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
+    caseType: {
+      type: DataTypes.ENUM('vehicle', 'property', 'appraisal'),
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -130,32 +102,101 @@ const CaseModel = DB.define<ICaseModel>(
     tableName: 'cases',
     timestamps: true,
     hooks: {
-      beforeCreate: (caseInstance) => {
-        if (caseInstance.aps) {
-          const apsDate = new Date(caseInstance.aps);
-          apsDate.setDate(apsDate.getDate() + 150);
-          caseInstance.aps_expiresAt = apsDate;
+      beforeCreate: async (caseInstance) => {
+        // get last internNumber
+        const lastCase = await CaseModel.findOne({
+          order: [['createdAt', 'DESC']],
+        });
+
+        const lastNumber = lastCase?.internNumber
+          ? parseInt(lastCase.internNumber.replace(/\D/g, '')) || 0
+          : 0;
+
+        // Generate new internNumber
+        const prefix =
+          caseInstance.caseType === 'vehicle'
+            ? 'JR'
+            : caseInstance.caseType === 'property'
+            ? 'JI'
+            : 'T';
+
+        caseInstance.internNumber = `${prefix}${lastNumber + 1}`;
+
+        if (!caseInstance.internNumber) {
+          throw new Error('Failed to generate internNumber');
         }
-        caseInstance.intern_number = caseInstance.intern_number.toUpperCase();
       },
-      beforeUpdate: (caseInstance) => {
-        if (caseInstance.aps) {
-          const apsDate = new Date(caseInstance.aps);
-          apsDate.setDate(apsDate.getDate() + 150);
-          caseInstance.aps_expiresAt = apsDate;
+      beforeDestroy: async (caseInstance) => {
+        if (!caseInstance.internNumber) {
+          throw new Error('Cannot delete case without internNumber');
         }
+
+        // delete dynamic cases
+        if (caseInstance.caseType === 'vehicle') {
+          await VehicleCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        } else if (caseInstance.caseType === 'property') {
+          await PropertyCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        } else if (caseInstance.caseType === 'appraisal') {
+          await AppraisalCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        }
+
+        // delete related movements
+        await MovementModel.destroy({
+          where: { caseInternNumber: caseInstance.internNumber },
+        });
       },
     },
   }
 );
 
+CaseModel.hasOne(VehicleCaseModel, {
+  foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
+  as: 'vehicleDetails',
+});
+
+VehicleCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
+});
+
+CaseModel.hasOne(PropertyCaseModel, {
+  foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
+  as: 'propertyDetails',
+});
+
+PropertyCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
+});
+
+CaseModel.hasOne(AppraisalCaseModel, {
+  foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
+  as: 'appraisalDetails',
+});
+
+AppraisalCaseModel.belongsTo(CaseModel, {
+  foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
+});
+
 CaseModel.hasMany(MovementModel, {
-  foreignKey: 'case_id',
+  foreignKey: 'caseInternNumber',
+  sourceKey: 'internNumber',
   as: 'movements', // Alias para incluir los movimientos en consultas
 });
 
 MovementModel.belongsTo(CaseModel, {
-  foreignKey: 'case_id',
+  foreignKey: 'caseInternNumber',
+  targetKey: 'internNumber',
   as: 'case', // Alias para incluir el caso en consultas
 });
 

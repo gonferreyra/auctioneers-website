@@ -3,6 +3,9 @@ import CaseModel from '../models/case.model';
 import MovementModel from '../models/movement.model';
 import CustomError from '../utils/customError';
 import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
+import VehicleCaseModel from '../models/vehicleCase.mode';
+import PropertyCaseModel from '../models/propertyCase.model';
+import AppraisalCaseModel from '../models/appraisalCase.model';
 
 type GetCasesParams = {
   page: number;
@@ -34,22 +37,16 @@ export const getCasesPaginated = async ({
     order,
     attributes: [
       'id',
-      'intern_number',
+      'internNumber',
       'status',
       'record',
       'plaintiff',
       'defendant',
       'type',
       'court',
-      'law_office',
+      'lawOffice',
       'debt',
-      'aps',
-      'aps_expiresAt',
-      'is_executed',
-      'address',
-      'account_dgr',
-      'nomenclature',
-      'description',
+      'caseType',
       'createdAt',
       'updatedAt',
     ],
@@ -77,8 +74,8 @@ export const getCasesPaginated = async ({
   };
 };
 
-export const getCaseById = async (caseId: string) => {
-  const caseWithMovements = await CaseModel.findByPk(caseId, {
+export const getCaseById = async (id: number) => {
+  const caseWithMovements = await CaseModel.findByPk(id, {
     include: [
       {
         model: MovementModel,
@@ -89,7 +86,7 @@ export const getCaseById = async (caseId: string) => {
   });
 
   if (!caseWithMovements) {
-    throw new CustomError(404, 'Case not found');
+    throw new CustomError(404, `Case with id ${id} not found`);
   }
 
   return { caseWithMovements };
@@ -98,50 +95,136 @@ export const getCaseById = async (caseId: string) => {
 type createCaseParams = z.infer<typeof createCaseSchema>;
 
 export const createCase = async (data: createCaseParams) => {
-  // check if case already exists
+  // check if case already exists by record number (numero de expediente)
   const previusCase = await CaseModel.findOne({
     where: {
-      intern_number: data.intern_number,
+      record: data.record,
     },
   });
 
   if (previusCase) {
     throw new CustomError(
       400,
-      `Case with number ${data.intern_number} already exists on database`
+      `Case with record number ${data.record} already exists on database`
     );
   }
 
-  // create new case
+  // create new base case
   const newCase = await CaseModel.create({
     ...data,
-    status: 'active',
+    // status: 'active',
   });
+
+  // Ensure internNumber is generated
+  if (!newCase.internNumber) {
+    throw new Error('Failed to generate internNumber');
+  }
+
+  // Create specific case type
+  if (data.caseType === 'vehicle') {
+    await VehicleCaseModel.create({
+      caseInternNumber: newCase.internNumber,
+      ...data.specificData,
+    });
+  } else if (data.caseType === 'property') {
+    await PropertyCaseModel.create({
+      caseInternNumber: newCase.internNumber,
+      ...data.specificData,
+    });
+  } else if (data.caseType === 'appraisal') {
+    await AppraisalCaseModel.create({
+      caseInternNumber: newCase.internNumber,
+      ...data.specificData,
+    });
+  }
 
   return { newCase };
 };
 
 type updateCaseParams = {
-  caseId: string;
+  id: number;
   data: z.infer<typeof updateCaseSchema>;
 };
 
-export const updateCase = async ({ caseId, data }: updateCaseParams) => {
-  const caseToUpdate = await CaseModel.findByPk(caseId);
+export const updateCase = async ({ id, data }: updateCaseParams) => {
+  const caseToUpdate = await CaseModel.findOne({
+    where: {
+      id,
+      caseType: data.caseType,
+    },
+  });
 
   if (!caseToUpdate) {
-    throw new CustomError(404, 'Case not found');
+    throw new CustomError(404, 'Case not found or caseType does not match');
   }
 
-  const updatedCase = await caseToUpdate.update(data);
+  if (!data) {
+    throw new Error('Data to update is required');
+  }
+
+  // omit caseType field to avoid updating it
+  const { caseType, ...updateData } = data;
+
+  // update basecase
+  const updatedCase = await caseToUpdate.update(updateData);
+
+  if (caseToUpdate.caseType === 'vehicle' && data.specificData) {
+    await VehicleCaseModel.update(
+      data.specificData as {
+        licensePlate?: string;
+        brand?: string;
+        model?: string;
+        year?: number;
+        chassisBrand?: string;
+        chassisNumber?: string;
+        engineBrand?: string;
+        engineNumber?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  } else if (caseToUpdate.caseType === 'property' && data.specificData) {
+    await PropertyCaseModel.update(
+      data.specificData as {
+        propertyRegistration?: string;
+        percentage?: number;
+        address?: string;
+        description?: string;
+        aps?: Date;
+        apsExpiresAt?: Date;
+        acccountDgr?: string;
+        nomenclature?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  } else if (caseToUpdate.caseType === 'appraisal' && data.specificData) {
+    await AppraisalCaseModel.update(
+      data.specificData as {
+        itemToAppraise?: string;
+        description?: string;
+      },
+      {
+        where: {
+          caseInternNumber: caseToUpdate.internNumber,
+        },
+      }
+    );
+  }
 
   return { updatedCase };
 };
 
-export const deleteCase = async (caseId: string) => {
+export const deleteCase = async (id: number) => {
   const deletedCase = await CaseModel.destroy({
     where: {
-      id: caseId,
+      id,
     },
   });
 

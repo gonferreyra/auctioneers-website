@@ -64,9 +64,9 @@ export const deleteMovementHandler = async (
   next: NextFunction
 ) => {
   try {
-    const movementId = movementIdSchema.parse(req.params.id);
+    const id = movementIdSchema.parse(req.params.id);
 
-    await services.deleteMovement(movementId);
+    await services.deleteMovement(id);
 
     res.status(200).json({
       message: 'Movement deleted successfully',
