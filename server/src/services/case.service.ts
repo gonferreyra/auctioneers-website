@@ -146,10 +146,15 @@ type updateCaseParams = {
 };
 
 export const updateCase = async ({ id, data }: updateCaseParams) => {
-  const caseToUpdate = await CaseModel.findByPk(id);
+  const caseToUpdate = await CaseModel.findOne({
+    where: {
+      id,
+      caseType: data.caseType,
+    },
+  });
 
   if (!caseToUpdate) {
-    throw new CustomError(404, 'Case not found');
+    throw new CustomError(404, 'Case not found or caseType does not match');
   }
 
   if (!data) {
