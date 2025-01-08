@@ -120,6 +120,7 @@ export const createCase = async (data: createCaseParams) => {
     throw new Error('Failed to generate internNumber');
   }
 
+  // Create specific case type
   if (data.caseType === 'vehicle') {
     await VehicleCaseModel.create({
       caseInternNumber: newCase.internNumber,
