@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response } from 'express';
 import * as services from '../services/case.service';
-import CaseModel from '../models/case.model';
-import CustomError from '../utils/customError';
-import MovementModel from '../models/movement.model';
 import {
-  caseIdSchema,
-  createCaseSchema,
   getCasesPaginatedSchema,
+  idSchema,
   updateCaseSchema,
 } from '../validations/schemas';
+import { validateCase, validateUpdateCase } from '../validations/validateCase';
 
 export const getCasesHandler = async (
   req: Request,
@@ -39,9 +36,13 @@ export const getCaseByIdHandler = async (
   next: NextFunction
 ) => {
   try {
-    const caseId = caseIdSchema.parse(req.params.id);
+    const id = idSchema.parse(Number(req.params.id));
 
-    const { caseWithMovements } = await services.getCaseById(caseId);
+    if (isNaN(id)) {
+      throw new Error('Invalid case ID');
+    }
+
+    const { caseWithMovements } = await services.getCaseById(id);
 
     res.status(200).json(caseWithMovements);
   } catch (error) {
@@ -55,11 +56,13 @@ export const createCaseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const request = createCaseSchema.parse(req.body);
+    const request = validateCase(req.body);
 
     const { newCase } = await services.createCase(request);
 
-    res.status(201).json(newCase);
+    res
+      .status(201)
+      .json({ message: `Case ${newCase.internNumber} created successfully` });
   } catch (error) {
     next(error);
   }
@@ -71,14 +74,14 @@ export const updateCaseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const caseId = caseIdSchema.parse(req.params.id);
-    const request = updateCaseSchema.parse(req.body);
+    const id = idSchema.parse(Number(req.params.id));
+
+    const request = validateUpdateCase(req.body);
 
     const { updatedCase } = await services.updateCase({
-      caseId,
+      id,
       data: request,
     });
-
     res.status(200).json(updatedCase);
   } catch (error) {
     next(error);
@@ -91,9 +94,9 @@ export const deleteCaseHandler = async (
   next: NextFunction
 ) => {
   try {
-    const caseId = caseIdSchema.parse(req.params.id);
+    const id = idSchema.parse(Number(req.params.id));
 
-    const { deletedCase } = await services.deleteCase(caseId);
+    const { deletedCase } = await services.deleteCase(id);
 
     res.status(200).json({
       message: 'Case deleted successfully',

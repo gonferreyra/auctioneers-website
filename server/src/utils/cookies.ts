@@ -19,7 +19,8 @@ export const setAuthenticationCookies = ({
       sameSite: 'strict',
       httpOnly: true,
       secure,
-      expires: fifteenMinutesFromNow(),
+      // expires: fifteenMinutesFromNow(),
+      expires: thirtyDaysFromNow(),
     })
     .cookie('refreshToken', refreshToken, {
       sameSite: 'strict',

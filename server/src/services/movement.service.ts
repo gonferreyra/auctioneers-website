@@ -5,17 +5,17 @@ import { updateMovementSchema } from '../validations/schemas';
 import CaseModel from '../models/case.model';
 
 type CreateMovementParams = {
-  case_id: number;
+  caseInternNumber: string;
   description: string;
 };
 
 export const createMovement = async ({
-  case_id,
+  caseInternNumber,
   description,
 }: CreateMovementParams) => {
   const caseExist = await CaseModel.findOne({
     where: {
-      id: case_id,
+      internNumber: caseInternNumber,
     },
   });
 
@@ -24,7 +24,7 @@ export const createMovement = async ({
   }
 
   const newMovement = await MovementModel.create({
-    case_id,
+    caseInternNumber,
     description,
   });
 
@@ -48,7 +48,7 @@ type UpdateMovementParams = {
 export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
   const caseExist = await CaseModel.findOne({
     where: {
-      id: data.case_id,
+      internNumber: data.caseInternNumber,
     },
   });
 
@@ -71,10 +71,10 @@ export const updateMovement = async ({ id, data }: UpdateMovementParams) => {
   return { updatedMovement };
 };
 
-export const deleteMovement = async (movementId: string) => {
+export const deleteMovement = async (id: string) => {
   const deletedMovement = await MovementModel.destroy({
     where: {
-      id: movementId,
+      id,
     },
   });
 

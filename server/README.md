@@ -86,14 +86,16 @@ EMAIL_SENDER=
 
 ### Case
 
-| Method   | URL                                                           | Description                                                                       |
-| -------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `GET`    | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                |
-| `GET`    | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order. |
-| `POST`   | `/cases`                                                      | Add a new Case                                                                    |
-| `PATCH`  | `/cases/:id`                                                  | Update cases                                                                      |
-| `DELETE` | `/cases/:id`                                                  | Delete case                                                                       |
+| Method   | URL                                                           | Description                                                                                          |
+| -------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `GET`    | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                                   |
+| `GET`    | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order.                    |
+| `POST`   | `/cases`                                                      | Add a new Case. Depending on the caseType it will also create a dynamic case with the specific type. |
+| `PATCH`  | `/cases/:id`                                                  | Update cases                                                                                         |
+| `DELETE` | `/cases/:id`                                                  | Delete case                                                                                          |
 |          |
+
+##### Note - If the user delete a case, it will also delete the related dynamic case if it exists and it's movements. The internNumber will be available to reasign to a new case.
 
 Examples
 
