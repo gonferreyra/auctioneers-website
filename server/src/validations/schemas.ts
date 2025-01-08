@@ -30,7 +30,7 @@ export const resetPasswordSchema = z.object({
 export const movementIdSchema = z.string();
 
 export const newMovementSchema = z.object({
-  caseId: z.number(),
+  caseInternNumber: z.string(),
   description: z.string(),
 });
 
