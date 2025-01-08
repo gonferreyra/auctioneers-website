@@ -86,17 +86,8 @@ export const appraisalCaseSchema = z.object({
   description: z.string().optional(),
 });
 
-export const createCaseSchema = z.object({
+export const createCaseSchema = baseCaseSchema.extend({
   internNumber: z.string().optional(),
-  status: z.enum(['active', 'paralyzed', 'closed']).optional(),
-  record: z.string().min(5).max(8),
-  plaintiff: z.string(),
-  defendant: z.string(),
-  type: z.string(),
-  court: z.string(),
-  lawOffice: z.string().optional(),
-  debt: z.number().optional(),
-  caseType: z.enum(['vehicle', 'property', 'appraisal']),
   specificData: z.union([
     vehicleCaseSchema,
     propertyCaseSchema,
