@@ -88,20 +88,20 @@ export const updateCaseHandler = async (
   }
 };
 
-// export const deleteCaseHandler = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction
-// ) => {
-//   try {
-//     const caseId = caseIdSchema.parse(req.params.id);
+export const deleteCaseHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const id = idSchema.parse(Number(req.params.id));
 
-//     const { deletedCase } = await services.deleteCase(caseId);
+    const { deletedCase } = await services.deleteCase(id);
 
-//     res.status(200).json({
-//       message: 'Case deleted successfully',
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+    res.status(200).json({
+      message: 'Case deleted successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

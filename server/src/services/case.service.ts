@@ -220,10 +220,10 @@ export const updateCase = async ({ id, data }: updateCaseParams) => {
   return { updatedCase };
 };
 
-export const deleteCase = async (caseId: string) => {
+export const deleteCase = async (id: number) => {
   const deletedCase = await CaseModel.destroy({
     where: {
-      id: caseId,
+      id,
     },
   });
 
