@@ -126,6 +126,31 @@ const CaseModel = DB.define<ICaseModel>(
           throw new Error('Failed to generate internNumber');
         }
       },
+      beforeDestroy: async (caseInstance) => {
+        if (!caseInstance.internNumber) {
+          throw new Error('Cannot delete case without internNumber');
+        }
+
+        // delete dynamic cases
+        if (caseInstance.caseType === 'vehicle') {
+          await VehicleCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        } else if (caseInstance.caseType === 'property') {
+          await PropertyCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        } else if (caseInstance.caseType === 'appraisal') {
+          await AppraisalCaseModel.destroy({
+            where: { caseInternNumber: caseInstance.internNumber },
+          });
+        }
+
+        // delete related movements
+        await MovementModel.destroy({
+          where: { caseInternNumber: caseInstance.internNumber },
+        });
+      },
     },
   }
 );
