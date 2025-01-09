@@ -6,7 +6,7 @@ import {
 } from 'sequelize';
 import { DB } from '../config/db';
 import MovementModel from './movement.model';
-import VehicleCaseModel from './vehicleCase.mode';
+import VehicleCaseModel from './vehicleCase.model';
 import PropertyCaseModel from './propertyCase.model';
 import AppraisalCaseModel from './appraisalCase.model';
 

@@ -3,7 +3,7 @@ import CaseModel from '../models/case.model';
 import MovementModel from '../models/movement.model';
 import CustomError from '../utils/customError';
 import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
-import VehicleCaseModel from '../models/vehicleCase.mode';
+import VehicleCaseModel from '../models/vehicleCase.model';
 import PropertyCaseModel from '../models/propertyCase.model';
 import AppraisalCaseModel from '../models/appraisalCase.model';
 
