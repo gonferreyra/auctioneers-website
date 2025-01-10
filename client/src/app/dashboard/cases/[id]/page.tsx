@@ -13,17 +13,28 @@ interface CasePageProps {
 
 export default function CasePage({ params }: CasePageProps) {
   const queryClient = useQueryClient();
-  const { id: caseId } = use(params);
+  const { id } = use(params);
 
   // try to get data from cache
-  const cachedCase = queryClient
-    .getQueryData(['cases'])
-    ?.data.cases.find((case_: Case) => case_.id === caseId);
+  const cachedCases = queryClient.getQueryData<{ data: { cases: Case[] } }>([
+    'cases',
+  ]);
+
+  const cachedCase = cachedCases?.data?.cases.find((case_: Case) => case_.id);
 
   // If the case is not on cache, fetch it
   const { data: caseData, isLoading } = useQuery({
-    queryKey: ['cases', caseId],
-    queryFn: () => getCaseById(caseId),
+    queryKey: ['cases', id],
+    // queryFn: () => getCaseById(id),
+    queryFn: () => {
+      if (cachedCase) {
+        console.log('Obteniendo datos del caché');
+        return Promise.resolve(cachedCase);
+      } else {
+        console.log('Obteniendo datos de la API');
+        return getCaseById(id);
+      }
+    },
     initialData: cachedCase || undefined,
     staleTime: 1000 * 60 * 60, // 1 hora
     refetchOnWindowFocus: false,
