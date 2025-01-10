@@ -30,13 +30,15 @@ export default function MovementItem({
     setIsEditing(false);
   };
 
+  // console.log(movement);
+
   return (
     <div className="flex items-start gap-4 rounded-lg border p-4">
       <div className="flex-1">
         <div className="mb-2 flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            {new Date(movement.date).toLocaleDateString()}
+            {new Date(movement.createdAt).toLocaleDateString()}
           </span>
         </div>
         {isEditing ? (

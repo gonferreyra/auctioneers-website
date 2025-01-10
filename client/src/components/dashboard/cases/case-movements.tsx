@@ -31,6 +31,8 @@ export default function CaseMovements({
     description: '',
   });
 
+  // console.log(caseData);
+
   const handleAddMovement = () => {
     // Here you would typically make an API call to add the movement
     console.log('Adding new movement:', newMovement);
@@ -44,21 +46,21 @@ export default function CaseMovements({
   return (
     <Card className="p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Case Movements</h2>
+        <h2 className="text-lg font-semibold">Movimientos</h2>
         <Dialog open={isAddingMovement} onOpenChange={setIsAddingMovement}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Movement
+              Agregar Movimiento
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Movement</DialogTitle>
+              <DialogTitle>Agregar Nuevo Movimiento</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div>
-                <label className="mb-1 block text-sm font-medium">Date</label>
+                <label className="mb-1 block text-sm font-medium">Fecha</label>
                 <Input
                   type="date"
                   value={newMovement.date}
@@ -69,7 +71,7 @@ export default function CaseMovements({
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium">
-                  Description
+                  Descripcion
                 </label>
                 <Textarea
                   value={newMovement.description}
@@ -83,7 +85,7 @@ export default function CaseMovements({
                 />
               </div>
               <Button onClick={handleAddMovement} className="w-full">
-                Add Movement
+                Agregar Movimiento
               </Button>
             </div>
           </DialogContent>
@@ -91,9 +93,10 @@ export default function CaseMovements({
       </div>
 
       <div className="space-y-4">
-        {caseData.movements.map((movement) => (
+        {caseData.movements.map((movement, index) => (
           <MovementItem
-            key={movement.id}
+            // key={movement.id}
+            key={index}
             movement={movement}
             onUpdateDescription={(description) =>
               onUpdateMovement(movement.id, description)

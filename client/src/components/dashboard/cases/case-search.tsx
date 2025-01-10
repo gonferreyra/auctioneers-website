@@ -8,13 +8,13 @@ import { FileText, Calendar, User } from 'lucide-react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getCasesPaginated } from '@/lib/api';
-import { Case } from '@/types/case';
+import type { Case } from '@/types/case';
 
 export default function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchType, setSearchType] = useState<'all' | 'fileNumber' | 'party'>(
-    'all',
-  );
+  const [searchType, setSearchType] = useState<
+    'all' | 'recordNumber' | 'party'
+  >('all');
 
   const { data, isLoading } = useQuery({
     queryKey: ['cases'],
@@ -23,7 +23,7 @@ export default function CaseSearch() {
         page: 1,
         limit: 10,
         sortBy: 'recentMovement',
-        sortOrder: 'desc',
+        sortOrder: 'asc',
       }),
     // ver la configuracion de cache, que me conviene mejor para este caso - Ahora tengo que actualizar la pagina para que haga otro request
     staleTime: 1000 * 60 * 60, // 1 hora
@@ -33,12 +33,36 @@ export default function CaseSearch() {
 
   // debounce search term
 
+  // const filteredCases = data?.data.cases.filter((case_: Case) => {
+  //   const searchLower = searchTerm.toLowerCase();
+
+  //   if (!searchTerm) return true;
+
+  //   if (searchType === 'record') {
+  //     return case_.record.toLowerCase().includes(searchLower);
+  //   }
+
+  //   if (searchType === 'party') {
+  //     return (
+  //       case_.plaintiff.toLowerCase().includes(searchLower) ||
+  //       case_.defendant.toLowerCase().includes(searchLower)
+  //     );
+  //   }
+
+  //   return (
+  //     case_.record.toLowerCase().includes(searchLower) ||
+  //     case_.type.toLowerCase().includes(searchLower) ||
+  //     case_.plaintiff.toLowerCase().includes(searchLower) ||
+  //     case_.defendant.toLowerCase().includes(searchLower)
+  //   );
+  // });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <Input
-            placeholder="Buscar casos..."
+            placeholder="Search cases..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
@@ -49,19 +73,19 @@ export default function CaseSearch() {
             variant={searchType === 'all' ? 'default' : 'outline'}
             onClick={() => setSearchType('all')}
           >
-            Todos
+            All
           </Button>
           <Button
-            variant={searchType === 'fileNumber' ? 'default' : 'outline'}
-            onClick={() => setSearchType('fileNumber')}
+            variant={searchType === 'recordNumber' ? 'default' : 'outline'}
+            onClick={() => setSearchType('recordNumber')}
           >
-            Numero Interno
+            Record Number
           </Button>
           <Button
             variant={searchType === 'party' ? 'default' : 'outline'}
             onClick={() => setSearchType('party')}
           >
-            Autos Catatulados
+            Party Name
           </Button>
         </div>
       </div>
@@ -72,7 +96,6 @@ export default function CaseSearch() {
             Cargando casos...
           </p>
         )}
-
         {data?.data.cases?.map((case_: Case) => (
           <Link key={case_.id} href={`/dashboard/cases/${case_.id}`}>
             <Card className="cursor-pointer p-4 transition-shadow hover:shadow-md">
@@ -81,21 +104,18 @@ export default function CaseSearch() {
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium text-muted-foreground">
-                      {case_.intern_number}
+                      {case_.record}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold">
-                    {case_.plaintiff} C/ {case_.defendant} - {case_.type} -{' '}
-                    Expte Nro {case_.record}
-                  </h3>
+                  <h3 className="text-lg font-semibold">{case_.type}</h3>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <User className="h-4 w-4" />
                       {case_.plaintiff} vs {case_.defendant}
                     </div>
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(case_.createdAt).toLocaleDateString()}
+                      <Calendar className="h-4 w-4" />$
+                      {case_.debt.toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -117,15 +137,7 @@ export default function CaseSearch() {
 
         {data?.data.cases?.length === 0 && (
           <p className="py-8 text-center text-muted-foreground">
-            No se encontraron casos que coincidan con sus criterios de búsqueda.
-          </p>
-        )}
-
-        {!data && !isLoading && (
-          <p className="py-8 text-center text-muted-foreground">
-            {
-              'Ocurrio un error al cargar los datos. Por favor, intente nuevamente.'
-            }
+            No cases found matching your search criteria.
           </p>
         )}
       </div>

@@ -24,6 +24,7 @@ interface CaseDetailProps {
 }
 
 export default function CaseDetail({ caseData }: CaseDetailProps) {
+  // console.log(caseData);
   const [isEditing, setIsEditing] = useState(false);
   const [editedCase, setEditedCase] = useState<Case>(caseData);
   const [originalCase] = useState<Case>(caseData);
@@ -94,7 +95,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
           isEditing={isEditing}
           onUpdate={handleUpdate}
         />
-        <div className="ml-4 space-x-2">
+        <div className="ml-4 space-x-2 self-end">
           {!isEditing ? (
             <Button onClick={() => setIsEditing(true)}>Edit Case</Button>
           ) : (
