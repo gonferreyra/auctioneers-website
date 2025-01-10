@@ -58,6 +58,18 @@ export const getCasesPaginated = async ({
               as: 'movements',
               attributes: ['description', 'createdAt', 'updatedAt'],
             },
+            {
+              model: VehicleCaseModel,
+              as: 'vehicleDetails',
+            },
+            {
+              model: PropertyCaseModel,
+              as: 'propertyDetails',
+            },
+            {
+              model: AppraisalCaseModel,
+              as: 'appraisalDetails',
+            },
           ]
         : [],
   });
@@ -65,6 +77,23 @@ export const getCasesPaginated = async ({
   if (!cases || cases.length === 0) {
     throw new CustomError(404, 'Cases not found');
   }
+
+  cases.forEach((case_) => {
+    switch (case_.caseType) {
+      case 'property':
+        delete case_.dataValues.vehicleDetails;
+        delete case_.dataValues.appraisalDetails;
+        break;
+      case 'vehicle':
+        delete case_.dataValues.propertyDetails;
+        delete case_.dataValues.appraisalDetails;
+        break;
+      case 'appraisal':
+        delete case_.dataValues.vehicleDetails;
+        delete case_.dataValues.propertyDetails;
+        break;
+    }
+  });
 
   return {
     currentPage: page,
@@ -82,11 +111,38 @@ export const getCaseById = async (id: number) => {
         as: 'movements',
         attributes: ['description'],
       },
+      {
+        model: VehicleCaseModel,
+        as: 'vehicleDetails',
+      },
+      {
+        model: PropertyCaseModel,
+        as: 'propertyDetails',
+      },
+      {
+        model: AppraisalCaseModel,
+        as: 'appraisalDetails',
+      },
     ],
   });
 
   if (!caseWithMovements) {
     throw new CustomError(404, `Case with id ${id} not found`);
+  }
+
+  switch (caseWithMovements.caseType) {
+    case 'property':
+      delete caseWithMovements.dataValues.vehicleDetails;
+      delete caseWithMovements.dataValues.appraisalDetails;
+      break;
+    case 'vehicle':
+      delete caseWithMovements.dataValues.propertyDetails;
+      delete caseWithMovements.dataValues.appraisalDetails;
+      break;
+    case 'appraisal':
+      delete caseWithMovements.dataValues.vehicleDetails;
+      delete caseWithMovements.dataValues.propertyDetails;
+      break;
   }
 
   return { caseWithMovements };

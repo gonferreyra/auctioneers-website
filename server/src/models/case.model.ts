@@ -28,6 +28,9 @@ interface ICaseModel
   caseType: 'vehicle' | 'property' | 'appraisal';
   createdAt?: Date;
   updatedAt?: Date;
+  vehicleDetails?: InstanceType<typeof VehicleCaseModel>;
+  propertyDetails?: InstanceType<typeof PropertyCaseModel>;
+  appraisalDetails?: InstanceType<typeof AppraisalCaseModel>;
 }
 
 const CaseModel = DB.define<ICaseModel>(
