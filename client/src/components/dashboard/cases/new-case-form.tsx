@@ -220,26 +220,7 @@ export default function NewCaseForm() {
                 rows={3}
               />
             </div>
-            {/* <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="aps">Anotacion Preventiva de Subasta</Label>
-                <Input
-                  {...register('specificData.aps')}
-                  id="aps"
-                  type="date"
-                  disabled
-                />
-              </div>
-              <div>
-                <Label htmlFor="apsExpiresAt">APS Fecha de Expiración</Label>
-                <Input
-                  {...register('specificData.apsExpiresAt')}
-                  id="apsExpiresAt"
-                  type="date"
-                  disabled
-                />
-              </div>
-            </div> */}
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="accountDgr">Numero de Cuenta</Label>
