@@ -1,4 +1,5 @@
 import API from '@/config/apiClient';
+import { TCreateCaseSchema } from '@/validations/schemas';
 
 type LoginData = {
   email: string;
@@ -32,5 +33,12 @@ export const getCasesPaginated = async ({
 
 export const getCaseById = async (id: string) => {
   const response = await API.get(`/cases/${id}`);
+  return response.data;
+};
+
+// type CreateCaseData = z.infer<typeof createCaseSchema>;
+
+export const createNewCase = async (data: TCreateCaseSchema) => {
+  const response = await API.post('/cases', data);
   return response.data;
 };
