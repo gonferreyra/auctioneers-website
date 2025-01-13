@@ -90,7 +90,8 @@ export default function CaseInfo({
               <div>
                 <Label>Preventiva Detalles</Label>
                 <p className="text-gray-600">
-                  {caseData.propertyDetails?.aps.toLocaleDateString()} (Expires:{' '}
+                  {caseData.propertyDetails?.aps?.toLocaleDateString()}{' '}
+                  (Expires:{' '}
                   {caseData.propertyDetails?.apsExpiresAt &&
                     new Date(
                       caseData.propertyDetails?.apsExpiresAt,

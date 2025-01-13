@@ -104,14 +104,17 @@ export default function CaseSearch() {
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm font-medium text-muted-foreground">
-                      {case_.record}
+                      {case_.record} - {case_.caseType.toLocaleUpperCase()}
                     </span>
                   </div>
-                  <h3 className="text-lg font-semibold">{case_.type}</h3>
+                  <h3 className="text-lg font-semibold">
+                    {case_.plaintiff} c/ {case_.defendant}
+                  </h3>
                   <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <User className="h-4 w-4" />
-                      {case_.plaintiff} vs {case_.defendant}
+                      {/* Ver que le ponemos aca, puede ser lo que se ejecuta */}
+                      {case_.type}
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />$
