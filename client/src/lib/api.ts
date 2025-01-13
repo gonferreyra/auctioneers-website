@@ -31,7 +31,7 @@ export const getCasesPaginated = async ({
   return response;
 };
 
-export const getCaseById = async (id: string) => {
+export const getCaseById = async (id: number) => {
   const response = await API.get(`/cases/${id}`);
   return response.data;
 };

@@ -2,7 +2,7 @@ export type CaseStatus = 'active' | 'paralyzed' | 'closed';
 export type CaseType = 'vehicle' | 'property' | 'appraisal';
 
 interface BaseCase {
-  id: string;
+  id: number;
   internNumber: string;
   status: CaseStatus;
   record: string;
