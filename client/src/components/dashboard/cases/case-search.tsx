@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { getCasesPaginated } from '@/lib/api';
 import type { Case } from '@/types/case';
+import { useDebounce } from '@/lib/hooks';
 
 export default function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,29 +34,31 @@ export default function CaseSearch() {
 
   // debounce search term
 
-  // const filteredCases = data?.data.cases.filter((case_: Case) => {
-  //   const searchLower = searchTerm.toLowerCase();
+  const { debouncedValue, isDebounceLoading } = useDebounce(searchTerm, 1000);
 
-  //   if (!searchTerm) return true;
+  const filteredCases = data?.data.cases.filter((case_: Case) => {
+    const searchLower = debouncedValue.toLowerCase();
 
-  //   if (searchType === 'record') {
-  //     return case_.record.toLowerCase().includes(searchLower);
-  //   }
+    if (!debouncedValue) return true;
 
-  //   if (searchType === 'party') {
-  //     return (
-  //       case_.plaintiff.toLowerCase().includes(searchLower) ||
-  //       case_.defendant.toLowerCase().includes(searchLower)
-  //     );
-  //   }
+    if (searchType === 'recordNumber') {
+      return case_.record.toLowerCase().includes(searchLower);
+    }
 
-  //   return (
-  //     case_.record.toLowerCase().includes(searchLower) ||
-  //     case_.type.toLowerCase().includes(searchLower) ||
-  //     case_.plaintiff.toLowerCase().includes(searchLower) ||
-  //     case_.defendant.toLowerCase().includes(searchLower)
-  //   );
-  // });
+    if (searchType === 'party') {
+      return (
+        case_.plaintiff.toLowerCase().includes(searchLower) ||
+        case_.defendant.toLowerCase().includes(searchLower)
+      );
+    }
+
+    return (
+      case_.record.toLowerCase().includes(searchLower) ||
+      case_.type.toLowerCase().includes(searchLower) ||
+      case_.plaintiff.toLowerCase().includes(searchLower) ||
+      case_.defendant.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <div className="space-y-6">
@@ -73,74 +76,80 @@ export default function CaseSearch() {
             variant={searchType === 'all' ? 'default' : 'outline'}
             onClick={() => setSearchType('all')}
           >
-            All
+            Todo
           </Button>
           <Button
             variant={searchType === 'recordNumber' ? 'default' : 'outline'}
             onClick={() => setSearchType('recordNumber')}
           >
-            Record Number
+            Numero de Expediente
           </Button>
           <Button
             variant={searchType === 'party' ? 'default' : 'outline'}
             onClick={() => setSearchType('party')}
           >
-            Party Name
+            Autos Caratulados
           </Button>
         </div>
       </div>
 
       <div className="space-y-4">
-        {isLoading && (
+        {isLoading ? (
           <p className="py-8 text-center text-muted-foreground">
             Cargando casos...
           </p>
-        )}
-        {data?.data.cases?.map((case_: Case) => (
-          <Link key={case_.id} href={`/dashboard/cases/${case_.id}`}>
-            <Card className="cursor-pointer p-4 transition-shadow hover:shadow-md">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {case_.record} - {case_.caseType.toLocaleUpperCase()}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-semibold">
-                    {case_.plaintiff} c/ {case_.defendant}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <User className="h-4 w-4" />
-                      {/* Ver que le ponemos aca, puede ser lo que se ejecuta */}
-                      {case_.type}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />$
-                      {case_.debt.toLocaleString()}
-                    </div>
-                  </div>
-                </div>
-                <span
-                  className={`rounded-full px-2 py-1 text-sm font-medium ${
-                    case_.status === 'active'
-                      ? 'bg-green-100 text-green-800'
-                      : case_.status === 'paralyzed'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : 'bg-gray-100 text-gray-800'
-                  }`}
-                >
-                  {case_.status.charAt(0).toUpperCase() + case_.status.slice(1)}
-                </span>
-              </div>
-            </Card>
-          </Link>
-        ))}
-
-        {data?.data.cases?.length === 0 && (
+        ) : searchTerm.length > 0 && isDebounceLoading ? (
           <p className="py-8 text-center text-muted-foreground">
-            No cases found matching your search criteria.
+            Buscando casos...
+          </p>
+        ) : (
+          filteredCases?.map((case_: Case) => (
+            <Link key={case_.id} href={`/dashboard/cases/${case_.id}`}>
+              <Card className="cursor-pointer p-4 transition-shadow hover:shadow-md">
+                <div className="flex items-start justify-between">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-muted-foreground">
+                        {case_.record} - {case_.caseType.toLocaleUpperCase()}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold">
+                      {case_.plaintiff} c/ {case_.defendant}
+                    </h3>
+                    <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <User className="h-4 w-4" />
+
+                        {case_.type}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />$
+                        {case_.debt.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    className={`rounded-full px-2 py-1 text-sm font-medium ${
+                      case_.status === 'active'
+                        ? 'bg-green-100 text-green-800'
+                        : case_.status === 'paralyzed'
+                          ? 'bg-yellow-100 text-yellow-800'
+                          : 'bg-gray-100 text-gray-800'
+                    }`}
+                  >
+                    {case_.status.charAt(0).toUpperCase() +
+                      case_.status.slice(1)}
+                  </span>
+                </div>
+              </Card>
+            </Link>
+          ))
+        )}
+
+        {filteredCases?.length === 0 && !isLoading && !isDebounceLoading && (
+          <p className="py-8 text-center text-muted-foreground">
+            No se encontraton registros con los datos proporcionados.
           </p>
         )}
       </div>
