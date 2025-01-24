@@ -3,26 +3,19 @@
 import { FileText, Scale } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import type { Case } from '@/types/case';
 import clsx from 'clsx';
+import { Case } from '@/types/case';
 
 interface CaseHeaderProps {
   caseData: Case;
   isEditing: boolean;
-  onUpdate: (updates: Partial<Case>) => void;
+  // onUpdate: (updates: Partial<Case>) => void;
 }
 
 export default function CaseHeader({
   caseData,
   isEditing,
-  onUpdate,
+  // onUpdate,
 }: CaseHeaderProps) {
   return (
     <div className="flex flex-1 flex-col gap-4">
@@ -43,26 +36,6 @@ export default function CaseHeader({
                   disabled
                   placeholder="e.g., Banco Suquia c/ Daniel Blanco - Ejecucion hipotecaria"
                 />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                {/* <div className="space-y-2">
-                  <Label htmlFor="internalNumber">Numero interno</Label>
-                  <Input
-                    id="internalNumber"
-                    value={caseData.internNumber}
-                    onChange={(e) => onUpdate({ internNumber: e.target.value })}
-                    placeholder="e.g., 2024-001"
-                  />
-                </div> */}
-                {/* <div className="space-y-2">
-                  <Label htmlFor="recordNumber">Record Number</Label>
-                  <Input
-                    id="recordNumber"
-                    value={caseData.recordNumber}
-                    onChange={(e) => onUpdate({ recordNumber: e.target.value })}
-                    placeholder="e.g., 123456/2024"
-                  />
-                </div> */}
               </div>
             </>
           ) : (
