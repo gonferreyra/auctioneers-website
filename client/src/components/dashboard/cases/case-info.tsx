@@ -12,19 +12,47 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Gavel, FileText, DollarSign } from 'lucide-react';
-import type { Case, CaseStatus, CaseType } from '@/types/case';
+import type { Case } from '@/types/case';
+import { Controller, UseFormReturn } from 'react-hook-form';
+import { useEffect } from 'react';
+import moment from 'moment';
+// import { TUpdateCaseSchema, updateCaseSchema } from '@/validations/schemas';
+// import { zodResolver } from '@hookform/resolvers/zod';
 
 interface CaseInfoProps {
   caseData: Case;
   isEditing: boolean;
-  onUpdate: (updates: Partial<Case>) => void;
+  methods: UseFormReturn<Case>;
 }
 
 export default function CaseInfo({
   caseData,
   isEditing,
-  onUpdate,
+  methods,
 }: CaseInfoProps) {
+  const { register, control, setValue } = methods;
+
+  useEffect(() => {
+    if (
+      caseData &&
+      caseData.caseType === 'property' &&
+      caseData.propertyDetails
+    ) {
+      if (caseData.propertyDetails.aps) {
+        const formattedDate = moment
+          .utc(caseData.propertyDetails.aps)
+          .format('YYYY-MM-DD');
+        setValue('propertyDetails.aps', formattedDate);
+      }
+      if (caseData.propertyDetails.apsExpiresAt) {
+        const formattedDate = moment
+          .utc(caseData.propertyDetails.apsExpiresAt)
+          .format('YYYY-MM-DD');
+        setValue('propertyDetails.apsExpiresAt', formattedDate);
+      }
+    }
+  }, [caseData, setValue]);
+
   const renderDynamicFields = () => {
     if (!isEditing) {
       switch (caseData.caseType) {
@@ -71,7 +99,7 @@ export default function CaseInfo({
                 <div>
                   <Label>Matricula</Label>
                   <p className="text-gray-600">
-                    {caseData.propertyDetails?.propertyRegistration}
+                    {caseData?.propertyDetails?.propertyRegistration}
                   </p>
                 </div>
                 <div>
@@ -88,14 +116,15 @@ export default function CaseInfo({
                 </p>
               </div>
               <div>
-                <Label>Preventiva Detalles</Label>
+                <Label>Preventiva</Label>
                 <p className="text-gray-600">
-                  {caseData.propertyDetails?.aps?.toLocaleDateString()}{' '}
+                  {moment
+                    .utc(caseData.propertyDetails?.aps)
+                    .format('DD-MM-YYYY')}{' '}
                   (Expires:{' '}
-                  {caseData.propertyDetails?.apsExpiresAt &&
-                    new Date(
-                      caseData.propertyDetails?.apsExpiresAt,
-                    ).toLocaleDateString()}
+                  {moment
+                    .utc(caseData.propertyDetails?.apsExpiresAt)
+                    .format('DD-MM-YYYY') || 'N/A'}
                   )
                 </p>
               </div>
@@ -119,7 +148,7 @@ export default function CaseInfo({
               <div>
                 <Label>Inmueble a Tasar</Label>
                 <ul className="list-inside list-disc text-gray-600">
-                  {caseData.appraisalDetails?.itemsToAppraise.map(
+                  {caseData.appraisalDetails?.itemToAppraise.map(
                     (item, index) => <li key={index}>{item}</li>,
                   )}
                 </ul>
@@ -143,54 +172,42 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="licensePlate">Dominio</Label>
                 <Input
+                  {...register('vehicleDetails.licensePlate')}
                   id="licensePlate"
-                  value={caseData.vehicleDetails?.licensePlate}
-                  onChange={(e) => onUpdate({ licensePlate: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="year">Año</Label>
                 <Input
+                  {...register('vehicleDetails.year')}
                   id="year"
                   type="number"
-                  value={caseData.vehicleDetails?.year}
-                  onChange={(e) => onUpdate({ year: parseInt(e.target.value) })}
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="brand">Marca</Label>
-                <Input
-                  id="brand"
-                  value={caseData.vehicleDetails?.brand}
-                  onChange={(e) => onUpdate({ brand: e.target.value })}
-                />
+                <Input {...register('vehicleDetails.brand')} id="brand" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="model">Modelo</Label>
-                <Input
-                  id="model"
-                  value={caseData.vehicleDetails?.model}
-                  onChange={(e) => onUpdate({ model: e.target.value })}
-                />
+                <Input {...register('vehicleDetails.model')} id="model" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="chasisBrand">Chasis Marca</Label>
                 <Input
-                  id="chasisBrand"
-                  value={caseData.vehicleDetails?.chassisBrand}
-                  onChange={(e) => onUpdate({ chassisBrand: e.target.value })}
+                  {...register('vehicleDetails.chassisBrand')}
+                  id="chassisBrand"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="chasisNumber">Chasis Numero</Label>
                 <Input
+                  {...register('vehicleDetails.chassisNumber')}
                   id="chasisNumber"
-                  value={caseData.vehicleDetails?.chassisNumber}
-                  onChange={(e) => onUpdate({ chassisNumber: e.target.value })}
                 />
               </div>
             </div>
@@ -198,17 +215,15 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="engineBrand">Motor Marca</Label>
                 <Input
+                  {...register('vehicleDetails.engineBrand')}
                   id="engineBrand"
-                  value={caseData.vehicleDetails?.engineBrand}
-                  onChange={(e) => onUpdate({ engineBrand: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="engineNumber">Motor Numero</Label>
                 <Input
+                  {...register('vehicleDetails.engineNumber')}
                   id="engineNumber"
-                  value={caseData.vehicleDetails?.engineNumber}
-                  onChange={(e) => onUpdate({ engineNumber: e.target.value })}
                 />
               </div>
             </div>
@@ -221,62 +236,51 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="propertyRegistration">Matricula</Label>
                 <Input
+                  {...register('propertyDetails.propertyRegistration')}
                   id="propertyRegistration"
-                  value={caseData.propertyDetails?.propertyRegistration}
-                  onChange={(e) =>
-                    onUpdate({ propertyRegistration: e.target.value })
-                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="percentage">Porcentaje</Label>
                 <Input
+                  {...register('propertyDetails.percentage')}
                   id="percentage"
                   type="number"
                   min="0"
                   max="100"
-                  value={caseData.propertyDetails?.percentage}
-                  onChange={(e) =>
-                    onUpdate({ percentage: parseInt(e.target.value) })
-                  }
                 />
               </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="address">Direccion</Label>
-              <Input
-                id="address"
-                value={caseData.propertyDetails?.address}
-                onChange={(e) => onUpdate({ address: e.target.value })}
-              />
+              <Input {...register('propertyDetails.address')} id="address" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Descripcion</Label>
               <Textarea
+                {...register('propertyDetails.description')}
                 id="description"
-                value={caseData.propertyDetails?.description}
-                onChange={(e) => onUpdate({ description: e.target.value })}
-                rows={3}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="aps">Preventiva</Label>
                 <Input
+                  {...register('propertyDetails.aps', { valueAsDate: true })}
+                  defaultValue={moment(caseData.propertyDetails?.aps).format(
+                    'YYYY-MM-DD',
+                  )}
                   id="aps"
-                  value={caseData.propertyDetails?.aps?.toISOString()}
-                  // onChange={(e) => onUpdate({ aps: e.target.value })}
+                  type="date"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="apsExpiresAt">
-                  Fecha Vencimiento Preventiva
-                </Label>
+                <Label htmlFor="apsExpiresAt">Vencimiento APS</Label>
                 <Input
+                  {...register('propertyDetails.apsExpiresAt')}
                   id="apsExpiresAt"
                   type="date"
-                  value={caseData.propertyDetails?.apsExpiresAt?.toISOString()}
-                  // onChange={(e) => onUpdate({ apsExpiresAt: e.target.value })}
+                  // value={caseData.propertyDetails?.apsExpiresAt?.toISOString()}
                 />
               </div>
             </div>
@@ -284,17 +288,15 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="accountDgr">Numero de Cuenta</Label>
                 <Input
+                  {...register('propertyDetails.accountDgr')}
                   id="accountDgr"
-                  value={caseData.propertyDetails?.accountDgr}
-                  onChange={(e) => onUpdate({ accountDgr: e.target.value })}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nomenclature">Nomenclatura</Label>
                 <Input
+                  {...register('propertyDetails.nomenclature')}
                   id="nomenclature"
-                  value={caseData.propertyDetails?.nomenclature}
-                  onChange={(e) => onUpdate({ nomenclature: e.target.value })}
                 />
               </div>
             </div>
@@ -306,11 +308,8 @@ export default function CaseInfo({
             <div className="space-y-2">
               <Label htmlFor="itemsToAppraise">Inmueble a Tasar</Label>
               <Textarea
-                id="itemsToAppraise"
-                value={caseData.appraisalDetails?.itemsToAppraise.join('\n')}
-                onChange={(e) =>
-                  onUpdate({ itemsToAppraise: e.target.value.split('\n') })
-                }
+                {...register('appraisalDetails.itemToAppraise')}
+                id="itemToAppraise"
                 rows={4}
                 placeholder="Enter each item on a new line"
               />
@@ -318,9 +317,8 @@ export default function CaseInfo({
             <div className="space-y-2">
               <Label htmlFor="description">Descripcion</Label>
               <Textarea
+                {...register('appraisalDetails.description')}
                 id="description"
-                value={caseData.appraisalDetails?.description}
-                onChange={(e) => onUpdate({ description: e.target.value })}
                 rows={3}
               />
             </div>
@@ -332,116 +330,92 @@ export default function CaseInfo({
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-semibold">Base Information</h2>
-        <div className="space-y-4">
-          {isEditing ? (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="record">Numero de expediente</Label>
-                <Input
-                  id="record"
-                  value={caseData.record}
-                  onChange={(e) => onUpdate({ record: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="court">Juzgado</Label>
-                <Input
-                  id="court"
-                  value={caseData.court}
-                  onChange={(e) => onUpdate({ court: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="court">Actor</Label>
-                <Input
-                  id="plaintiff"
-                  value={caseData.plaintiff}
-                  onChange={(e) => onUpdate({ plaintiff: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="court">Demandado</Label>
-                <Input
-                  id="defendant"
-                  value={caseData.defendant}
-                  onChange={(e) => onUpdate({ defendant: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="court">Tipo de ejecucion</Label>
-                <Input
-                  id="type"
-                  value={caseData.type}
-                  onChange={(e) => onUpdate({ type: e.target.value })}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">Estado</Label>
-                <Select
-                  value={caseData.status}
-                  onValueChange={(value: CaseStatus) =>
-                    onUpdate({ status: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="active">Activo</SelectItem>
-                    <SelectItem value="paralyzed">Paralizado</SelectItem>
-                    <SelectItem value="closed">Baja</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="type">Tipo de Juicio</Label>
-                <Select
-                  value={caseData.caseType}
-                  disabled
-                  onValueChange={(value: CaseType) =>
-                    onUpdate({ caseType: value })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="vehicle">Rodado</SelectItem>
-                    <SelectItem value="property">Inmueble</SelectItem>
-                    <SelectItem value="appraisal">Tasacion</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="debt">Deuda</Label>
-                <Input
-                  id="debt"
-                  type="number"
-                  value={caseData.debt}
-                  onChange={(e) =>
-                    onUpdate({ debt: parseFloat(e.target.value) })
-                  }
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <span>Record: {caseData.record}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Gavel className="h-4 w-4 text-muted-foreground" />
-                <span>Type: {caseData.type}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-                <span>Debt: ${caseData.debt.toLocaleString()}</span>
-              </div>
-            </>
-          )}
-        </div>
+        <form>
+          <h2 className="mb-4 text-lg font-semibold">Base Information</h2>
+          <div className="space-y-4">
+            {isEditing ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="record">Numero de expediente</Label>
+                  <Input {...register('record')} id="record" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="court">Juzgado</Label>
+                  <Input {...register('court')} id="court" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="court">Actor</Label>
+                  <Input {...register('plaintiff')} id="plaintiff" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="court">Demandado</Label>
+                  <Input {...register('defendant')} id="defendant" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="court">Tipo de ejecucion</Label>
+                  <Input {...register('type')} id="type" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="status">Estado</Label>
+                  <Controller
+                    name="status"
+                    control={control}
+                    render={({ field }) => (
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">Activo</SelectItem>
+                          <SelectItem value="paralyzed">Paralizado</SelectItem>
+                          <SelectItem value="closed">Baja</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="type">Tipo de Juicio</Label>
+                  <Select
+                    value={caseData.caseType}
+                    disabled
+                    // onValueChange={(value: CaseType) =>
+                    //   onUpdate({ caseType: value })
+                    // }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="vehicle">Rodado</SelectItem>
+                      <SelectItem value="property">Inmueble</SelectItem>
+                      <SelectItem value="appraisal">Tasacion</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="debt">Deuda</Label>
+                  <Input {...register('debt')} id="debt" type="number" />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span>Numero de Expediente: {caseData.record}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gavel className="h-4 w-4 text-muted-foreground" />
+                  <span>Ejecución: {caseData.type}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span>Deuda: ${caseData.debt.toLocaleString()}</span>
+                </div>
+              </>
+            )}
+          </div>
+        </form>
       </Card>
 
       <Card className="p-6">
