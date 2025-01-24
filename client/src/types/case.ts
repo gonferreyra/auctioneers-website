@@ -1,7 +1,7 @@
 export type CaseStatus = 'active' | 'paralyzed' | 'closed';
 export type CaseType = 'vehicle' | 'property' | 'appraisal';
 
-interface BaseCase {
+export interface BaseCase {
   id: number;
   internNumber: string;
   status: CaseStatus;
@@ -14,13 +14,18 @@ interface BaseCase {
   debt: number;
   caseType: CaseType;
   movements: CaseMovement[];
-  vehicleDetails?: VehicleCase;
-  propertyDetails?: PropertyCase;
-  appraisalDetails?: AppraisalCase;
+  // specificData: VehicleCase | PropertyCase | AppraisalCase;
+  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   * Puede ser VehicleCase, PropertyCase o AppraisalCase
+   */
 }
 
-interface VehicleCase extends BaseCase {
-  // caseType: 'vehicle';
+export type Case =
+  | (BaseCase & { caseType: 'vehicle'; vehicleDetails: VehicleCase })
+  | (BaseCase & { caseType: 'property'; propertyDetails: PropertyCase })
+  | (BaseCase & { caseType: 'appraisal'; appraisalDetails: AppraisalCase });
+
+export interface VehicleCase {
   licensePlate: string;
   brand: string;
   model: string;
@@ -31,8 +36,7 @@ interface VehicleCase extends BaseCase {
   engineNumber: string;
 }
 
-interface PropertyCase extends BaseCase {
-  // caseType: 'property';
+export interface PropertyCase {
   propertyRegistration: string;
   percentage: number;
   address: string;
@@ -43,13 +47,12 @@ interface PropertyCase extends BaseCase {
   nomenclature: string;
 }
 
-interface AppraisalCase extends BaseCase {
-  // caseType: 'appraisal';
-  itemsToAppraise: string[];
+export interface AppraisalCase {
+  itemToAppraise: string[];
   description: string;
 }
 
-export type Case = VehicleCase | PropertyCase | AppraisalCase;
+// export type Case = VehicleCase | PropertyCase | AppraisalCase;
 
 export interface CaseMovement {
   id: string;
