@@ -36,7 +36,7 @@ export default function CaseSearch() {
 
   const { debouncedValue, isDebounceLoading } = useDebounce(searchTerm, 1000);
 
-  const filteredCases = data?.data.cases.filter((case_: Case) => {
+  const filteredCases = data?.cases.filter((case_: Case) => {
     const searchLower = debouncedValue.toLowerCase();
 
     if (!debouncedValue) return true;
