@@ -1,3 +1,4 @@
+import { isValid, parse } from 'date-fns';
 import z from 'zod';
 
 // Auth
@@ -74,8 +75,23 @@ export const propertyCaseSchema = z.object({
   percentage: z.number().optional(),
   address: z.string().optional(),
   description: z.string().optional(),
-  aps: z.date().optional(),
-  apsExpiresAt: z.date().optional(),
+  // aps: z.date().optional(),
+  // apsExpiresAt: z.date().optional(),
+  aps: z.preprocess((value) => {
+    if (typeof value === 'string') {
+      const parsedDate = parse(value, 'dd-MM-yyyy', new Date());
+      console.log('Fecha procesada:', parsedDate);
+      return isValid(parsedDate) ? parsedDate : undefined;
+    }
+    return value;
+  }, z.date().optional()),
+  apsExpiresAt: z.preprocess((value) => {
+    if (typeof value === 'string') {
+      const parsedDate = parse(value, 'dd-MM-yyyy', new Date());
+      return isValid(parsedDate) ? parsedDate : undefined;
+    }
+    return value;
+  }, z.date().optional()),
   accountDgr: z.string().optional(),
   nomenclature: z.string().optional(),
 });
