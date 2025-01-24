@@ -28,7 +28,7 @@ export const getCasesPaginated = async ({
     `/cases?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
   );
   // change response to return cases directly
-  return response;
+  return response.data;
 };
 
 export const getCaseById = async (id: number) => {
@@ -40,5 +40,10 @@ export const getCaseById = async (id: number) => {
 
 export const createNewCase = async (data: TCreateCaseSchema) => {
   const response = await API.post('/cases', data);
+  return response.data;
+};
+
+export const updateCase = async (id: number, data: any) => {
+  const response = await API.patch(`/cases/${id}`, data);
   return response.data;
 };
