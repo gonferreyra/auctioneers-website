@@ -18,59 +18,72 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { TUpdateCaseSchema, updateCaseSchema } from '@/validations/schemas';
+import { useMutation } from '@tanstack/react-query';
+import { updateCase } from '@/lib/api';
 
 interface CaseDetailProps {
   caseData: Case;
 }
 
 export default function CaseDetail({ caseData }: CaseDetailProps) {
-  // console.log(caseData);
   const [isEditing, setIsEditing] = useState(false);
   const [editedCase, setEditedCase] = useState<Case>(caseData);
   const [originalCase] = useState<Case>(caseData);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // initialice useForm
+  const methods = useForm<Case>({
+    resolver: zodResolver(updateCaseSchema),
+    defaultValues: caseData,
+  });
+
+  const {
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  // console.log(caseData);
+
+  const { mutate: handleUpdate } = useMutation({
+    mutationFn: updateCase,
+    onSuccess: () => {
+      toast.success('Caso actualizado correctamente');
+      // router.push('/dashboard/cases');
+    },
+    // server errors
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const handleUpdateMovement = (movementId: string, description: string) => {
     const updatedMovements = editedCase.movements.map((movement) =>
       movement.id === movementId ? { ...movement, description } : movement,
     );
 
-    handleUpdate({ movements: updatedMovements });
+    // handleUpdate({ movements: updatedMovements });
     toast.success('Movement updated successfully');
   };
 
-  const handleUpdate = (updates: Partial<Case>) => {
-    setEditedCase((prev) => {
-      const updated = { ...prev, ...updates };
-      setHasUnsavedChanges(
-        JSON.stringify(updated) !== JSON.stringify(originalCase),
-      );
-      return updated;
+  // client side validation errors - client errors
+  const onError = () => {
+    (Object.keys(errors) as Array<keyof TUpdateCaseSchema>).forEach((key) => {
+      const error = errors[key];
+      if (error) {
+        toast.error(error.message || 'Hubo un error');
+      }
     });
   };
 
-  const handleSave = async () => {
-    try {
-      // Validate required fields
-      if (
-        !editedCase.title.trim() ||
-        !editedCase.recordNumber.trim() ||
-        !editedCase.court.trim()
-      ) {
-        toast.error('Please fill in all required fields');
-        return;
-      }
-
-      // In a real app, this would be an API call
-      console.log('Saving case:', editedCase);
-
-      toast.success('Case updated successfully');
-      setIsEditing(false);
-      setHasUnsavedChanges(false);
-    } catch (error) {
-      toast.error('Failed to update case');
-      console.error(error);
-    }
+  const onSubmit = () => {
+    // validate date and send in correct format
+    // convert date format
+    console.log(getValues());
+    // handleUpdate(caseData.id);
   };
 
   const handleUndo = () => {
@@ -93,7 +106,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
         <CaseHeader
           caseData={editedCase}
           isEditing={isEditing}
-          onUpdate={handleUpdate}
+          // onUpdate={handleUpdate}
         />
         <div className="ml-4 space-x-2 self-end">
           {!isEditing ? (
@@ -129,7 +142,9 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button onClick={handleSave}>Save Changes</Button>
+              <Button onClick={handleSubmit(onSubmit, onError)}>
+                Save Changes
+              </Button>
             </>
           )}
         </div>
@@ -138,7 +153,8 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
       <CaseInfo
         caseData={editedCase}
         isEditing={isEditing}
-        onUpdate={handleUpdate}
+        methods={methods}
+        // handleSubmit={onSubmit}
       />
 
       <CaseMovements
