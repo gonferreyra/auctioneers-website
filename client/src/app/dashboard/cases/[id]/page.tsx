@@ -15,20 +15,24 @@ export default function CasePage({ params }: CasePageProps) {
   const { id } = use(params);
   const numberId = Number(id);
 
-  // If the case is not on cache, fetch it
-  const { data: caseData, isLoading } = useQuery({
+  // Try to get cases from cache
+  const cachedCases = useQuery({
     queryKey: ['cases'],
-    // select: get data from cache, and if not found, fetch it (need to be test!)
-    select: (data: { data: { cases: Case[] } }) => {
-      const case_ = data.data.cases.find(
-        (case_: Case) => case_.id === numberId,
-      );
-      if (!case_) {
-        return getCaseById(numberId);
-      }
-      return case_;
-    },
-    staleTime: 1000 * 60 * 60, // 1 hora
+    enabled: false, // We don't want to refetch, just read cache
+  });
+
+  // Search case in cache
+  const cachedCase = cachedCases?.data?.cases?.find(
+    (case_: Case) => case_.id === numberId,
+  );
+
+  // If not in cache, fetch it
+  const { data: caseData, isLoading } = useQuery({
+    queryKey: ['case', numberId], // New key for every case
+    queryFn: () => getCaseById(numberId),
+    enabled: !cachedCase, // Only fetch if not in cache
+    initialData: cachedCase, // If in cache, use it
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   if (isLoading) {
