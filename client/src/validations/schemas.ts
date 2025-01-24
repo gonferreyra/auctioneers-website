@@ -33,6 +33,7 @@ export const vehicleCaseSchema = z.object({
   engineNumber: z.string().optional(),
 });
 
+// property schema to create a case
 export const propertyCaseSchema = z.object({
   propertyRegistration: z.string().optional(),
   percentage: z.number().optional(),
@@ -43,6 +44,12 @@ export const propertyCaseSchema = z.object({
   // apsExpiresAt: z.date().optional(),
   accountDgr: z.string().optional(),
   nomenclature: z.string().optional(),
+});
+
+// property schema to update a case
+export const updatePropertySchema = propertyCaseSchema.extend({
+  aps: z.date().optional(),
+  apsExpiresAt: z.date().optional(),
 });
 
 export const appraisalCaseSchema = z.object({
@@ -60,3 +67,14 @@ export const createCaseSchema = baseCaseSchema.extend({
 });
 
 export type TCreateCaseSchema = z.infer<typeof createCaseSchema>;
+
+// create schema and make all fields optional
+export const updateCaseSchema = baseCaseSchema.extend({
+  specificData: z.union([
+    vehicleCaseSchema,
+    propertyCaseSchema,
+    appraisalCaseSchema,
+  ]),
+});
+// infer the type
+export type TUpdateCaseSchema = z.infer<typeof updateCaseSchema>;
