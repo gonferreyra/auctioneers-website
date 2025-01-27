@@ -19,6 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createNewCase } from '@/lib/api';
 import { useEffect } from 'react';
+import { transformData } from '@/lib/utils';
 
 export default function NewCaseForm() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function NewCaseForm() {
     control,
     reset,
     getValues,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<TCreateCaseSchema>({
     resolver: zodResolver(createCaseSchema),
@@ -75,15 +77,11 @@ export default function NewCaseForm() {
     });
   }, [caseType, reset]);
 
-  useEffect(() => {
-    console.log('Form values updated:', watch());
-  }, [watch]);
-
   const { mutate: createCase } = useMutation({
     mutationFn: createNewCase,
     onSuccess: () => {
       toast.success('Caso creado correctamente');
-      router.push('/dashboard/cases');
+      router.push('/dashboard');
     },
     // server errors
     onError: (error) => {
@@ -102,8 +100,11 @@ export default function NewCaseForm() {
   };
 
   const onSubmit = async () => {
-    const values = getValues();
-    createCase(values);
+    const transformedData = transformData(getValues());
+    const year = getValues('specificData.year');
+    setValue('specificData.year', Number(year));
+    // console.log(transformedData);
+    createCase(transformedData);
   };
 
   const renderDynamicFields = () => {
