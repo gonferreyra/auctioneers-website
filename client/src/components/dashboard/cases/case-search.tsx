@@ -17,7 +17,7 @@ export default function CaseSearch() {
     'all' | 'recordNumber' | 'party'
   >('all');
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, status } = useQuery({
     queryKey: ['cases'],
     queryFn: () =>
       getCasesPaginated({
@@ -147,10 +147,16 @@ export default function CaseSearch() {
           ))
         )}
 
-        {filteredCases?.length === 0 && !isLoading && !isDebounceLoading && (
+        {filteredCases?.length === 0 && !isLoading && !isDebounceLoading ? (
           <p className="py-8 text-center text-muted-foreground">
             No se encontraton registros con los datos proporcionados.
           </p>
+        ) : (
+          status === 'error' && (
+            <p className="py-8 text-center text-muted-foreground">
+              Error al cargar los casos.
+            </p>
+          )
         )}
       </div>
     </div>
