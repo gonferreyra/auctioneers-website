@@ -101,6 +101,7 @@ const PropertyCaseModel = DB.define<IPropertyCaseModel>(
           const apsDate = new Date(caseInstance.aps);
           apsDate.setDate(apsDate.getDate() + 150);
           caseInstance.apsExpiresAt = apsDate;
+          // console.log('apsExpiresAt updated to:', caseInstance.apsExpiresAt);
         }
       },
     },

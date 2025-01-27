@@ -75,11 +75,9 @@ export const propertyCaseSchema = z.object({
   percentage: z.number().optional(),
   address: z.string().optional(),
   description: z.string().optional(),
-  // aps: z.date().optional(),
-  // apsExpiresAt: z.date().optional(),
   aps: z.preprocess((value) => {
     if (typeof value === 'string') {
-      const parsedDate = parse(value, 'dd-MM-yyyy', new Date());
+      const parsedDate = parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSX", new Date());
       console.log('Fecha procesada:', parsedDate);
       return isValid(parsedDate) ? parsedDate : undefined;
     }
