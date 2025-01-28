@@ -78,7 +78,7 @@ export const propertyCaseSchema = z.object({
   aps: z.preprocess((value) => {
     if (typeof value === 'string') {
       const parsedDate = parse(value, "yyyy-MM-dd'T'HH:mm:ss.SSSX", new Date());
-      console.log('Fecha procesada:', parsedDate);
+      // console.log('Fecha procesada:', parsedDate);
       return isValid(parsedDate) ? parsedDate : undefined;
     }
     return value;
