@@ -274,15 +274,16 @@ export default function CaseInfo({
                   type="date"
                 />
               </div>
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="apsExpiresAt">Vencimiento APS</Label>
                 <Input
                   {...register('specificData.apsExpiresAt')}
                   id="apsExpiresAt"
                   type="date"
+                  disabled
                   // value={caseData.specificData?.apsExpiresAt?.toISOString()}
                 />
-              </div>
+              </div> */}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">

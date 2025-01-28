@@ -83,13 +83,13 @@ export const propertyCaseSchema = z.object({
     }
     return value;
   }, z.date().optional()),
-  apsExpiresAt: z.preprocess((value) => {
-    if (typeof value === 'string') {
-      const parsedDate = parse(value, 'dd-MM-yyyy', new Date());
-      return isValid(parsedDate) ? parsedDate : undefined;
-    }
-    return value;
-  }, z.date().optional()),
+  // apsExpiresAt: z.preprocess((value) => {
+  //   if (typeof value === 'string') {
+  //     const parsedDate = parse(value, 'dd-MM-yyyy', new Date());
+  //     return isValid(parsedDate) ? parsedDate : undefined;
+  //   }
+  //   return value;
+  // }, z.date().optional()),
   accountDgr: z.string().optional(),
   nomenclature: z.string().optional(),
 });
