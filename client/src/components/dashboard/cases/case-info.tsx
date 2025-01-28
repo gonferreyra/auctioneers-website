@@ -33,22 +33,18 @@ export default function CaseInfo({
   const { register, control, setValue } = methods;
 
   useEffect(() => {
-    if (
-      caseData &&
-      caseData.caseType === 'property' &&
-      caseData.propertyDetails
-    ) {
-      if (caseData.propertyDetails.aps) {
+    if (caseData && caseData.caseType === 'property' && caseData.specificData) {
+      if (caseData.specificData.aps) {
         const formattedDate = moment
-          .utc(caseData.propertyDetails.aps)
+          .utc(caseData.specificData.aps)
           .format('YYYY-MM-DD');
-        setValue('propertyDetails.aps', formattedDate);
+        setValue('specificData.aps', formattedDate);
       }
-      if (caseData.propertyDetails.apsExpiresAt) {
+      if (caseData.specificData.apsExpiresAt) {
         const formattedDate = moment
-          .utc(caseData.propertyDetails.apsExpiresAt)
+          .utc(caseData.specificData.apsExpiresAt)
           .format('YYYY-MM-DD');
-        setValue('propertyDetails.apsExpiresAt', formattedDate);
+        setValue('specificData.apsExpiresAt', formattedDate);
       }
     }
   }, [caseData, setValue]);
@@ -63,14 +59,14 @@ export default function CaseInfo({
                 <div>
                   <Label>Dominio</Label>
                   <p className="text-gray-600">
-                    {caseData.vehicleDetails?.licensePlate}
+                    {caseData.specificData?.licensePlate}
                   </p>
                 </div>
                 <div>
                   <Label>Marca y Modelo</Label>
                   <p className="text-gray-600">
-                    {caseData.vehicleDetails?.brand}{' '}
-                    {caseData.vehicleDetails?.model}
+                    {caseData.specificData?.brand}{' '}
+                    {caseData.specificData?.model}
                   </p>
                 </div>
               </div>
@@ -78,15 +74,15 @@ export default function CaseInfo({
                 <div>
                   <Label>Chasis</Label>
                   <p className="text-gray-600">
-                    {caseData.vehicleDetails?.chassisBrand} -{' '}
-                    {caseData.vehicleDetails?.chassisNumber}
+                    {caseData.specificData?.chassisBrand} -{' '}
+                    {caseData.specificData?.chassisNumber}
                   </p>
                 </div>
                 <div>
                   <Label>Motor</Label>
                   <p className="text-gray-600">
-                    {caseData.vehicleDetails?.engineBrand} -{' '}
-                    {caseData.vehicleDetails?.engineNumber}
+                    {caseData.specificData?.engineBrand} -{' '}
+                    {caseData.specificData?.engineNumber}
                   </p>
                 </div>
               </div>
@@ -99,31 +95,29 @@ export default function CaseInfo({
                 <div>
                   <Label>Matricula</Label>
                   <p className="text-gray-600">
-                    {caseData?.propertyDetails?.propertyRegistration}
+                    {caseData?.specificData?.propertyRegistration}
                   </p>
                 </div>
                 <div>
                   <Label>Porcentaje</Label>
                   <p className="text-gray-600">
-                    {caseData.propertyDetails?.percentage}%
+                    {caseData.specificData?.percentage}%
                   </p>
                 </div>
               </div>
               <div>
                 <Label>Direccion</Label>
                 <p className="text-gray-600">
-                  {caseData.propertyDetails?.address}
+                  {caseData.specificData?.address}
                 </p>
               </div>
               <div>
                 <Label>Preventiva</Label>
                 <p className="text-gray-600">
-                  {moment
-                    .utc(caseData.propertyDetails?.aps)
-                    .format('DD-MM-YYYY')}{' '}
+                  {moment.utc(caseData.specificData?.aps).format('DD-MM-YYYY')}{' '}
                   (Expires:{' '}
                   {moment
-                    .utc(caseData.propertyDetails?.apsExpiresAt)
+                    .utc(caseData.specificData?.apsExpiresAt)
                     .format('DD-MM-YYYY') || 'N/A'}
                   )
                 </p>
@@ -131,13 +125,13 @@ export default function CaseInfo({
               <div>
                 <Label>Numero de Cuenta</Label>
                 <p className="text-gray-600">
-                  {caseData.propertyDetails?.accountDgr}
+                  {caseData.specificData?.accountDgr}
                 </p>
               </div>
               <div>
                 <Label>Nomenclatura</Label>
                 <p className="text-gray-600">
-                  {caseData.propertyDetails?.nomenclature}
+                  {caseData.specificData?.nomenclature}
                 </p>
               </div>
             </div>
@@ -148,15 +142,13 @@ export default function CaseInfo({
               <div>
                 <Label>Inmueble a Tasar</Label>
                 <ul className="list-inside list-disc text-gray-600">
-                  {caseData.appraisalDetails?.itemToAppraise.map(
-                    (item, index) => <li key={index}>{item}</li>,
-                  )}
+                  {caseData.specificData?.itemToAppraise}
                 </ul>
               </div>
               <div>
                 <Label>Descripcion</Label>
                 <p className="text-gray-600">
-                  {caseData.appraisalDetails?.description}
+                  {caseData.specificData?.description}
                 </p>
               </div>
             </div>
@@ -172,14 +164,14 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="licensePlate">Dominio</Label>
                 <Input
-                  {...register('vehicleDetails.licensePlate')}
+                  {...register('specificData.licensePlate')}
                   id="licensePlate"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="year">Año</Label>
                 <Input
-                  {...register('vehicleDetails.year')}
+                  {...register('specificData.year')}
                   id="year"
                   type="number"
                 />
@@ -188,25 +180,25 @@ export default function CaseInfo({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="brand">Marca</Label>
-                <Input {...register('vehicleDetails.brand')} id="brand" />
+                <Input {...register('specificData.brand')} id="brand" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="model">Modelo</Label>
-                <Input {...register('vehicleDetails.model')} id="model" />
+                <Input {...register('specificData.model')} id="model" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="chasisBrand">Chasis Marca</Label>
                 <Input
-                  {...register('vehicleDetails.chassisBrand')}
+                  {...register('specificData.chassisBrand')}
                   id="chassisBrand"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="chasisNumber">Chasis Numero</Label>
                 <Input
-                  {...register('vehicleDetails.chassisNumber')}
+                  {...register('specificData.chassisNumber')}
                   id="chasisNumber"
                 />
               </div>
@@ -215,14 +207,14 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="engineBrand">Motor Marca</Label>
                 <Input
-                  {...register('vehicleDetails.engineBrand')}
+                  {...register('specificData.engineBrand')}
                   id="engineBrand"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="engineNumber">Motor Numero</Label>
                 <Input
-                  {...register('vehicleDetails.engineNumber')}
+                  {...register('specificData.engineNumber')}
                   id="engineNumber"
                 />
               </div>
@@ -236,14 +228,14 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="propertyRegistration">Matricula</Label>
                 <Input
-                  {...register('propertyDetails.propertyRegistration')}
+                  {...register('specificData.propertyRegistration')}
                   id="propertyRegistration"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="percentage">Porcentaje</Label>
                 <Input
-                  {...register('propertyDetails.percentage')}
+                  {...register('specificData.percentage')}
                   id="percentage"
                   type="number"
                   min="0"
@@ -253,12 +245,12 @@ export default function CaseInfo({
             </div>
             <div className="space-y-2">
               <Label htmlFor="address">Direccion</Label>
-              <Input {...register('propertyDetails.address')} id="address" />
+              <Input {...register('specificData.address')} id="address" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">Descripcion</Label>
               <Textarea
-                {...register('propertyDetails.description')}
+                {...register('specificData.description')}
                 id="description"
               />
             </div>
@@ -266,8 +258,8 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="aps">Preventiva</Label>
                 <Input
-                  {...register('propertyDetails.aps', { valueAsDate: true })}
-                  defaultValue={moment(caseData.propertyDetails?.aps).format(
+                  {...register('specificData.aps', { valueAsDate: true })}
+                  defaultValue={moment(caseData.specificData?.aps).format(
                     'YYYY-MM-DD',
                   )}
                   id="aps"
@@ -277,10 +269,10 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="apsExpiresAt">Vencimiento APS</Label>
                 <Input
-                  {...register('propertyDetails.apsExpiresAt')}
+                  {...register('specificData.apsExpiresAt')}
                   id="apsExpiresAt"
                   type="date"
-                  // value={caseData.propertyDetails?.apsExpiresAt?.toISOString()}
+                  // value={caseData.specificData?.apsExpiresAt?.toISOString()}
                 />
               </div>
             </div>
@@ -288,14 +280,14 @@ export default function CaseInfo({
               <div className="space-y-2">
                 <Label htmlFor="accountDgr">Numero de Cuenta</Label>
                 <Input
-                  {...register('propertyDetails.accountDgr')}
+                  {...register('specificData.accountDgr')}
                   id="accountDgr"
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nomenclature">Nomenclatura</Label>
                 <Input
-                  {...register('propertyDetails.nomenclature')}
+                  {...register('specificData.nomenclature')}
                   id="nomenclature"
                 />
               </div>
@@ -308,7 +300,7 @@ export default function CaseInfo({
             <div className="space-y-2">
               <Label htmlFor="itemsToAppraise">Inmueble a Tasar</Label>
               <Textarea
-                {...register('appraisalDetails.itemToAppraise')}
+                {...register('specificData.itemToAppraise')}
                 id="itemToAppraise"
                 rows={4}
                 placeholder="Enter each item on a new line"
@@ -317,7 +309,7 @@ export default function CaseInfo({
             <div className="space-y-2">
               <Label htmlFor="description">Descripcion</Label>
               <Textarea
-                {...register('appraisalDetails.description')}
+                {...register('specificData.description')}
                 id="description"
                 rows={3}
               />
@@ -330,96 +322,94 @@ export default function CaseInfo({
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <Card className="p-6">
-        <form>
-          <h2 className="mb-4 text-lg font-semibold">Base Information</h2>
-          <div className="space-y-4">
-            {isEditing ? (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="record">Numero de expediente</Label>
-                  <Input {...register('record')} id="record" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="court">Juzgado</Label>
-                  <Input {...register('court')} id="court" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="court">Actor</Label>
-                  <Input {...register('plaintiff')} id="plaintiff" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="court">Demandado</Label>
-                  <Input {...register('defendant')} id="defendant" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="court">Tipo de ejecucion</Label>
-                  <Input {...register('type')} id="type" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="status">Estado</Label>
-                  <Controller
-                    name="status"
-                    control={control}
-                    render={({ field }) => (
-                      <Select {...field} onValueChange={field.onChange}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">Activo</SelectItem>
-                          <SelectItem value="paralyzed">Paralizado</SelectItem>
-                          <SelectItem value="closed">Baja</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="type">Tipo de Juicio</Label>
-                  <Select
-                    value={caseData.caseType}
-                    disabled
-                    // onValueChange={(value: CaseType) =>
-                    //   onUpdate({ caseType: value })
-                    // }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="vehicle">Rodado</SelectItem>
-                      <SelectItem value="property">Inmueble</SelectItem>
-                      <SelectItem value="appraisal">Tasacion</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="debt">Deuda</Label>
-                  <Input {...register('debt')} id="debt" type="number" />
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span>Numero de Expediente: {caseData.record}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Gavel className="h-4 w-4 text-muted-foreground" />
-                  <span>Ejecución: {caseData.type}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>Deuda: ${caseData.debt.toLocaleString()}</span>
-                </div>
-              </>
-            )}
-          </div>
-        </form>
+        <h2 className="mb-4 text-lg font-semibold">Informacion Base</h2>
+        <div className="space-y-4">
+          {isEditing ? (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="record">Numero de expediente</Label>
+                <Input {...register('record')} id="record" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="court">Juzgado</Label>
+                <Input {...register('court')} id="court" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="court">Actor</Label>
+                <Input {...register('plaintiff')} id="plaintiff" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="court">Demandado</Label>
+                <Input {...register('defendant')} id="defendant" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="court">Tipo de ejecucion</Label>
+                <Input {...register('type')} id="type" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="status">Estado</Label>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Activo</SelectItem>
+                        <SelectItem value="paralyzed">Paralizado</SelectItem>
+                        <SelectItem value="closed">Baja</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="type">Tipo de Juicio</Label>
+                <Select
+                  value={caseData.caseType}
+                  disabled
+                  // onValueChange={(value: CaseType) =>
+                  //   onUpdate({ caseType: value })
+                  // }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="vehicle">Rodado</SelectItem>
+                    <SelectItem value="property">Inmueble</SelectItem>
+                    <SelectItem value="appraisal">Tasacion</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="debt">Deuda</Label>
+                <Input {...register('debt')} id="debt" type="number" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-muted-foreground" />
+                <span>Numero de Expediente: {caseData.record}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Gavel className="h-4 w-4 text-muted-foreground" />
+                <span>Ejecución: {caseData.type}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <span>Deuda: ${caseData.debt.toLocaleString()}</span>
+              </div>
+            </>
+          )}
+        </div>
       </Card>
 
       <Card className="p-6">
-        <h2 className="mb-4 text-lg font-semibold">Case Details</h2>
+        <h2 className="mb-4 text-lg font-semibold">Detalles del Juicio</h2>
         {renderDynamicFields()}
       </Card>
     </div>
