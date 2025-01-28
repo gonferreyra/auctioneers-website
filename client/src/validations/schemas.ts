@@ -1,3 +1,4 @@
+import moment from 'moment';
 import z from 'zod';
 
 export const loginSchema = z.object({
@@ -48,7 +49,16 @@ export const propertyCaseSchema = z.object({
 
 // property schema to update a case
 export const updatePropertySchema = propertyCaseSchema.extend({
-  aps: z.date().optional(),
+  // aps: z.date().optional(),
+  // apsExpiresAt: z.date().optional(),
+  aps: z.preprocess((value) => {
+    if (typeof value === 'string') {
+      const parsedDate = moment(value, 'YYYY-MM-DD').format('DD-MM-YYYY');
+      console.log('fecha procesada: ', parsedDate);
+      return parsedDate;
+    }
+    return value;
+  }, z.string().optional()),
   apsExpiresAt: z.date().optional(),
 });
 
