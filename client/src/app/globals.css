@@ -34,3 +34,8 @@ body {
     --radius: 0.5rem;
   }
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}

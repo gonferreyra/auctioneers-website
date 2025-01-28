@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,18 +10,27 @@ import { useQuery } from '@tanstack/react-query';
 import { getCasesPaginated } from '@/lib/api';
 import type { Case } from '@/types/case';
 import { useDebounce } from '@/lib/hooks';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 export default function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchType, setSearchType] = useState<
     'all' | 'recordNumber' | 'party'
   >('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const { data, isLoading, status } = useQuery({
+  const { data, isLoading, status, refetch } = useQuery({
     queryKey: ['cases'],
     queryFn: () =>
       getCasesPaginated({
-        page: 1,
+        page: currentPage,
         limit: 10,
         sortBy: 'recentMovement',
         sortOrder: 'asc',
@@ -31,6 +40,17 @@ export default function CaseSearch() {
     refetchOnWindowFocus: false,
     retry: false,
   });
+
+  const totalPages = data?.totalPages;
+
+  const handlePageClick = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // refetch on page change
+  useEffect(() => {
+    refetch();
+  }, [currentPage, refetch]);
 
   // debounce search term
 
@@ -158,6 +178,40 @@ export default function CaseSearch() {
             </p>
           )
         )}
+
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={() => handlePageClick(currentPage - 1)}
+                className={currentPage === 1 ? 'disabled' : ''}
+              />
+            </PaginationItem>
+            {/* <PaginationItem> */}
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNumber = index + 1;
+              return (
+                <PaginationItem key={pageNumber}>
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === pageNumber}
+                    onClick={() => handlePageClick(pageNumber)}
+                  >
+                    {pageNumber}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            })}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={() => handlePageClick(currentPage + 1)}
+                className={currentPage === totalPages ? 'disabled' : ''}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );
