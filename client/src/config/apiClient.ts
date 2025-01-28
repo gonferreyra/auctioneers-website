@@ -1,3 +1,4 @@
+import { transformData } from '@/lib/utils';
 import Axios from 'axios';
 
 const API = Axios.create({
@@ -7,6 +8,17 @@ const API = Axios.create({
 
 API.interceptors.response.use(
   (response) => {
+    if (response.config.method === 'get') {
+      if (response.data) {
+        if (response.config.url?.includes('/cases?page=')) {
+          // Transform data for paginated cases
+          response.data.cases = transformData(response.data.cases);
+        } else if (response.config.url?.includes('/cases')) {
+          // Transform data for single case
+          response.data = transformData(response.data);
+        }
+      }
+    }
     // console.log(response.data);
     return response;
   },
@@ -17,7 +29,7 @@ API.interceptors.response.use(
       status,
       message:
         //  Try to set the error message to the zod errror message OR data.message (witch is the error from the customError middleware)
-        // `Field: ${error.response?.data?.errors?.[0]?.path} - Error: ${error.response.data.errors?.[0].message}` ||
+        `Field: ${error.response?.data?.errors?.[0]?.path} - Error: ${error.response.data.errors?.[0].message}` ||
         data.message,
     });
   },
