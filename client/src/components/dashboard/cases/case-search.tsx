@@ -18,6 +18,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function CaseSearch() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +32,9 @@ export default function CaseSearch() {
     'all' | 'recordNumber' | 'party'
   >('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [type, setType] = useState<
+    'all' | 'vehicle' | 'property' | 'appraisal'
+  >('all');
 
   const { data, isLoading, status, refetch } = useQuery({
     queryKey: ['cases'],
@@ -47,10 +57,10 @@ export default function CaseSearch() {
     setCurrentPage(pageNumber);
   };
 
-  // refetch on page change
+  // refetch on page change - server side pagination - I NEED TO MAKE A GLOBAL STATE TO HANDLE CURRENTPAGE SO IT DOESNT RESET WHEN I CHANGE THE PAGE
   useEffect(() => {
-    refetch();
-  }, [currentPage, refetch]);
+    if (!isLoading && data?.currentPage !== currentPage) refetch();
+  }, [isLoading, data?.currentPage, currentPage, refetch]);
 
   // debounce search term
 
@@ -60,6 +70,14 @@ export default function CaseSearch() {
     const searchLower = debouncedValue.toLowerCase();
 
     if (!debouncedValue) return true;
+
+    if (type === 'vehicle') {
+      return case_.caseType.includes('vehicle');
+    } else if (type === 'property') {
+      return case_.caseType.includes('property');
+    } else if (type === 'appraisal') {
+      return case_.caseType.includes('appraisal');
+    }
 
     if (searchType === 'recordNumber') {
       return case_.record.toLowerCase().includes(searchLower);
@@ -98,11 +116,27 @@ export default function CaseSearch() {
           >
             Todo
           </Button>
+          <Select
+            value={type}
+            onValueChange={(
+              value: 'all' | 'vehicle' | 'property' | 'appraisal',
+            ) => setType(value)}
+          >
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Tipo de Juicio" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="vehicle">Rodados</SelectItem>
+              <SelectItem value="property">Inmuebles</SelectItem>
+              <SelectItem value="appraisal">Tasaciones</SelectItem>
+            </SelectContent>
+          </Select>
           <Button
             variant={searchType === 'recordNumber' ? 'default' : 'outline'}
             onClick={() => setSearchType('recordNumber')}
           >
-            Numero de Expediente
+            Expediente
           </Button>
           <Button
             variant={searchType === 'party' ? 'default' : 'outline'}
@@ -131,7 +165,7 @@ export default function CaseSearch() {
                     <div className="flex items-center gap-2">
                       <FileText className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm font-medium text-muted-foreground">
-                        {case_.record} - {case_.caseType.toLocaleUpperCase()}
+                        Expte. Nº {case_.record} - {case_.internNumber}
                       </span>
                     </div>
                     <h3 className="text-lg font-semibold">
