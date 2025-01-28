@@ -21,9 +21,9 @@ export interface BaseCase {
 }
 
 export type Case =
-  | (BaseCase & { caseType: 'vehicle'; vehicleDetails: VehicleCase })
-  | (BaseCase & { caseType: 'property'; propertyDetails: PropertyCase })
-  | (BaseCase & { caseType: 'appraisal'; appraisalDetails: AppraisalCase });
+  | (BaseCase & { caseType: 'vehicle'; specificData: VehicleCase })
+  | (BaseCase & { caseType: 'property'; specificData: PropertyCase })
+  | (BaseCase & { caseType: 'appraisal'; specificData: AppraisalCase });
 
 export interface VehicleCase {
   licensePlate: string;
