@@ -35,28 +35,28 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // initialice useForm
-  const methods = useForm<Case>({
+  const methods = useForm<TUpdateCaseSchema>({
     resolver: zodResolver(updateCaseSchema),
     defaultValues: caseData,
   });
 
   const {
     getValues,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = methods;
 
-  // console.log(caseData);
-
   const { mutate: handleUpdate } = useMutation({
-    mutationFn: updateCase,
+    mutationFn: () => updateCase(editedCase.id, getValues()),
     onSuccess: () => {
       toast.success('Caso actualizado correctamente');
-      // router.push('/dashboard/cases');
+      setIsEditing(false);
     },
     // server errors
     onError: (error) => {
       toast.error(error.message);
+      console.log(error);
     },
   });
 
@@ -71,19 +71,25 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
 
   // client side validation errors - client errors
   const onError = () => {
-    (Object.keys(errors) as Array<keyof TUpdateCaseSchema>).forEach((key) => {
-      const error = errors[key];
+    // console.log(errors); // Log the errors to see the structure
+    Object.keys(errors).forEach((key) => {
+      const error = errors[key as keyof Case];
       if (error) {
-        toast.error(error.message || 'Hubo un error');
+        toast.error(`${key}: ${error.message || 'Hubo un error'}`);
       }
     });
   };
 
-  const onSubmit = () => {
-    // validate date and send in correct format
-    // convert date format
-    console.log(getValues());
-    // handleUpdate(caseData.id);
+  const onSubmit = async () => {
+    const percentage = getValues('specificData.percentage');
+    setValue('specificData.percentage', Number(percentage));
+
+    const carYear = getValues('specificData.year');
+    setValue('specificData.year', Number(carYear));
+
+    // console.log(data);
+    // API call
+    handleUpdate();
   };
 
   const handleUndo = () => {
@@ -101,66 +107,66 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start justify-between">
-        <CaseHeader
+    <form onSubmit={handleSubmit(onSubmit, onError)}>
+      <div className="space-y-6">
+        <div className="flex items-start justify-between">
+          <CaseHeader
+            caseData={editedCase}
+            isEditing={isEditing}
+            // onUpdate={handleUpdate}
+          />
+          <div className="ml-4 space-x-2 self-end">
+            {!isEditing ? (
+              <Button onClick={() => setIsEditing(true)}>Edit Case</Button>
+            ) : (
+              <>
+                {hasUnsavedChanges && (
+                  <Button
+                    variant="outline"
+                    onClick={handleUndo}
+                    className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
+                  >
+                    Undo Changes
+                  </Button>
+                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You have unsaved changes. Are you sure you want to
+                        discard them?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Continue Editing</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleCancel}>
+                        Discard Changes
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                <Button type="submit">Save Changes</Button>
+              </>
+            )}
+          </div>
+        </div>
+
+        <CaseInfo
           caseData={editedCase}
           isEditing={isEditing}
-          // onUpdate={handleUpdate}
+          methods={methods}
+          // handleSubmit={onSubmit}
         />
-        <div className="ml-4 space-x-2 self-end">
-          {!isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>Edit Case</Button>
-          ) : (
-            <>
-              {hasUnsavedChanges && (
-                <Button
-                  variant="outline"
-                  onClick={handleUndo}
-                  className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
-                >
-                  Undo Changes
-                </Button>
-              )}
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="outline">Cancel</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You have unsaved changes. Are you sure you want to discard
-                      them?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Continue Editing</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleCancel}>
-                      Discard Changes
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <Button onClick={handleSubmit(onSubmit, onError)}>
-                Save Changes
-              </Button>
-            </>
-          )}
-        </div>
+
+        <CaseMovements
+          caseData={editedCase}
+          onUpdateMovement={handleUpdateMovement}
+        />
       </div>
-
-      <CaseInfo
-        caseData={editedCase}
-        isEditing={isEditing}
-        methods={methods}
-        // handleSubmit={onSubmit}
-      />
-
-      <CaseMovements
-        caseData={editedCase}
-        onUpdateMovement={handleUpdateMovement}
-      />
-    </div>
+    </form>
   );
 }
