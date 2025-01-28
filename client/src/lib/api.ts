@@ -27,7 +27,6 @@ export const getCasesPaginated = async ({
   const response = await API.get(
     `/cases?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
   );
-  // change response to return cases directly
   return response.data;
 };
 
@@ -35,8 +34,6 @@ export const getCaseById = async (id: number) => {
   const response = await API.get(`/cases/${id}`);
   return response.data;
 };
-
-// type CreateCaseData = z.infer<typeof createCaseSchema>;
 
 export const createNewCase = async (data: TCreateCaseSchema) => {
   const response = await API.post('/cases', data);
