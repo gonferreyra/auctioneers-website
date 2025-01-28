@@ -21,8 +21,9 @@ import {
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TUpdateCaseSchema, updateCaseSchema } from '@/validations/schemas';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCase } from '@/lib/api';
+import { useRouter } from 'next/navigation';
 
 interface CaseDetailProps {
   caseData: Case;
@@ -33,6 +34,9 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   const [editedCase, setEditedCase] = useState<Case>(caseData);
   const [originalCase] = useState<Case>(caseData);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
   // initialice useForm
   const methods = useForm<TUpdateCaseSchema>({
@@ -52,6 +56,8 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     onSuccess: () => {
       toast.success('Caso actualizado correctamente');
       setIsEditing(false);
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      router.push('/dashboard');
     },
     // server errors
     onError: (error) => {
@@ -71,9 +77,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
 
   // client side validation errors - client errors
   const onError = () => {
-    // console.log(errors); // Log the errors to see the structure
-    Object.keys(errors).forEach((key) => {
-      const error = errors[key as keyof Case];
+    Object.entries(errors).forEach(([key, error]) => {
       if (error) {
         toast.error(`${key}: ${error.message || 'Hubo un error'}`);
       }
@@ -81,13 +85,17 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   };
 
   const onSubmit = async () => {
-    const percentage = getValues('specificData.percentage');
-    setValue('specificData.percentage', Number(percentage));
+    const caseType = getValues('caseType');
 
-    const carYear = getValues('specificData.year');
-    setValue('specificData.year', Number(carYear));
+    // set data to Number (RHF transform to string by default)
+    if (caseType === 'vehicle') {
+      const carYear = getValues('specificData.year');
+      setValue('specificData.year', Number(carYear));
+    } else if (caseType === 'property') {
+      const percentage = getValues('specificData.percentage');
+      setValue('specificData.percentage', Number(percentage));
+    }
 
-    // console.log(data);
     // API call
     handleUpdate();
   };
