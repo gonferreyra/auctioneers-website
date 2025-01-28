@@ -243,23 +243,33 @@ export const updateCase = async ({ id, data }: updateCaseParams) => {
       }
     );
   } else if (caseToUpdate.caseType === 'property' && data.specificData) {
-    await PropertyCaseModel.update(
-      data.specificData as {
-        propertyRegistration?: string;
-        percentage?: number;
-        address?: string;
-        description?: string;
-        aps?: Date;
-        apsExpiresAt?: Date;
-        acccountDgr?: string;
-        nomenclature?: string;
+    // await PropertyCaseModel.update(
+    //   data.specificData as {
+    //     propertyRegistration?: string;
+    //     percentage?: number;
+    //     address?: string;
+    //     description?: string;
+    //     aps?: Date;
+    //     apsExpiresAt?: Date;
+    //     acccountDgr?: string;
+    //     nomenclature?: string;
+    //   },
+    //   {
+    //     where: {
+    //       caseInternNumber: caseToUpdate.internNumber,
+    //     },
+    //   }
+    // );
+    const propertyCaseToUpdate = await PropertyCaseModel.findOne({
+      where: {
+        caseInternNumber: caseToUpdate.internNumber,
       },
-      {
-        where: {
-          caseInternNumber: caseToUpdate.internNumber,
-        },
-      }
-    );
+    });
+
+    if (propertyCaseToUpdate) {
+      Object.assign(propertyCaseToUpdate, data.specificData);
+      await propertyCaseToUpdate.save(); // Use save to trigger hooks
+    }
   } else if (caseToUpdate.caseType === 'appraisal' && data.specificData) {
     await AppraisalCaseModel.update(
       data.specificData as {
