@@ -114,12 +114,20 @@ export default function CaseInfo({
               <div>
                 <Label>Preventiva</Label>
                 <p className="text-gray-600">
-                  {moment.utc(caseData.specificData?.aps).format('DD-MM-YYYY')}{' '}
-                  (Expires:{' '}
-                  {moment
-                    .utc(caseData.specificData?.apsExpiresAt)
-                    .format('DD-MM-YYYY') || 'N/A'}
-                  )
+                  {caseData.specificData?.aps
+                    ? moment
+                        .utc(caseData.specificData?.aps)
+                        .format('DD-MM-YYYY')
+                    : 'No se encuentra cargada fecha de preventiva de subasta'}{' '}
+                  {caseData.specificData?.apsExpiresAt && (
+                    <span className="text-gray-600">
+                      (Expires:{' '}
+                      {moment
+                        .utc(caseData.specificData?.apsExpiresAt)
+                        .format('DD-MM-YYYY') || 'N/A'}
+                      )
+                    </span>
+                  )}
                 </p>
               </div>
               <div>
