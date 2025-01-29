@@ -41,8 +41,8 @@ export interface PropertyCase {
   percentage: number;
   address: string;
   description: string;
-  aps: Date;
-  apsExpiresAt: Date;
+  aps: Date | string;
+  apsExpiresAt: Date | string;
   accountDgr: string;
   nomenclature: string;
 }
