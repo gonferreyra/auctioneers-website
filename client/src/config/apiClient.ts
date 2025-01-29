@@ -27,10 +27,9 @@ API.interceptors.response.use(
     // return Promise.reject({ status, ...data });
     return Promise.reject({
       status,
-      message:
-        //  Try to set the error message to the zod errror message OR data.message (witch is the error from the customError middleware)
-        `Field: ${error.response?.data?.errors?.[0]?.path} - Error: ${error.response.data.errors?.[0].message}` ||
-        data.message,
+      message: error.response?.data?.errors?.[0]
+        ? `Field: ${error.response?.data?.errors?.[0]?.path} - Error: ${error.response.data.errors?.[0].message}`
+        : data.message,
     });
   },
 );
