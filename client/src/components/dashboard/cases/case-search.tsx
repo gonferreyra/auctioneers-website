@@ -57,10 +57,11 @@ export default function CaseSearch() {
     setCurrentPage(pageNumber);
   };
 
-  // refetch on page change - server side pagination - I NEED TO MAKE A GLOBAL STATE TO HANDLE CURRENTPAGE SO IT DOESNT RESET WHEN I CHANGE THE PAGE
+  // refetch on page change - server side pagination - I NEED TO MAKE A GLOBAL STATE TO HANDLE CURRENTPAGE SO IT DOESNT RESET WHEN I GO BACK TO THE PAGE
   useEffect(() => {
     if (!isLoading && data?.currentPage !== currentPage) refetch();
-  }, [isLoading, data?.currentPage, currentPage, refetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.currentPage, currentPage]);
 
   // debounce search term
 
