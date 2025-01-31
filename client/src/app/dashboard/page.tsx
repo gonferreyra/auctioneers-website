@@ -10,10 +10,21 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Gavel, Plus } from 'lucide-react';
 import { useState } from 'react';
 import AuctionSearch from '@/components/dashboard/auctions/auction-search';
+import { useAuth } from '@/lib/hooks';
+import Loading from './loading';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('cases');
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!user) {
+    return null; // O puedes mostrar un mensaje de error o un spinner
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
