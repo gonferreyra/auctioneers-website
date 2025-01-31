@@ -11,6 +11,11 @@ export const login = async (data: LoginData) => {
   return response;
 };
 
+export const logout = async () => {
+  const response = await API.get('/auth/logout');
+  return response;
+};
+
 type CasesPaginatedParams = {
   page: number;
   limit: number;
@@ -43,4 +48,9 @@ export const createNewCase = async (data: TCreateCaseSchema) => {
 export const updateCase = async (id: number, data: any) => {
   const response = await API.patch(`/cases/${id}`, data);
   return response.data;
+};
+
+export const getUser = async () => {
+  const response = await API.get('/user');
+  return response;
 };
