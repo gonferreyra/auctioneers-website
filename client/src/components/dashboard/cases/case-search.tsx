@@ -218,7 +218,7 @@ export default function CaseSearch() {
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
-                href="#"
+                // href="#"
                 onClick={() => handlePageClick(currentPage - 1)}
                 className={currentPage === 1 ? 'disabled' : ''}
               />
@@ -229,7 +229,7 @@ export default function CaseSearch() {
               return (
                 <PaginationItem key={pageNumber}>
                   <PaginationLink
-                    href="#"
+                    // href="#"
                     isActive={currentPage === pageNumber}
                     onClick={() => handlePageClick(pageNumber)}
                   >
@@ -240,7 +240,7 @@ export default function CaseSearch() {
             })}
             <PaginationItem>
               <PaginationNext
-                href="#"
+                // href="#"
                 onClick={() => handlePageClick(currentPage + 1)}
                 className={currentPage === totalPages ? 'disabled' : ''}
               />
