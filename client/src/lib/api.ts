@@ -1,5 +1,5 @@
 import API from '@/config/apiClient';
-import { TCreateCaseSchema } from '@/validations/schemas';
+import { TCreateCaseSchema, TUpdateCaseSchema } from '@/validations/schemas';
 
 type LoginData = {
   email: string;
@@ -45,7 +45,7 @@ export const createNewCase = async (data: TCreateCaseSchema) => {
   return response.data;
 };
 
-export const updateCase = async (id: number, data: any) => {
+export const updateCase = async (id: number, data: TUpdateCaseSchema) => {
   const response = await API.patch(`/cases/${id}`, data);
   return response.data;
 };
