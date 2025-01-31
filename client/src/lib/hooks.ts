@@ -1,4 +1,6 @@
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { getUser } from './api';
 
 export const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState('');
@@ -17,4 +19,14 @@ export const useDebounce = (value: string, delay: number) => {
   }, [value]);
 
   return { debouncedValue, isDebounceLoading };
+};
+
+export const useAuth = () => {
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+    retry: false,
+  });
+
+  return { user, isLoading };
 };
