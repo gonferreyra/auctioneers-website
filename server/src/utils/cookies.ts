@@ -1,4 +1,4 @@
-import { CookieOptions, Response } from 'express';
+import { Response } from 'express';
 import { fifteenMinutesFromNow, thirtyDaysFromNow } from './date';
 
 const secure = process.env.NODE_ENV !== 'development';
@@ -19,8 +19,7 @@ export const setAuthenticationCookies = ({
       sameSite: 'strict',
       httpOnly: true,
       secure,
-      // expires: fifteenMinutesFromNow(),
-      expires: thirtyDaysFromNow(),
+      expires: fifteenMinutesFromNow(),
     })
     .cookie('refreshToken', refreshToken, {
       sameSite: 'strict',
