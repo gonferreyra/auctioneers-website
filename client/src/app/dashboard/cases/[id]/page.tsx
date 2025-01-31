@@ -16,7 +16,7 @@ export default function CasePage({ params }: CasePageProps) {
   const numberId = Number(id);
 
   // Try to get cases from cache
-  const cachedCases = useQuery({
+  const cachedCases = useQuery<{ cases: Case[] }>({
     queryKey: ['cases'],
     enabled: false, // We don't want to refetch, just read cache
   });
