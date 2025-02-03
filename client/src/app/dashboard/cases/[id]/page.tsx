@@ -32,7 +32,8 @@ export default function CasePage({ params }: CasePageProps) {
     queryFn: () => getCaseById(numberId),
     enabled: !cachedCase, // Only fetch if not in cache
     initialData: cachedCase, // If in cache, use it
-    staleTime: 1000 * 60 * 60, // 1 hour
+    initialDataUpdatedAt: cachedCase ? Date.now() : undefined,
+    // staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   if (isLoading) {
