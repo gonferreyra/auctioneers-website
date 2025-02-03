@@ -12,6 +12,7 @@ import { useState } from 'react';
 import AuctionSearch from '@/components/dashboard/auctions/auction-search';
 import { useAuth } from '@/lib/hooks';
 import Loading from './loading';
+import { toast } from 'sonner';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,7 +24,13 @@ export default function DashboardPage() {
   }
 
   if (!user) {
-    return null; // O puedes mostrar un mensaje de error o un spinner
+    toast.error('Backend not responding. Please contact administrator.', {
+      action: {
+        label: 'Go to Main',
+        onClick: () => window.location.replace('/'),
+      },
+    });
+    return null;
   }
 
   return (
