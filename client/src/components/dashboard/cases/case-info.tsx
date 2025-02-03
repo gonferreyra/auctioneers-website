@@ -16,8 +16,6 @@ import type { Case } from '@/types/case';
 import { Controller, UseFormReturn } from 'react-hook-form';
 import { useEffect } from 'react';
 import moment from 'moment';
-// import { TUpdateCaseSchema, updateCaseSchema } from '@/validations/schemas';
-// import { zodResolver } from '@hookform/resolvers/zod';
 
 interface CaseInfoProps {
   caseData: Case;
