@@ -40,6 +40,8 @@ API.interceptors.response.use(
       } catch (error) {
         console.error(error);
         queryClient.clear();
+        // Redirect to login if refresh fails
+        window.location.replace('/login');
       }
     }
 
