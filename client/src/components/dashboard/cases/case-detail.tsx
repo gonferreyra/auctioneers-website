@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CaseHeader from './case-header';
 import CaseInfo from './case-info';
 import CaseMovements from './case-movements';
@@ -49,15 +49,19 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     setValue,
     handleSubmit,
     formState: { errors },
+    reset,
   } = methods;
 
   const { mutate: handleUpdate } = useMutation({
     mutationFn: () => updateCase(editedCase.id, getValues()),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Caso actualizado correctamente');
-      setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ['cases'] });
+      await queryClient.invalidateQueries({ queryKey: ['cases'] });
+
+      queryClient.removeQueries({ queryKey: ['case', editedCase.id] });
+
       router.push('/dashboard');
+      setIsEditing(false);
     },
     // server errors
     onError: (error) => {
@@ -113,6 +117,12 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     handleUndo();
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    // Reset form with new case data when caseData changes
+    setEditedCase(caseData);
+    reset(caseData);
+  }, [caseData, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit, onError)}>
