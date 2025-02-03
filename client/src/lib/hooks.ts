@@ -16,6 +16,7 @@ export const useDebounce = (value: string, delay: number) => {
     return () => {
       clearTimeout(timer);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return { debouncedValue, isDebounceLoading };
@@ -26,6 +27,7 @@ export const useAuth = () => {
     queryKey: ['user'],
     queryFn: getUser,
     retry: false,
+    staleTime: 1000 * 60 * 15, // 15 minutes
   });
 
   return { user, isLoading };
