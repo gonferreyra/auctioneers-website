@@ -43,6 +43,12 @@ export const getCasesPaginatedSchema = z.object({
   limit: z.string().optional().default('10'),
   sortBy: z.string().optional().default('id'),
   sortOrder: z.enum(['asc', 'desc']).optional().default('asc'),
+  searchTerm: z.string().default(''),
+  searchType: z
+    .enum(['all', 'recordNumber', 'party'])
+    .optional()
+    .default('all'),
+  caseType: z.enum(['all', 'vehicle', 'property', 'appraisal']).default('all'),
 });
 
 export const idSchema = z.number();

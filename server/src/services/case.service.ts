@@ -6,12 +6,16 @@ import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
 import VehicleCaseModel from '../models/vehicleCase.model';
 import PropertyCaseModel from '../models/propertyCase.model';
 import AppraisalCaseModel from '../models/appraisalCase.model';
+import { Op } from 'sequelize';
 
 type GetCasesParams = {
   page: number;
   limit: number;
   sortBy: string;
   sortOrder: 'ASC' | 'DESC';
+  searchTerm?: string;
+  searchType?: 'all' | 'recordNumber' | 'party';
+  caseType?: 'all' | 'vehicle' | 'property' | 'appraisal';
 };
 
 export const getCasesPaginated = async ({
@@ -19,6 +23,9 @@ export const getCasesPaginated = async ({
   limit,
   sortBy,
   sortOrder,
+  searchTerm,
+  searchType,
+  caseType,
 }: GetCasesParams) => {
   const offset = (page - 1) * limit;
 
@@ -31,25 +38,51 @@ export const getCasesPaginated = async ({
     ];
   }
 
+  const where: any = {};
+
+  if (searchTerm) {
+    const searchLower = searchTerm.toLowerCase();
+    if (searchType === 'recordNumber') {
+      where.record = { [Op.iLike]: `%${searchLower}%` };
+    } else if (searchType === 'party') {
+      where[Op.or] = [
+        { plaintiff: { [Op.iLike]: `%${searchLower}%` } },
+        { defendant: { [Op.iLike]: `%${searchLower}%` } },
+      ];
+    } else {
+      where[Op.or] = [
+        { record: { [Op.iLike]: `%${searchLower}%` } },
+        { type: { [Op.iLike]: `%${searchLower}%` } },
+        { plaintiff: { [Op.iLike]: `%${searchLower}%` } },
+        { defendant: { [Op.iLike]: `%${searchLower}%` } },
+      ];
+    }
+  }
+
+  if (caseType && caseType !== 'all') {
+    where.caseType = caseType;
+  }
+
   const { count, rows: cases } = await CaseModel.findAndCountAll({
     limit,
     offset,
     order,
-    attributes: [
-      'id',
-      'internNumber',
-      'status',
-      'record',
-      'plaintiff',
-      'defendant',
-      'type',
-      'court',
-      'lawOffice',
-      'debt',
-      'caseType',
-      'createdAt',
-      'updatedAt',
-    ],
+    where,
+    // attributes: [
+    //   'id',
+    //   'internNumber',
+    //   'status',
+    //   'record',
+    //   'plaintiff',
+    //   'defendant',
+    //   'type',
+    //   'court',
+    //   'lawOffice',
+    //   'debt',
+    //   'caseType',
+    //   'createdAt',
+    //   'updatedAt',
+    // ],
     include:
       sortBy === 'recentMovement'
         ? [
