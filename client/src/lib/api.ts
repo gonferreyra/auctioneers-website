@@ -21,6 +21,9 @@ type CasesPaginatedParams = {
   limit: number;
   sortBy: string;
   sortOrder: 'asc' | 'desc';
+  searchTerm?: string;
+  searchType?: 'all' | 'recordNumber' | 'party';
+  caseType?: 'all' | 'vehicle' | 'property' | 'appraisal';
 };
 
 export const getCasesPaginated = async ({
@@ -28,9 +31,12 @@ export const getCasesPaginated = async ({
   limit,
   sortBy,
   sortOrder,
+  searchTerm,
+  searchType,
+  caseType,
 }: CasesPaginatedParams) => {
   const response = await API.get(
-    `/cases?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`,
+    `/cases?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}&searchTerm=${searchTerm}&searchType=${searchType}&caseType=${caseType}`,
   );
   return response.data;
 };
