@@ -13,7 +13,7 @@ type CaseStateStore = {
 
 export const useCaseStore = create<CaseStateStore>()((set) => ({
   searchTerm: '',
-  setSearchTerm: (searchTerm) => set({ searchTerm }),
+  setSearchTerm: (searchTerm) => set({ searchTerm, currentPage: 1 }),
   searchType: 'all',
   setSearchType: (type) => set({ searchType: type }),
   currentPage: 1,
