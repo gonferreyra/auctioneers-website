@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -25,25 +25,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useCaseStore } from '@/stores/useCaseStore';
 
 export default function CaseSearch() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchType, setSearchType] = useState<
-    'all' | 'recordNumber' | 'party'
-  >('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [type, setType] = useState<
-    'all' | 'vehicle' | 'property' | 'appraisal'
-  >('all');
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchType,
+    setSearchType,
+    currentPage,
+    setCurrentPage,
+    caseType,
+    setCaseType,
+  } = useCaseStore();
+
+  // debounce search term
+  const { debouncedValue, isDebounceLoading } = useDebounce(searchTerm, 1000);
 
   const { data, isLoading, status, refetch } = useQuery({
-    queryKey: ['cases'],
+    queryKey: ['cases', currentPage, debouncedValue, searchType, caseType],
     queryFn: () =>
       getCasesPaginated({
         page: currentPage,
         limit: 10,
         sortBy: 'recentMovement',
         sortOrder: 'asc',
+        searchTerm: debouncedValue,
+        searchType,
+        caseType,
       }),
     // ver la configuracion de cache, que me conviene mejor para este caso - Ahora tengo que actualizar la pagina para que haga otro request
     staleTime: 1000 * 60 * 60, // 1 hora
@@ -57,47 +66,10 @@ export default function CaseSearch() {
     setCurrentPage(pageNumber);
   };
 
-  // refetch on page change - server side pagination - I NEED TO MAKE A GLOBAL STATE TO HANDLE CURRENTPAGE SO IT DOESNT RESET WHEN I GO BACK TO THE PAGE
+  // refetch when search term, currentPage, searchType or caseType changes
   useEffect(() => {
-    if (!isLoading && data?.currentPage !== currentPage) refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data?.currentPage, currentPage]);
-
-  // debounce search term
-
-  const { debouncedValue, isDebounceLoading } = useDebounce(searchTerm, 1000);
-
-  const filteredCases = data?.cases.filter((case_: Case) => {
-    const searchLower = debouncedValue.toLowerCase();
-
-    if (!debouncedValue) return true;
-
-    if (type === 'vehicle') {
-      return case_.caseType.includes('vehicle');
-    } else if (type === 'property') {
-      return case_.caseType.includes('property');
-    } else if (type === 'appraisal') {
-      return case_.caseType.includes('appraisal');
-    }
-
-    if (searchType === 'recordNumber') {
-      return case_.record.toLowerCase().includes(searchLower);
-    }
-
-    if (searchType === 'party') {
-      return (
-        case_.plaintiff.toLowerCase().includes(searchLower) ||
-        case_.defendant.toLowerCase().includes(searchLower)
-      );
-    }
-
-    return (
-      case_.record.toLowerCase().includes(searchLower) ||
-      case_.type.toLowerCase().includes(searchLower) ||
-      case_.plaintiff.toLowerCase().includes(searchLower) ||
-      case_.defendant.toLowerCase().includes(searchLower)
-    );
-  });
+    refetch();
+  }, [debouncedValue, searchType, caseType, refetch, currentPage]);
 
   return (
     <div className="space-y-6">
@@ -118,10 +90,10 @@ export default function CaseSearch() {
             Todo
           </Button>
           <Select
-            value={type}
+            value={caseType}
             onValueChange={(
               value: 'all' | 'vehicle' | 'property' | 'appraisal',
-            ) => setType(value)}
+            ) => setCaseType(value)}
           >
             <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Tipo de Juicio" />
@@ -158,7 +130,7 @@ export default function CaseSearch() {
             Buscando casos...
           </p>
         ) : (
-          filteredCases?.map((case_: Case) => (
+          data?.cases?.map((case_: Case) => (
             <Link key={case_.id} href={`/dashboard/cases/${case_.id}`}>
               <Card className="cursor-pointer p-4 transition-shadow hover:shadow-md">
                 <div className="flex items-start justify-between">
@@ -202,7 +174,7 @@ export default function CaseSearch() {
           ))
         )}
 
-        {filteredCases?.length === 0 && !isLoading && !isDebounceLoading ? (
+        {data?.cases?.length === 0 && !isLoading && !isDebounceLoading ? (
           <p className="py-8 text-center text-muted-foreground">
             No se encontraton registros con los datos proporcionados.
           </p>
