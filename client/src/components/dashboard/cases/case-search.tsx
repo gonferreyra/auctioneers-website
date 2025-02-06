@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -42,7 +41,7 @@ export default function CaseSearch() {
   // debounce search term
   const { debouncedValue, isDebounceLoading } = useDebounce(searchTerm, 1000);
 
-  const { data, isLoading, status, refetch } = useQuery({
+  const { data, isLoading, status } = useQuery({
     queryKey: ['cases', currentPage, debouncedValue, searchType, caseType],
     queryFn: () =>
       getCasesPaginated({
@@ -67,9 +66,9 @@ export default function CaseSearch() {
   };
 
   // refetch when search term, currentPage, searchType or caseType changes
-  useEffect(() => {
-    refetch();
-  }, [debouncedValue, searchType, caseType, refetch, currentPage]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [debouncedValue, searchType, caseType, refetch, currentPage]);
 
   return (
     <div className="space-y-6">
