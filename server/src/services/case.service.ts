@@ -89,7 +89,7 @@ export const getCasesPaginated = async ({
             {
               model: MovementModel,
               as: 'movements',
-              attributes: ['description', 'createdAt', 'updatedAt'],
+              attributes: ['id', 'description', 'createdAt', 'updatedAt'],
             },
             {
               model: VehicleCaseModel,
@@ -142,7 +142,7 @@ export const getCaseById = async (id: number) => {
       {
         model: MovementModel,
         as: 'movements',
-        attributes: ['description'],
+        attributes: ['id', 'description', 'createdAt', 'updatedAt'],
       },
       {
         model: VehicleCaseModel,
