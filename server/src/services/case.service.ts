@@ -130,8 +130,8 @@ export const getCasesPaginated = async ({
 
   return {
     currentPage: page,
-    totalPages: Math.ceil(count / limit),
-    totalCases: count,
+    totalPages: Math.ceil((count - 1) / limit),
+    totalCases: count - 1,
     cases,
   };
 };
