@@ -68,28 +68,18 @@ export const getCasesPaginated = async ({
     offset,
     order,
     where,
-    // attributes: [
-    //   'id',
-    //   'internNumber',
-    //   'status',
-    //   'record',
-    //   'plaintiff',
-    //   'defendant',
-    //   'type',
-    //   'court',
-    //   'lawOffice',
-    //   'debt',
-    //   'caseType',
-    //   'createdAt',
-    //   'updatedAt',
-    // ],
     include:
       sortBy === 'recentMovement'
         ? [
             {
               model: MovementModel,
               as: 'movements',
-              attributes: ['id', 'description', 'createdAt', 'updatedAt'],
+              attributes: [
+                'id',
+                'caseInternNumber',
+                'description',
+                'createdAt',
+              ],
             },
             {
               model: VehicleCaseModel,
@@ -142,7 +132,7 @@ export const getCaseById = async (id: number) => {
       {
         model: MovementModel,
         as: 'movements',
-        attributes: ['id', 'description', 'createdAt', 'updatedAt'],
+        attributes: ['id', 'caseInternNumber', 'description', 'createdAt'],
       },
       {
         model: VehicleCaseModel,
