@@ -3,6 +3,8 @@ import { create } from 'zustand';
 type CaseStateStore = {
   searchTerm: string;
   setSearchTerm: (searchTerm: string) => void;
+  debouncedValue: string;
+  setDebouncedValue: (searchTerm: string) => void;
   searchType: 'all' | 'recordNumber' | 'party';
   setSearchType: (type: 'all' | 'recordNumber' | 'party') => void;
   currentPage: number;
@@ -14,6 +16,8 @@ type CaseStateStore = {
 export const useCaseStore = create<CaseStateStore>()((set) => ({
   searchTerm: '',
   setSearchTerm: (searchTerm) => set({ searchTerm, currentPage: 1 }),
+  debouncedValue: '',
+  setDebouncedValue: (searchTerm) => set({ debouncedValue: searchTerm }),
   searchType: 'all',
   setSearchType: (type) => set({ searchType: type }),
   currentPage: 1,
