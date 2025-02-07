@@ -55,7 +55,7 @@ export interface AppraisalCase {
 // export type Case = VehicleCase | PropertyCase | AppraisalCase;
 
 export interface CaseMovement {
-  id: string;
+  id: number;
   caseInternNumber: string;
   description: string;
   createdAt: Date;
