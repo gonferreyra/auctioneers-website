@@ -1,6 +1,7 @@
 import API from '@/config/apiClient';
 import { TCreateCaseSchema, TUpdateCaseSchema } from '@/validations/schemas';
 
+// ------------- Auth -------------
 type LoginData = {
   email: string;
   password: string;
@@ -16,6 +17,7 @@ export const logout = async () => {
   return response;
 };
 
+// ------------- Cases -------------
 type CasesPaginatedParams = {
   page: number;
   limit: number;
@@ -59,4 +61,28 @@ export const updateCase = async (id: number, data: TUpdateCaseSchema) => {
 export const getUser = async () => {
   const response = await API.get('/user');
   return response;
+};
+
+// ------------- Movements -------------
+export const updateMovement = async (
+  movementId: number,
+  caseInternNumber: string,
+  description: string,
+) => {
+  const response = await API.patch(`/movements/${movementId}`, {
+    caseInternNumber,
+    description,
+  });
+  return response.data;
+};
+
+export const createNewMovement = async (
+  caseInternNumber: string,
+  description: string,
+) => {
+  const response = await API.post('/movements', {
+    caseInternNumber,
+    description,
+  });
+  return response.data;
 };
