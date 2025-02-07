@@ -88,3 +88,10 @@ export const updateCaseSchema = baseCaseSchema.extend({
 });
 // infer the type
 export type TUpdateCaseSchema = z.infer<typeof updateCaseSchema>;
+
+export const createMovementSchema = z.object({
+  caseInternNumber: z.string(),
+  description: z.string(),
+});
+
+export type TCreateMovementSchema = z.infer<typeof createMovementSchema>;
