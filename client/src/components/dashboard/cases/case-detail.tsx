@@ -31,9 +31,6 @@ interface CaseDetailProps {
 
 export default function CaseDetail({ caseData }: CaseDetailProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedCase, setEditedCase] = useState<Case>(caseData);
-  const [originalCase] = useState<Case>(caseData);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -43,7 +40,6 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     resolver: zodResolver(updateCaseSchema),
     defaultValues: caseData,
   });
-
   const {
     getValues,
     setValue,
@@ -52,13 +48,15 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     reset,
   } = methods;
 
+  // mutation to update case
   const { mutate: handleUpdate } = useMutation({
-    mutationFn: () => updateCase(editedCase.id, getValues()),
+    mutationFn: () => updateCase(caseData.id, getValues()),
     onSuccess: async () => {
       toast.success('Caso actualizado correctamente');
+
       await queryClient.invalidateQueries({ queryKey: ['cases'] });
 
-      queryClient.removeQueries({ queryKey: ['case', editedCase.id] });
+      queryClient.setQueryData(['case', caseData.id], getValues());
 
       router.push('/dashboard');
       setIsEditing(false);
@@ -70,7 +68,12 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     },
   });
 
-  const handleUpdateMovement = (movementId: string, description: string) => {
+  // mutation to update movement
+  // const {} = useMutation({
+  //   mutationFn: () => updateMovement()
+  // })
+
+  const handleUpdateMovement = (movementId: number, description: string) => {
     const updatedMovements = editedCase.movements.map((movement) =>
       movement.id === movementId ? { ...movement, description } : movement,
     );
@@ -104,23 +107,12 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     handleUpdate();
   };
 
-  const handleUndo = () => {
-    setEditedCase(originalCase);
-    setHasUnsavedChanges(false);
-  };
-
   const handleCancel = () => {
-    if (hasUnsavedChanges) {
-      // Show confirmation dialog
-      return;
-    }
-    handleUndo();
+    reset(caseData);
     setIsEditing(false);
   };
 
   useEffect(() => {
-    // Reset form with new case data when caseData changes
-    setEditedCase(caseData);
     reset(caseData);
   }, [caseData, reset]);
 
@@ -129,7 +121,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
       <div className="space-y-6">
         <div className="flex items-start justify-between">
           <CaseHeader
-            caseData={editedCase}
+            caseData={caseData}
             isEditing={isEditing}
             // onUpdate={handleUpdate}
           />
@@ -138,7 +130,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
               <Button onClick={() => setIsEditing(true)}>Edit Case</Button>
             ) : (
               <>
-                {hasUnsavedChanges && (
+                {/* {hasUnsavedChanges && (
                   <Button
                     variant="outline"
                     onClick={handleUndo}
@@ -146,7 +138,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
                   >
                     Undo Changes
                   </Button>
-                )}
+                )} */}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline">Cancel</Button>
@@ -174,14 +166,14 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
         </div>
 
         <CaseInfo
-          caseData={editedCase}
+          caseData={caseData}
           isEditing={isEditing}
           methods={methods}
           // handleSubmit={onSubmit}
         />
 
         <CaseMovements
-          caseData={editedCase}
+          caseData={caseData}
           onUpdateMovement={handleUpdateMovement}
         />
       </div>
