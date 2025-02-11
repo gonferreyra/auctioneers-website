@@ -87,7 +87,7 @@ const PropertyCaseModel = DB.define<IPropertyCaseModel>(
   },
   {
     tableName: 'property_cases',
-    timestamps: false,
+    timestamps: true,
     hooks: {
       beforeCreate: (caseInstance) => {
         if (caseInstance.aps) {
