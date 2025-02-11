@@ -205,7 +205,7 @@ export default function CaseInfo({
                 <Label htmlFor="chasisNumber">Chasis Numero</Label>
                 <Input
                   {...register('specificData.chassisNumber')}
-                  id="chasisNumber"
+                  id="chassisNumber"
                 />
               </div>
             </div>
@@ -272,16 +272,6 @@ export default function CaseInfo({
                   type="date"
                 />
               </div>
-              {/* <div className="space-y-2">
-                <Label htmlFor="apsExpiresAt">Vencimiento APS</Label>
-                <Input
-                  {...register('specificData.apsExpiresAt')}
-                  id="apsExpiresAt"
-                  type="date"
-                  disabled
-                  // value={caseData.specificData?.apsExpiresAt?.toISOString()}
-                />
-              </div> */}
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -342,15 +332,15 @@ export default function CaseInfo({
                 <Input {...register('court')} id="court" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="court">Actor</Label>
+                <Label htmlFor="plaintiff">Actor</Label>
                 <Input {...register('plaintiff')} id="plaintiff" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="court">Demandado</Label>
+                <Label htmlFor="defendant">Demandado</Label>
                 <Input {...register('defendant')} id="defendant" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="court">Tipo de ejecucion</Label>
+                <Label htmlFor="type">Tipo de ejecucion</Label>
                 <Input {...register('type')} id="type" />
               </div>
               <div className="space-y-2">
@@ -373,14 +363,8 @@ export default function CaseInfo({
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="type">Tipo de Juicio</Label>
-                <Select
-                  value={caseData.caseType}
-                  disabled
-                  // onValueChange={(value: CaseType) =>
-                  //   onUpdate({ caseType: value })
-                  // }
-                >
+                <Label htmlFor="caseType">Tipo de Juicio</Label>
+                <Select value={caseData.caseType} disabled>
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
