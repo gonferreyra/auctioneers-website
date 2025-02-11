@@ -86,6 +86,7 @@ export const updateCaseSchema = baseCaseSchema.extend({
     appraisalCaseSchema,
   ]),
 });
+
 // infer the type
 export type TUpdateCaseSchema = z.infer<typeof updateCaseSchema>;
 
@@ -95,3 +96,7 @@ export const createMovementSchema = z.object({
 });
 
 export type TCreateMovementSchema = z.infer<typeof createMovementSchema>;
+
+export const updateMovementSchema = z.object({
+  description: z.string().min(5).max(100),
+});

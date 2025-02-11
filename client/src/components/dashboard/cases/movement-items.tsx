@@ -4,33 +4,81 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Calendar, Pencil, Check, X } from 'lucide-react';
-import type { CaseMovement } from '@/types/case';
+import type { Case, CaseMovement } from '@/types/case';
+import { useForm } from 'react-hook-form';
+import type { TCreateMovementSchema } from '@/validations/schemas';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateMovement } from '@/lib/api';
+import { toast } from 'sonner';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { updateMovementSchema } from '../../../validations/schemas';
 
 interface MovementItemProps {
   movement: CaseMovement;
-  onUpdateDescription: (description: string) => void;
+  caseId: number;
 }
 
 export default function MovementItem({
   movement,
-  onUpdateDescription,
+  caseId,
+  // onUpdateDescription,
 }: MovementItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedDescription, setEditedDescription] = useState(
     movement.description,
   );
+  const queryClient = useQueryClient();
 
-  const handleSave = () => {
-    onUpdateDescription(editedDescription);
-    setIsEditing(false);
-  };
+  const {
+    register,
+    handleSubmit,
+    // formState: { errors },
+    getValues,
+  } = useForm<TCreateMovementSchema>({
+    defaultValues: movement,
+    resolver: zodResolver(updateMovementSchema),
+  });
+
+  const { mutate: updateMovementMutation } = useMutation({
+    mutationFn: () =>
+      updateMovement(
+        movement.id,
+        movement.caseInternNumber,
+        getValues().description,
+      ),
+    onSuccess: () => {
+      setIsEditing(false);
+
+      queryClient.setQueryData(['case', caseId], (caseData: Case) => {
+        return {
+          ...caseData,
+          movements: caseData?.movements?.map((m) => {
+            if (m.id === movement.id) {
+              return {
+                ...m,
+                description: getValues('description'),
+              };
+            }
+            return m;
+          }),
+        };
+      });
+
+      toast.success('Movement updated successfully');
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
   const handleCancel = () => {
     setEditedDescription(movement.description);
     setIsEditing(false);
   };
 
-  // console.log(movement);
+  const onSubmit = () => {
+    updateMovementMutation();
+  };
 
   return (
     <div className="flex items-start gap-4 rounded-lg border p-4">
@@ -44,8 +92,8 @@ export default function MovementItem({
         {isEditing ? (
           <div className="space-y-2">
             <Textarea
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
+              {...register('description')}
+              // defaultValue={movement.description}
               rows={2}
               className="resize-none"
             />
@@ -54,7 +102,11 @@ export default function MovementItem({
                 <X className="mr-1 h-4 w-4" />
                 Cancel
               </Button>
-              <Button size="sm" onClick={handleSave}>
+              <Button
+                size="sm"
+                // onClick={handleSave}
+                onClick={handleSubmit(onSubmit)}
+              >
                 <Check className="mr-1 h-4 w-4" />
                 Save
               </Button>

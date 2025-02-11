@@ -15,6 +15,7 @@ import {
 import { Plus } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
 import MovementItem from './movement-items';
+import { useQuery } from '@tanstack/react-query';
 
 interface CaseMovementsProps {
   caseData: Case;
@@ -31,7 +32,14 @@ export default function CaseMovements({
     description: '',
   });
 
-  // console.log(caseData);
+  // search cache data
+  const cachedCase = useQuery<{ movements: CaseMovement[] }>({
+    queryKey: ['case', caseData.id],
+    enabled: false,
+  });
+  const cachedMovements = cachedCase?.data?.movements || [];
+
+  // search movements in cache
 
   const handleAddMovement = () => {
     // Here you would typically make an API call to add the movement
@@ -93,14 +101,15 @@ export default function CaseMovements({
       </div>
 
       <div className="space-y-4">
-        {caseData.movements.map((movement, index) => (
+        {cachedMovements?.map((movement, index) => (
           <MovementItem
             // key={movement.id}
             key={index}
             movement={movement}
-            onUpdateDescription={(description) =>
-              onUpdateMovement(movement.id, description)
-            }
+            caseId={caseData.id}
+            // onUpdateDescription={(description) =>
+            //   onUpdateMovement(movement.id, description)
+            // }
           />
         ))}
       </div>
