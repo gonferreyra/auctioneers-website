@@ -32,11 +32,12 @@ export default function CasePage({ params }: CasePageProps) {
   const { data: caseData, isLoading } = useQuery({
     queryKey: ['case', numberId], // New key for every case
     queryFn: () => getCaseById(numberId),
-    enabled: !cachedCase, // Only fetch if not in cache
     initialData: cachedCase, // If in cache, use it
-    initialDataUpdatedAt: cachedCase ? Date.now() : undefined,
-    // staleTime: 1000 * 60 * 60, // 1 hour
+    enabled: !cachedCase, // Only fetch if not in cache
+    staleTime: Infinity, // Keep data fresh indefinitely
+    // enabled: !cachedCase, // always enable the query
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   if (isLoading) {
