@@ -51,13 +51,11 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   // mutation to update case
   const { mutate: handleUpdate } = useMutation({
     mutationFn: () => updateCase(caseData.id, getValues()),
-    onSuccess: async () => {
-      toast.success('Caso actualizado correctamente');
-
-      await queryClient.invalidateQueries({ queryKey: ['cases'] });
-
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cases'] });
       queryClient.setQueryData(['case', caseData.id], getValues());
 
+      toast.success('Caso actualizado correctamente');
       router.push('/dashboard');
       setIsEditing(false);
     },
