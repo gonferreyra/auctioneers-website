@@ -6,7 +6,7 @@ import { createCaseSchema, updateCaseSchema } from '../validations/schemas';
 import VehicleCaseModel from '../models/vehicleCase.model';
 import PropertyCaseModel from '../models/propertyCase.model';
 import AppraisalCaseModel from '../models/appraisalCase.model';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 
 type GetCasesParams = {
   page: number;
@@ -34,7 +34,13 @@ export const getCasesPaginated = async ({
   // sort by recent movements
   if (sortBy === 'recentMovement') {
     order = [
-      [{ model: MovementModel, as: 'movements' }, 'createdAt', sortOrder],
+      [
+        Sequelize.literal(
+          'CASE WHEN "movements"."createdAt" IS NULL THEN 1 ELSE 0 END'
+        ),
+        'ASC',
+      ],
+      [{ model: MovementModel, as: 'movements' }, 'updatedAt', sortOrder],
     ];
   }
 
@@ -68,33 +74,28 @@ export const getCasesPaginated = async ({
     offset,
     order,
     where,
-    include:
-      sortBy === 'recentMovement'
-        ? [
-            {
-              model: MovementModel,
-              as: 'movements',
-              attributes: [
-                'id',
-                'caseInternNumber',
-                'description',
-                'createdAt',
-              ],
-            },
-            {
-              model: VehicleCaseModel,
-              as: 'vehicleDetails',
-            },
-            {
-              model: PropertyCaseModel,
-              as: 'propertyDetails',
-            },
-            {
-              model: AppraisalCaseModel,
-              as: 'appraisalDetails',
-            },
-          ]
-        : [],
+    include: [
+      {
+        model: MovementModel,
+        as: 'movements',
+        attributes: ['description', 'updatedAt'],
+        required: false, // This makes it a LEFT JOIN
+      },
+      {
+        model: VehicleCaseModel,
+        as: 'vehicleDetails',
+      },
+      {
+        model: PropertyCaseModel,
+        as: 'propertyDetails',
+      },
+      {
+        model: AppraisalCaseModel,
+        as: 'appraisalDetails',
+      },
+    ],
+    distinct: true, // This ensures correct count with includes
+    subQuery: false, // This can help with performance in some cases
   });
 
   if (!cases || cases.length === 0) {
@@ -266,23 +267,6 @@ export const updateCase = async ({ id, data }: updateCaseParams) => {
       }
     );
   } else if (caseToUpdate.caseType === 'property' && data.specificData) {
-    // await PropertyCaseModel.update(
-    //   data.specificData as {
-    //     propertyRegistration?: string;
-    //     percentage?: number;
-    //     address?: string;
-    //     description?: string;
-    //     aps?: Date;
-    //     apsExpiresAt?: Date;
-    //     acccountDgr?: string;
-    //     nomenclature?: string;
-    //   },
-    //   {
-    //     where: {
-    //       caseInternNumber: caseToUpdate.internNumber,
-    //     },
-    //   }
-    // );
     const propertyCaseToUpdate = await PropertyCaseModel.findOne({
       where: {
         caseInternNumber: caseToUpdate.internNumber,
