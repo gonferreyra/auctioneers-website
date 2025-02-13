@@ -31,7 +31,13 @@ export default function LoginPage() {
     },
     // server errrors
     onError: (error) => {
-      toast.error(error.message);
+      const errorMessage =
+        'Hubo un error con el inicio de sesion. Contactar administrador.';
+      if (error.message === undefined) {
+        toast.error(error.message);
+        return;
+      }
+      toast.error(errorMessage);
     },
   });
 
