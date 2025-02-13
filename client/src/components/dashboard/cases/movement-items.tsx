@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Calendar, Pencil, Check, X } from 'lucide-react';
+import { Calendar, Pencil, Check, X, Loader2 } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
 import { useForm } from 'react-hook-form';
 import type { TCreateMovementSchema } from '@/validations/schemas';
@@ -24,18 +24,13 @@ export default function MovementItem({ movement, caseId }: MovementItemProps) {
   const [originalMovement] = useState(movement.description);
   const queryClient = useQueryClient();
 
-  const {
-    register,
-    handleSubmit,
-    // formState: { errors },
-    getValues,
-    setValue,
-  } = useForm<TCreateMovementSchema>({
-    defaultValues: movement,
-    resolver: zodResolver(updateMovementSchema),
-  });
+  const { register, handleSubmit, getValues, setValue } =
+    useForm<TCreateMovementSchema>({
+      defaultValues: movement,
+      resolver: zodResolver(updateMovementSchema),
+    });
 
-  const { mutate: updateMovementMutation } = useMutation({
+  const { mutate: updateMovementMutation, isPending } = useMutation({
     mutationFn: () =>
       updateMovement(
         movement.id,
@@ -97,9 +92,19 @@ export default function MovementItem({ movement, caseId }: MovementItemProps) {
                 <X className="mr-1 h-4 w-4" />
                 Cancel
               </Button>
-              <Button size="sm" onClick={handleSubmit(onSubmit)}>
-                <Check className="mr-1 h-4 w-4" />
-                Save
+              <Button
+                size="sm"
+                onClick={handleSubmit(onSubmit)}
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <>
+                    <Check />
+                    Guardar
+                  </>
+                )}
               </Button>
             </div>
           </div>
