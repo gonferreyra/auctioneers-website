@@ -12,21 +12,16 @@ import { updateMovement } from '@/lib/api';
 import { toast } from 'sonner';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { updateMovementSchema } from '../../../validations/schemas';
+import moment from 'moment';
 
 interface MovementItemProps {
   movement: CaseMovement;
   caseId: number;
 }
 
-export default function MovementItem({
-  movement,
-  caseId,
-  // onUpdateDescription,
-}: MovementItemProps) {
+export default function MovementItem({ movement, caseId }: MovementItemProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedDescription, setEditedDescription] = useState(
-    movement.description,
-  );
+  const [originalMovement] = useState(movement.description);
   const queryClient = useQueryClient();
 
   const {
@@ -34,6 +29,7 @@ export default function MovementItem({
     handleSubmit,
     // formState: { errors },
     getValues,
+    setValue,
   } = useForm<TCreateMovementSchema>({
     defaultValues: movement,
     resolver: zodResolver(updateMovementSchema),
@@ -72,7 +68,7 @@ export default function MovementItem({
   });
 
   const handleCancel = () => {
-    setEditedDescription(movement.description);
+    setValue('description', originalMovement);
     setIsEditing(false);
   };
 
@@ -86,14 +82,13 @@ export default function MovementItem({
         <div className="mb-2 flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
-            {new Date(movement.createdAt).toLocaleDateString()}
+            {moment(movement.createdAt).format('DD/MM/YYYY')}
           </span>
         </div>
         {isEditing ? (
           <div className="space-y-2">
             <Textarea
               {...register('description')}
-              // defaultValue={movement.description}
               rows={2}
               className="resize-none"
             />
@@ -102,11 +97,7 @@ export default function MovementItem({
                 <X className="mr-1 h-4 w-4" />
                 Cancel
               </Button>
-              <Button
-                size="sm"
-                // onClick={handleSave}
-                onClick={handleSubmit(onSubmit)}
-              >
+              <Button size="sm" onClick={handleSubmit(onSubmit)}>
                 <Check className="mr-1 h-4 w-4" />
                 Save
               </Button>
