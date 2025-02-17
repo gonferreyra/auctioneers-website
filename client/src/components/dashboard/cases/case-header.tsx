@@ -9,14 +9,9 @@ import { Case } from '@/types/case';
 interface CaseHeaderProps {
   caseData: Case;
   isEditing: boolean;
-  // onUpdate: (updates: Partial<Case>) => void;
 }
 
-export default function CaseHeader({
-  caseData,
-  isEditing,
-  // onUpdate,
-}: CaseHeaderProps) {
+export default function CaseHeader({ caseData, isEditing }: CaseHeaderProps) {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <div className="flex items-start justify-between">
@@ -41,7 +36,7 @@ export default function CaseHeader({
           ) : (
             <>
               <h1 className="text-2xl font-bold">
-                {caseData.plaintiff} c/ {caseData.defendant} - {caseData.type} -
+                {caseData.plaintiff} c/ {caseData.defendant} - {caseData.type}
               </h1>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="flex items-center gap-2">

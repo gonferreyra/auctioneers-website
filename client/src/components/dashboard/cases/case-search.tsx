@@ -48,12 +48,11 @@ export default function CaseSearch() {
         page: currentPage,
         limit: 10,
         sortBy: 'recentMovement',
-        sortOrder: 'asc',
+        sortOrder: 'desc',
         searchTerm: debouncedValue,
         searchType,
         caseType,
       }),
-    // ver la configuracion de cache, que me conviene mejor para este caso - Ahora tengo que actualizar la pagina para que haga otro request
     staleTime: 1000 * 60 * 60, // 1 hora
     refetchOnWindowFocus: false,
     retry: false,
@@ -64,11 +63,6 @@ export default function CaseSearch() {
   const handlePageClick = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-
-  // refetch when search term, currentPage, searchType or caseType changes
-  // useEffect(() => {
-  //   refetch();
-  // }, [debouncedValue, searchType, caseType, refetch, currentPage]);
 
   return (
     <div className="space-y-6">
