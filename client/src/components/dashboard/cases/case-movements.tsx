@@ -21,8 +21,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createNewMovement } from '@/lib/api';
 import { toast } from 'sonner';
 import { queryClient } from '@/components/react-query-provider';
-import { createMovementSchema } from '@/validations/schemas';
-import { ZodError } from 'zod';
+import {
+  createMovementSchema,
+  TCreateMovementSchema,
+} from '@/validations/schemas';
 
 interface CaseMovementsProps {
   caseData: Case;
@@ -30,7 +32,13 @@ interface CaseMovementsProps {
 
 export default function CaseMovements({ caseData }: CaseMovementsProps) {
   const [isAddingMovement, setIsAddingMovement] = useState(false);
-  const { register, handleSubmit, getValues, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(createMovementSchema),
     defaultValues: {
       caseInternNumber: caseData.internNumber,
@@ -62,12 +70,14 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
   });
 
   // client side validation errors - client errors
-  const onError = (error: ZodError) => {
-    Object.keys(error).forEach((key) => {
-      const fieldName = key; // get field name validation failed
-      const errorMessage = error[key].message; // get error message
-      toast.error(`${fieldName}: ${errorMessage}`);
-    });
+  const onError = () => {
+    (Object.keys(errors) as Array<keyof TCreateMovementSchema>).forEach(
+      (key) => {
+        const fieldName = key;
+        const errorMessage = errors[key]?.message;
+        toast.error(`${fieldName}: ${errorMessage}`);
+      },
+    );
   };
 
   const onAddingNewMovement = () => {
