@@ -86,3 +86,8 @@ export const createNewMovement = async (
   });
   return response.data;
 };
+
+export const deleteMovement = async (id: number) => {
+  const response = await API.delete(`/movements/${id}`);
+  return response.data;
+};
