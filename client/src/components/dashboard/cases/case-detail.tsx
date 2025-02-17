@@ -118,14 +118,10 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
     <form onSubmit={handleSubmit(onSubmit, onError)}>
       <div className="space-y-6">
         <div className="flex items-start justify-between">
-          <CaseHeader
-            caseData={caseData}
-            isEditing={isEditing}
-            // onUpdate={handleUpdate}
-          />
+          <CaseHeader caseData={caseData} isEditing={isEditing} />
           <div className="ml-4 space-x-2 self-end">
             {!isEditing ? (
-              <Button onClick={() => setIsEditing(true)}>Edit Case</Button>
+              <Button onClick={() => setIsEditing(true)}>Editar Caso</Button>
             ) : (
               <>
                 {/* {hasUnsavedChanges && (
@@ -139,41 +135,33 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
                 )} */}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="outline">Cancel</Button>
+                    <Button variant="outline">Cancelar</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
+                      <AlertDialogTitle>Cancelar Cambios?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        You have unsaved changes. Are you sure you want to
-                        discard them?
+                        Hay cambios sin guardar. Estas seguro que quieres
+                        eliminarlos?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Continue Editing</AlertDialogCancel>
+                      <AlertDialogCancel>Continuar Editando</AlertDialogCancel>
                       <AlertDialogAction onClick={handleCancel}>
-                        Discard Changes
+                        Eliminar Cambios
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">Guardar Cambios</Button>
               </>
             )}
           </div>
         </div>
 
-        <CaseInfo
-          caseData={caseData}
-          isEditing={isEditing}
-          methods={methods}
-          // handleSubmit={onSubmit}
-        />
+        <CaseInfo caseData={caseData} isEditing={isEditing} methods={methods} />
 
-        <CaseMovements
-          caseData={caseData}
-          onUpdateMovement={handleUpdateMovement}
-        />
+        <CaseMovements caseData={caseData} />
       </div>
     </form>
   );
