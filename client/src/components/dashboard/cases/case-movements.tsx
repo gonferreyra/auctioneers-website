@@ -12,43 +12,66 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
 import MovementItem from './movement-items';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createNewMovement } from '@/lib/api';
+import { toast } from 'sonner';
+import { queryClient } from '@/components/react-query-provider';
+import { createMovementSchema } from '@/validations/schemas';
+import { ZodError } from 'zod';
 
 interface CaseMovementsProps {
   caseData: Case;
-  onUpdateMovement: (movementId: string, description: string) => void;
 }
 
-export default function CaseMovements({
-  caseData,
-  onUpdateMovement,
-}: CaseMovementsProps) {
+export default function CaseMovements({ caseData }: CaseMovementsProps) {
   const [isAddingMovement, setIsAddingMovement] = useState(false);
-  const [newMovement, setNewMovement] = useState<Partial<CaseMovement>>({
-    date: new Date().toISOString().split('T')[0],
-    description: '',
+  const { register, handleSubmit, getValues, setValue } = useForm({
+    resolver: zodResolver(createMovementSchema),
+    defaultValues: {
+      caseInternNumber: caseData.internNumber,
+      description: '',
+    },
   });
 
   // search cache data
-  const cachedCase = useQuery<{ movements: CaseMovement[] }>({
+  const { data: cachedCase, isLoading } = useQuery<{
+    movements: CaseMovement[];
+  }>({
     queryKey: ['case', caseData.id],
-    enabled: false,
+    enabled: true,
   });
-  const cachedMovements = cachedCase?.data?.movements || [];
+  const cachedMovements = cachedCase?.movements || [];
 
-  // search movements in cache
+  const { mutate: handleAddMovement, isPending } = useMutation({
+    mutationFn: () =>
+      createNewMovement(caseData.internNumber, getValues('description')),
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ['case', caseData.id] });
+      setIsAddingMovement(false);
+      setValue('description', '');
+      toast.success('Movement added successfully');
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
 
-  const handleAddMovement = () => {
-    // Here you would typically make an API call to add the movement
-    console.log('Adding new movement:', newMovement);
-    setIsAddingMovement(false);
-    setNewMovement({
-      date: new Date().toISOString().split('T')[0],
-      description: '',
+  // client side validation errors - client errors
+  const onError = (error: ZodError) => {
+    Object.keys(error).forEach((key) => {
+      const fieldName = key; // get field name validation failed
+      const errorMessage = error[key].message; // get error message
+      toast.error(`${fieldName}: ${errorMessage}`);
     });
+  };
+
+  const onAddingNewMovement = () => {
+    handleAddMovement();
   };
 
   return (
@@ -70,11 +93,9 @@ export default function CaseMovements({
               <div>
                 <label className="mb-1 block text-sm font-medium">Fecha</label>
                 <Input
+                  // {...register('date')}
                   type="date"
-                  value={newMovement.date}
-                  onChange={(e) =>
-                    setNewMovement({ ...newMovement, date: e.target.value })
-                  }
+                  defaultValue={new Date().toISOString().split('T')[0]}
                 />
               </div>
               <div>
@@ -82,18 +103,22 @@ export default function CaseMovements({
                   Descripcion
                 </label>
                 <Textarea
-                  value={newMovement.description}
-                  onChange={(e) =>
-                    setNewMovement({
-                      ...newMovement,
-                      description: e.target.value,
-                    })
-                  }
+                  {...register('description')}
+                  name="description"
                   rows={3}
                 />
               </div>
-              <Button onClick={handleAddMovement} className="w-full">
-                Agregar Movimiento
+              <Button
+                className="w-full"
+                type="button"
+                onClick={handleSubmit(onAddingNewMovement, onError)}
+                disabled={isPending}
+              >
+                {isPending ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  'Agregar Movimiento'
+                )}
               </Button>
             </div>
           </DialogContent>
@@ -101,17 +126,20 @@ export default function CaseMovements({
       </div>
 
       <div className="space-y-4">
-        {cachedMovements?.map((movement, index) => (
-          <MovementItem
-            // key={movement.id}
-            key={index}
-            movement={movement}
-            caseId={caseData.id}
-            // onUpdateDescription={(description) =>
-            //   onUpdateMovement(movement.id, description)
-            // }
-          />
-        ))}
+        {isLoading ? (
+          <div className="flex justify-center py-4">
+            <Loader2 className="h-6 w-6 animate-spin" />
+          </div>
+        ) : (
+          cachedMovements?.map((movement, index) => (
+            <MovementItem
+              key={index}
+              movement={movement}
+              caseId={caseData.id}
+              caseInternNumber={caseData.internNumber}
+            />
+          ))
+        )}
       </div>
     </Card>
   );
