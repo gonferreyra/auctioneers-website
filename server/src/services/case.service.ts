@@ -28,23 +28,28 @@ export const getCasesPaginated = async ({
   caseType,
 }: GetCasesParams) => {
   const offset = (page - 1) * limit;
-
-  let order: any[] = [[sortBy, sortOrder]];
-
-  // sort by recent movements
-  if (sortBy === 'recentMovement') {
-    order = [
-      [
-        Sequelize.literal(
-          'CASE WHEN "movements"."createdAt" IS NULL THEN 1 ELSE 0 END'
-        ),
-        'ASC',
-      ],
-      [{ model: MovementModel, as: 'movements' }, 'updatedAt', sortOrder],
-    ];
-  }
-
   const where: any = {};
+
+  const includes = [
+    {
+      model: MovementModel,
+      as: 'movements',
+      attributes: ['id', 'description', 'updatedAt'],
+      separate: true,
+    },
+    {
+      model: VehicleCaseModel,
+      as: 'vehicleDetails',
+    },
+    {
+      model: PropertyCaseModel,
+      as: 'propertyDetails',
+    },
+    {
+      model: AppraisalCaseModel,
+      as: 'appraisalDetails',
+    },
+  ];
 
   if (searchTerm) {
     const searchLower = searchTerm.toLowerCase();
@@ -69,33 +74,31 @@ export const getCasesPaginated = async ({
     where.caseType = caseType;
   }
 
-  const { count, rows: cases } = await CaseModel.findAndCountAll({
+  let order: any[] = [[sortBy, sortOrder]];
+
+  if (sortBy === 'recentMovement') {
+    order = [
+      [
+        Sequelize.literal(
+          '(SELECT MAX("movements"."updatedAt") FROM "movements" WHERE "movements"."caseInternNumber" = "Case"."internNumber")'
+        ),
+        sortOrder,
+      ],
+    ];
+  }
+
+  const totalCount = await CaseModel.count({
+    where,
+    distinct: true,
+  });
+
+  const cases = await CaseModel.findAll({
     limit,
     offset,
-    order,
     where,
-    include: [
-      {
-        model: MovementModel,
-        as: 'movements',
-        attributes: ['id', 'description', 'updatedAt'],
-        required: false, // This makes it a LEFT JOIN
-      },
-      {
-        model: VehicleCaseModel,
-        as: 'vehicleDetails',
-      },
-      {
-        model: PropertyCaseModel,
-        as: 'propertyDetails',
-      },
-      {
-        model: AppraisalCaseModel,
-        as: 'appraisalDetails',
-      },
-    ],
-    distinct: true, // This ensures correct count with includes
-    subQuery: false, // This can help with performance in some cases
+    order,
+    include: includes,
+    subQuery: false,
   });
 
   if (!cases || cases.length === 0) {
@@ -121,8 +124,8 @@ export const getCasesPaginated = async ({
 
   return {
     currentPage: page,
-    totalPages: Math.ceil(count - 1 / limit),
-    totalCases: count,
+    totalPages: Math.ceil(totalCount / limit),
+    totalCases: totalCount,
     cases,
   };
 };
