@@ -34,10 +34,6 @@ export default function CasePage({ params }: CasePageProps) {
     queryFn: () => getCaseById(numberId),
     initialData: cachedCase, // If in cache, use it
     enabled: !cachedCase, // Only fetch if not in cache
-    staleTime: Infinity, // Keep data fresh indefinitely
-    // enabled: !cachedCase, // always enable the query
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
   });
 
   if (isLoading) {
