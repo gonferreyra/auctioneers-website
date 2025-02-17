@@ -92,7 +92,7 @@ export type TUpdateCaseSchema = z.infer<typeof updateCaseSchema>;
 
 export const createMovementSchema = z.object({
   caseInternNumber: z.string(),
-  description: z.string(),
+  description: z.string().min(6),
 });
 
 export type TCreateMovementSchema = z.infer<typeof createMovementSchema>;
