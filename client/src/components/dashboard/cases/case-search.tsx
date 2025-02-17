@@ -48,13 +48,12 @@ export default function CaseSearch() {
         page: currentPage,
         limit: 10,
         sortBy: 'recentMovement',
-        sortOrder: 'desc',
+        sortOrder: 'asc',
         searchTerm: debouncedValue,
         searchType,
         caseType,
       }),
-    staleTime: 1000 * 60 * 60, // 1 hora
-    refetchOnWindowFocus: false,
+    staleTime: 1000 * 5 * 60, // 5 minutes
     retry: false,
   });
 
