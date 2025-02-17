@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TUpdateCaseSchema, updateCaseSchema } from '@/validations/schemas';
+import { updateCaseSchema } from '@/validations/schemas';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCase } from '@/lib/api';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   const queryClient = useQueryClient();
 
   // initialice useForm
-  const methods = useForm<TUpdateCaseSchema>({
+  const methods = useForm<Case>({
     resolver: zodResolver(updateCaseSchema),
     defaultValues: caseData,
   });
@@ -65,20 +65,6 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
       console.log(error);
     },
   });
-
-  // mutation to update movement
-  // const {} = useMutation({
-  //   mutationFn: () => updateMovement()
-  // })
-
-  const handleUpdateMovement = (movementId: number, description: string) => {
-    const updatedMovements = editedCase.movements.map((movement) =>
-      movement.id === movementId ? { ...movement, description } : movement,
-    );
-
-    // handleUpdate({ movements: updatedMovements });
-    toast.success('Movement updated successfully');
-  };
 
   // client side validation errors - client errors
   const onError = () => {
@@ -124,15 +110,6 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
               <Button onClick={() => setIsEditing(true)}>Editar Caso</Button>
             ) : (
               <>
-                {/* {hasUnsavedChanges && (
-                  <Button
-                    variant="outline"
-                    onClick={handleUndo}
-                    className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
-                  >
-                    Undo Changes
-                  </Button>
-                )} */}
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline">Cancelar</Button>
