@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Gavel, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,7 +14,13 @@ export default function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
-            <Gavel className="h-8 w-8 text-primary" />
+            {/* <Gavel className="h-8 w-8 text-primary" /> */}
+            <Image
+              src="/logo_martillo.png"
+              width={50}
+              height={50}
+              alt="martillo-logo"
+            />
             <span className="text-xl font-bold">Auctions</span>
           </Link>
 
