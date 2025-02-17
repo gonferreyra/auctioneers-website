@@ -98,5 +98,7 @@ export const createMovementSchema = z.object({
 export type TCreateMovementSchema = z.infer<typeof createMovementSchema>;
 
 export const updateMovementSchema = z.object({
-  description: z.string().min(5).max(100),
+  description: z.string().min(6).max(100),
 });
+
+export type TUpdateMovementSchema = z.infer<typeof updateMovementSchema>;
