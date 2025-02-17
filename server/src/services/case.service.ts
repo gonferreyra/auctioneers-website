@@ -78,7 +78,7 @@ export const getCasesPaginated = async ({
       {
         model: MovementModel,
         as: 'movements',
-        attributes: ['description', 'updatedAt'],
+        attributes: ['id', 'description', 'updatedAt'],
         required: false, // This makes it a LEFT JOIN
       },
       {
