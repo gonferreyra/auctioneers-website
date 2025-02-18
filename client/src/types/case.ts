@@ -1,3 +1,10 @@
+export type PaginatesAndSearchCasesApiResponse = {
+  cases: Case[];
+  currentPage: number;
+  totalPages: number;
+  totalCases: number;
+};
+
 export type CaseStatus = 'active' | 'paralyzed' | 'closed';
 export type CaseType = 'vehicle' | 'property' | 'appraisal';
 

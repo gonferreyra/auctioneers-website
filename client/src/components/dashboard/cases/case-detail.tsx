@@ -6,7 +6,7 @@ import CaseInfo from './case-info';
 import CaseMovements from './case-movements';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import type { Case } from '@/types/case';
+import type { Case, PaginatesAndSearchCasesApiResponse } from '@/types/case';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +23,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { updateCaseSchema } from '@/validations/schemas';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCase } from '@/lib/api';
-import { useRouter } from 'next/navigation';
+import { useCaseStore } from '@/stores/useCaseStore';
+import { Loader2 } from 'lucide-react';
 
 interface CaseDetailProps {
   caseData: Case;
@@ -32,8 +33,9 @@ interface CaseDetailProps {
 export default function CaseDetail({ caseData }: CaseDetailProps) {
   const [isEditing, setIsEditing] = useState(false);
 
-  const router = useRouter();
+  // const router = useRouter();
   const queryClient = useQueryClient();
+  const { currentPage, debouncedValue, searchType, caseType } = useCaseStore();
 
   // initialice useForm
   const methods = useForm<Case>({
@@ -49,14 +51,26 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
   } = methods;
 
   // mutation to update case
-  const { mutate: handleUpdate } = useMutation({
+  const { mutate: handleUpdate, isPending } = useMutation({
     mutationFn: () => updateCase(caseData.id, getValues()),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cases'] });
+    onSuccess: (updatedCase) => {
+      queryClient.setQueryData(
+        ['cases', currentPage, debouncedValue, searchType, caseType],
+        (oldData: PaginatesAndSearchCasesApiResponse) => {
+          if (!oldData?.cases) return oldData;
+
+          return {
+            ...oldData,
+            cases: oldData.cases.map((case_: Case) =>
+              case_.id === caseData.id ? updatedCase : case_,
+            ),
+          };
+        },
+      );
+
       queryClient.setQueryData(['case', caseData.id], getValues());
 
       toast.success('Caso actualizado correctamente');
-      router.push('/dashboard');
       setIsEditing(false);
     },
     // server errors
@@ -130,7 +144,13 @@ export default function CaseDetail({ caseData }: CaseDetailProps) {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-                <Button type="submit">Guardar Cambios</Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    'Guardar Cambios'
+                  )}
+                </Button>
               </>
             )}
           </div>
