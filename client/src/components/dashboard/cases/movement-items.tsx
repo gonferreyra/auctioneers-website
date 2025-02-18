@@ -106,11 +106,11 @@ export default function MovementItem({
   };
 
   return (
-    <div className="flex items-start gap-4 rounded-lg border p-4">
+    <div className="flex items-start gap-4 rounded-lg border p-3">
       <div className="flex-1">
         <div className="mb-2 flex items-center gap-2">
           <Calendar className="h-4 w-4 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {moment(movement.createdAt).format('DD/MM/YYYY')}
           </span>
         </div>
@@ -138,7 +138,7 @@ export default function MovementItem({
                 disabled={isPending}
               >
                 {isPending ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="animate-spin" />
                 ) : (
                   <>
                     <Check />
@@ -155,22 +155,24 @@ export default function MovementItem({
               size="sm"
               variant="ghost"
               type="button"
+              className="w-1"
               onClick={() => setIsEditing(true)}
               disabled={!movement.id}
             >
-              <Pencil className="h-4 w-4" />
+              <Pencil />
             </Button>
             <Button
               type="button"
               size="sm"
               variant="destructive"
+              className="w-1"
               onClick={() => handleDeleteMovement()}
               disabled={isDeletingMovement || !movement.id}
             >
               {isDeletingMovement ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="animate-spin" />
               ) : (
-                <Trash2 className="h-4 w-4" />
+                <Trash2 />
               )}
             </Button>
           </div>
