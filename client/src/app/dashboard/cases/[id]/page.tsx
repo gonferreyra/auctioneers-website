@@ -7,6 +7,7 @@ import type { Case } from '@/types/case';
 import CaseDetail from '@/components/dashboard/cases/case-detail';
 import { getCaseById } from '@/lib/api';
 import { useCaseStore } from '@/stores/useCaseStore';
+import Loading from './loading';
 
 interface CasePageProps {
   params: Promise<{ id: string }>;
@@ -37,7 +38,7 @@ export default function CasePage({ params }: CasePageProps) {
   });
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   if (!caseData) {
