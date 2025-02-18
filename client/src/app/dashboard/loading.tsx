@@ -2,7 +2,7 @@ export default function Loading() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="h-16 pt-8">
-        <div className="mx-6 max-w-7xl animate-pulse bg-gray-200 px-4 pt-12 sm:px-6 lg:px-8" />
+        <div className="mx-6 max-w-7xl animate-pulse bg-gray-200 px-4 pt-12 sm:px-6 lg:px-8 xl:mx-auto" />
         <main className="p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-7xl animate-pulse">
             <div className="mb-4 flex flex-col justify-between sm:flex-row sm:items-center">
@@ -17,8 +17,10 @@ export default function Loading() {
               </div>
             </div>
             <div className="mt-4">
-              <div className="card p-6">
-                <div className="h-64 rounded bg-gray-200"></div>
+              <div className="card space-y-4 p-6">
+                <div className="h-32 rounded bg-gray-200"></div>
+                <div className="h-32 rounded bg-gray-200"></div>
+                <div className="h-32 rounded bg-gray-200"></div>
               </div>
             </div>
           </div>
