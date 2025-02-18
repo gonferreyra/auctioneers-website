@@ -37,20 +37,15 @@ export const vehicleCaseSchema = z.object({
 // property schema to create a case
 export const propertyCaseSchema = z.object({
   propertyRegistration: z.string().optional(),
-  percentage: z.number().optional(),
+  percentage: z.number().min(10).max(100).optional(),
   address: z.string().optional(),
   description: z.string().optional(),
-  // this fields are deleted for createCaseSchema but kept just in case. They are not needed for creation
-  // aps: z.date().optional(),
-  // apsExpiresAt: z.date().optional(),
   accountDgr: z.string().optional(),
   nomenclature: z.string().optional(),
 });
 
 // property schema to update a case
 export const updatePropertySchema = propertyCaseSchema.extend({
-  // aps: z.date().optional(),
-  // apsExpiresAt: z.date().optional(),
   aps: z.preprocess((value) => {
     if (typeof value === 'string') {
       const parsedDate = moment(value, 'YYYY-MM-DD').format('DD-MM-YYYY');
