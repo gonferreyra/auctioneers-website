@@ -23,5 +23,5 @@ export const useCaseStore = create<CaseStateStore>()((set) => ({
   currentPage: 1,
   setCurrentPage: (page) => set({ currentPage: page }),
   caseType: 'all',
-  setCaseType: (caseType) => set({ caseType }),
+  setCaseType: (caseType) => set({ caseType, currentPage: 1 }),
 }));
