@@ -19,9 +19,18 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { createNewCase } from '@/lib/api';
 import { useEffect } from 'react';
+import { queryClient } from '@/components/react-query-provider';
+import { Loader2 } from 'lucide-react';
+import { useCaseStore } from '@/stores/useCaseStore';
 
 export default function NewCaseForm() {
   const router = useRouter();
+  const {
+    currentPage,
+    debouncedValue,
+    searchType,
+    caseType: caseTypeFromStore,
+  } = useCaseStore();
 
   const {
     register,
@@ -31,7 +40,7 @@ export default function NewCaseForm() {
     reset,
     getValues,
     setValue,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<TCreateCaseSchema>({
     resolver: zodResolver(createCaseSchema),
     defaultValues: {
@@ -76,9 +85,16 @@ export default function NewCaseForm() {
     });
   }, [caseType, reset]);
 
-  const { mutate: createCase } = useMutation({
+  const { mutate: createCase, isPending } = useMutation({
     mutationFn: createNewCase,
     onSuccess: () => {
+      queryClient.refetchQueries({
+        queryKey: ['cases'],
+        currentPage,
+        debouncedValue,
+        searchType,
+        caseTypeFromStore,
+      });
       toast.success('Caso creado correctamente');
       router.push('/dashboard');
     },
@@ -101,6 +117,8 @@ export default function NewCaseForm() {
   const onSubmit = async () => {
     const year = getValues('specificData.year');
     setValue('specificData.year', Number(year));
+    const percentage = getValues('specificData.percentage');
+    setValue('specificData.percentage', Number(percentage));
     createCase(getValues());
   };
 
@@ -207,7 +225,7 @@ export default function NewCaseForm() {
               </div>
             </div>
             <div>
-              <Label htmlFor="address">Dirección *</Label>
+              <Label htmlFor="address">Dirección</Label>
               <Input {...register('specificData.address')} id="address" />
             </div>
             <div>
@@ -359,10 +377,14 @@ export default function NewCaseForm() {
 
       <div className="flex justify-end gap-4">
         <Button type="button" variant="outline" onClick={() => router.back()}>
-          Cancel
+          Cancelar
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          Create Case
+        <Button type="submit" disabled={isPending}>
+          {isPending ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            'Crear Caso'
+          )}
         </Button>
       </div>
     </form>
