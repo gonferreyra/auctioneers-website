@@ -18,8 +18,8 @@ export default function Loading() {
             </div>
             <div className="mt-4">
               <div className="flex flex-col justify-center gap-4 p-6 md:flex-row">
-                <div className="h-96 rounded bg-gray-200 md:w-[45%]"></div>
-                <div className="h-96 rounded bg-gray-200 md:w-[45%]"></div>
+                <div className="h-96 rounded-xl bg-gray-200 md:w-[50%]"></div>
+                <div className="h-96 rounded-xl bg-gray-200 md:w-[50%]"></div>
               </div>
             </div>
           </div>
