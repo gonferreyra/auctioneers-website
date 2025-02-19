@@ -12,9 +12,12 @@ import { loginSchema, TLoginSchema } from '@/validations/schemas';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { setUser, isAuthenticated } = useAuthStore((state) => state);
 
   const {
     register,
@@ -26,7 +29,8 @@ export default function LoginPage() {
 
   const { mutate: signIn, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: () => {
+    onSuccess: (userData) => {
+      setUser(userData);
       router.replace('/dashboard');
     },
     // server errrors
@@ -54,6 +58,12 @@ export default function LoginPage() {
       }
     });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
