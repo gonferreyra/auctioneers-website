@@ -13,15 +13,17 @@ export const getCasesHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { page, limit, sortBy, sortOrder } = getCasesPaginatedSchema.parse(
-      req.query
-    );
+    const { page, limit, sortBy, sortOrder, searchTerm, searchType, caseType } =
+      getCasesPaginatedSchema.parse(req.query);
 
     const cases = await services.getCasesPaginated({
       page: parseInt(page),
       limit: parseInt(limit),
       sortBy,
       sortOrder: sortOrder.toUpperCase() as 'ASC' | 'DESC',
+      searchTerm,
+      searchType,
+      caseType,
     });
 
     res.status(200).json(cases);

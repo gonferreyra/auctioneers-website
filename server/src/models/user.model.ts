@@ -17,6 +17,7 @@ interface IUserModel
     InferCreationAttributes<IUserModel>
   > {
   id?: number;
+  userName: string;
   email: string;
   password: string;
   verified?: boolean;
@@ -32,6 +33,11 @@ const UserModel = DB.define<IUserModel>(
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
+    },
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     email: {
       type: DataTypes.STRING,
@@ -71,7 +77,7 @@ const UserModel = DB.define<IUserModel>(
     defaultScope: {
       attributes: { exclude: ['password'] },
     },
-    // scope to invlude password if needed
+    // scope to include password if needed
     scopes: {
       withPassword: {
         attributes: { include: ['password'] },

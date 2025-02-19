@@ -21,6 +21,7 @@ import {
 import { APP_ORIGIN } from '../constants/env';
 
 type CreateAccoutParams = {
+  userName: string;
   email: string;
   password: string;
   userAgent?: string;
@@ -40,6 +41,7 @@ export const createAccount = async (data: CreateAccoutParams) => {
 
   // create user
   const user = await UserModel.create({
+    userName: data.userName,
     email: data.email,
     password: data.password,
   });

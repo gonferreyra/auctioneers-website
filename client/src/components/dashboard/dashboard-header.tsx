@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { logout } from '@/lib/api';
 import { LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -14,17 +15,20 @@ export default function DashboardHeader() {
           <div className="flex items-center">
             {/* <Gavel className="h-8 w-8 text-primary" /> */}
             <span className="ml-2 text-xl font-bold text-primary">
-              Welcome back Gonzalo
+              Bienvenido Gonzalo
             </span>
           </div>
 
           <Button
             variant="ghost"
-            onClick={() => router.push('/login')}
+            onClick={() => {
+              logout();
+              router.push('/login');
+            }}
             className="text-gray-600 hover:text-gray-900"
           >
             <LogOut className="mr-2 h-5 w-5" />
-            Sign Out
+            Cerrar Sesion
           </Button>
         </div>
       </div>

@@ -1,66 +1,86 @@
 'use client';
 
-import { Calendar } from '@/components/ui/calendar';
-import { Card } from '@/components/ui/card';
 import { useState } from 'react';
-
-// Sample events data
-const events = [
-  {
-    id: 1,
-    title: 'Luxury Apartment Viewing',
-    date: new Date(2024, 12, 3),
-    type: 'viewing',
-  },
-  {
-    id: 2,
-    title: 'Property Inspection',
-    date: new Date(2024, 3, 16),
-    type: 'inspection',
-  },
-  {
-    id: 3,
-    title: 'Online Auction',
-    date: new Date(2024, 3, 20),
-    type: 'auction',
-  },
-];
+import { Calendar } from '@/components/ui/calendar';
+import { CalendarEvent } from '@/types/event';
+import { events as initialEvents } from '@/lib/data/events';
+import EventDialog from './calendar/event-dialog';
+import EventList from './calendar/event-list';
+import { format } from 'date-fns';
 
 export default function DashboardCalendar() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date>(new Date());
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents);
 
   const selectedDateEvents = events.filter(
-    (event) => date && event.date.toDateString() === date.toDateString(),
+    (event) => event.date === format(date, 'yyyy-MM-dd'),
   );
+
+  const handleAddEvent = (newEvent: Omit<CalendarEvent, 'id' | 'status'>) => {
+    const event: CalendarEvent = {
+      ...newEvent,
+      id: crypto.randomUUID(),
+      status: 'pending',
+    };
+    setEvents([...events, event]);
+  };
+
+  const handleMarkCompleted = (eventId: string) => {
+    setEvents(
+      events.map((event) =>
+        event.id === eventId ? { ...event, status: 'completed' } : event,
+      ),
+    );
+  };
+
+  // Create an object to store dates with events
+  const eventDates = events.reduce(
+    (acc, event) => {
+      acc[event.date] = true;
+      return acc;
+    },
+    {} as Record<string, boolean>,
+  );
+
+  // Custom modifiers for the calendar
+  const modifiers = {
+    hasEvent: (date: Date) => eventDates[format(date, 'yyyy-MM-dd')] || false,
+  };
+
+  // Custom modifier styles
+  const modifiersStyles = {
+    hasEvent: {
+      backgroundColor: 'rgb(var(--primary))',
+      color: 'white',
+      borderRadius: '50%',
+    },
+  };
 
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
       <div>
-        <h2 className="mb-4 text-xl font-semibold text-primary">Calendar</h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-primary">Calendario</h2>
+          <EventDialog selectedDate={date} onAddEvent={handleAddEvent} />
+        </div>
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(newDate) => newDate && setDate(newDate)}
           className="rounded-md border"
+          modifiers={modifiers}
+          modifiersStyles={modifiersStyles}
         />
       </div>
 
       <div>
         <h2 className="mb-4 text-xl font-semibold text-primary">
-          Events for {date?.toLocaleDateString()}
+          Eventos para el {format(date, 'd MMMM, yyyy')}
         </h2>
-        <div className="space-y-4">
-          {selectedDateEvents.length > 0 ? (
-            selectedDateEvents.map((event) => (
-              <Card key={event.id} className="p-4">
-                <h3 className="font-semibold text-primary">{event.title}</h3>
-                <p className="text-sm capitalize text-gray-600">{event.type}</p>
-              </Card>
-            ))
-          ) : (
-            <p className="text-gray-600">No events scheduled for this date.</p>
-          )}
-        </div>
+        <EventList
+          events={selectedDateEvents}
+          onMarkCompleted={handleMarkCompleted}
+        />
       </div>
     </div>
   );

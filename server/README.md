@@ -86,13 +86,13 @@ EMAIL_SENDER=
 
 ### Case
 
-| Method   | URL                                                           | Description                                                                                          |
-| -------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `GET`    | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`              | Get all cases with pagination and sorted by id in ascending order.                                   |
-| `GET`    | `/cases?page=1&limit=10&sortBy=recentMovement&SortOrder=desc` | Get all cases with pagination and sorted by recent movements in descending order.                    |
-| `POST`   | `/cases`                                                      | Add a new Case. Depending on the caseType it will also create a dynamic case with the specific type. |
-| `PATCH`  | `/cases/:id`                                                  | Update cases                                                                                         |
-| `DELETE` | `/cases/:id`                                                  | Delete case                                                                                          |
+| Method   | URL                                                                                                            | Description                                                                                                                             |
+| -------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET`    | `/cases?page=1&limit=10&sortBy=id&SortOrder=asc`                                                               | Get all cases with pagination and sorted by id in ascending or descending order.                                                        |
+| `GET`    | `/cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc&searchTerm=something&searchType=all&caseType=all` | Get all cases with pagination, sorted by recent movements in ascending or descending order and search by term, searchType and caseType. |
+| `POST`   | `/cases`                                                                                                       | Add a new Case. Depending on the caseType it will also create a dynamic case with the specific type.                                    |
+| `PATCH`  | `/cases/:id`                                                                                                   | Update cases                                                                                                                            |
+| `DELETE` | `/cases/:id`                                                                                                   | Delete case                                                                                                                             |
 |          |
 
 ##### Note - If the user delete a case, it will also delete the related dynamic case if it exists and it's movements. The internNumber will be available to reasign to a new case.
@@ -115,6 +115,12 @@ GET /cases?page=1&limit=10&sortBy=intern_number&sortOrder=desc
 Order by recent movements:
 
 GET /cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc
+```
+
+```bash
+Order by recent movements and searching by term, searchType and caseType:
+
+GET /cases?page=1&limit=10&sortBy=recentMovement&sortOrder=desc&searchTerm=caseName&searchType=recordNumber&caseType=property
 ```
 
 ### Movement

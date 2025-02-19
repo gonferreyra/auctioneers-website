@@ -1,22 +1,46 @@
-import BackButton from '@/components/dashboard/back-button';
-import CaseDetail from '@/components/dashboard/cases/case-detail';
-import { cases } from '@/lib/data/cases';
+'use client';
 
-export function generateStaticParams() {
-  return cases.map((case_) => ({
-    id: case_.id,
-  }));
-}
+import { use } from 'react';
+import BackButton from '@/components/dashboard/back-button';
+import { useQuery } from '@tanstack/react-query';
+import type { Case } from '@/types/case';
+import CaseDetail from '@/components/dashboard/cases/case-detail';
+import { getCaseById } from '@/lib/api';
+import { useCaseStore } from '@/stores/useCaseStore';
+import Loading from './loading';
 
 interface CasePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function CasePage({ params }: CasePageProps) {
-  // warning error fix - params should be awaited
-  const { id } = await params;
+export default function CasePage({ params }: CasePageProps) {
+  const { id } = use(params);
+  const numberId = Number(id);
+  const { currentPage, debouncedValue, searchType, caseType } = useCaseStore();
 
-  const caseData = cases.find((case_) => case_.id === id);
+  // Try to get cases from cache
+  const cachedCases = useQuery<{ cases: Case[] }>({
+    queryKey: ['cases', currentPage, debouncedValue, searchType, caseType],
+    enabled: false, // We don't want to refetch, just read cache
+  });
+
+  // Search case in cache
+  const cachedCase = cachedCases?.data?.cases?.find(
+    (case_: Case) => case_.id === numberId,
+  );
+
+  // If not in cache, fetch it
+  const { data: caseData, isLoading } = useQuery({
+    queryKey: ['case', numberId], // New key for every case
+    queryFn: () => getCaseById(numberId),
+    initialData: cachedCase, // If in cache, use it
+    enabled: !cachedCase, // Only fetch if not in cache
+  });
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
   if (!caseData) {
     return (
       <div className="p-6">
@@ -37,7 +61,7 @@ export default async function CasePage({ params }: CasePageProps) {
     <div className="p-6">
       <div className="mx-auto max-w-4xl">
         <BackButton />
-        <CaseDetail caseData={caseData} />
+        <CaseDetail caseData={caseData as Case} />
       </div>
     </div>
   );

@@ -1,20 +1,69 @@
-export interface Case {
-  id: string;
-  internalNumber: string; // Case number for organization inside auctioneers
-  recordNumber: string; // Official case record number
-  title: string; // e.g., "Banco suquia c/ Daniel blanco - Ejecucion hipotecaria"
-  status: 'active' | 'paralyzed' | 'closed' | 'pending';
-  court: string; // e.g., "Juzgado 1ra Instancia y 11 nominacion"
-  plaintiff: string; // Main plaintiff
-  defendant: string; // Main defendant
-  type: string; // Type of case (e.g., "Ejecucion hipotecaria")
-  filingDate: string;
-  notes?: string;
+export type PaginatesAndSearchCasesApiResponse = {
+  cases: Case[];
+  currentPage: number;
+  totalPages: number;
+  totalCases: number;
+};
+
+export type CaseStatus = 'active' | 'paralyzed' | 'closed';
+export type CaseType = 'vehicle' | 'property' | 'appraisal';
+
+export interface BaseCase {
+  id: number;
+  internNumber: string;
+  status: CaseStatus;
+  record: string;
+  plaintiff: string;
+  defendant: string;
+  type: string;
+  court: string;
+  lawOffice: string;
+  debt: number;
+  caseType: CaseType;
   movements: CaseMovement[];
+  // specificData: VehicleCase | PropertyCase | AppraisalCase;
+  /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   * Puede ser VehicleCase, PropertyCase o AppraisalCase
+   */
 }
 
-export interface CaseMovement {
-  id: string;
-  date: string;
+export type Case =
+  | (BaseCase & { caseType: 'vehicle'; specificData: VehicleCase })
+  | (BaseCase & { caseType: 'property'; specificData: PropertyCase })
+  | (BaseCase & { caseType: 'appraisal'; specificData: AppraisalCase });
+
+export interface VehicleCase {
+  licensePlate: string;
+  brand: string;
+  model: string;
+  year: number;
+  chassisBrand: string;
+  chassisNumber: string;
+  engineBrand: string;
+  engineNumber: string;
+}
+
+export interface PropertyCase {
+  propertyRegistration: string;
+  percentage: number;
+  address: string;
   description: string;
+  aps: Date | string;
+  apsExpiresAt: Date | string;
+  accountDgr: string;
+  nomenclature: string;
+}
+
+export interface AppraisalCase {
+  itemToAppraise: string[];
+  description: string;
+}
+
+// export type Case = VehicleCase | PropertyCase | AppraisalCase;
+
+export interface CaseMovement {
+  id: number;
+  caseInternNumber: string;
+  description: string;
+  createdAt: Date;
 }

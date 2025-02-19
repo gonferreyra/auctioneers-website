@@ -87,7 +87,7 @@ const PropertyCaseModel = DB.define<IPropertyCaseModel>(
   },
   {
     tableName: 'property_cases',
-    timestamps: false,
+    timestamps: true,
     hooks: {
       beforeCreate: (caseInstance) => {
         if (caseInstance.aps) {
@@ -101,6 +101,7 @@ const PropertyCaseModel = DB.define<IPropertyCaseModel>(
           const apsDate = new Date(caseInstance.aps);
           apsDate.setDate(apsDate.getDate() + 150);
           caseInstance.apsExpiresAt = apsDate;
+          // console.log('apsExpiresAt updated to:', caseInstance.apsExpiresAt);
         }
       },
     },
