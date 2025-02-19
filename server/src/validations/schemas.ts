@@ -2,6 +2,7 @@ import { isValid, parse } from 'date-fns';
 import z from 'zod';
 
 // Auth
+export const userNameSchema = z.string().min(4).max(25);
 export const emailSchema = z.string().email().min(1).max(255);
 export const passwordSchema = z.string().min(6).max(255);
 
@@ -14,6 +15,7 @@ export const loginSchema = z.object({
 export const registerSchema = loginSchema
   .extend({
     confirmPassword: z.string().min(6).max(255),
+    userName: userNameSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
