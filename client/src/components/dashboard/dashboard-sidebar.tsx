@@ -14,9 +14,12 @@ import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { useDashboardMenuStore } from '@/stores/useDashboardMenuStore';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardSidebar() {
   const setActivePage = useDashboardMenuStore((state) => state.setActivePage);
+  const router = useRouter();
+
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -29,14 +32,20 @@ export default function DashboardSidebar() {
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             <div
-              onClick={() => setActivePage('cases')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('cases');
+              }}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
               <Home className="h-4 w-4" />
               Home
             </div>
             <div
-              onClick={() => setActivePage('calendar')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('calendar');
+              }}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
               <ShoppingCart className="h-4 w-4" />
@@ -46,7 +55,10 @@ export default function DashboardSidebar() {
               </Badge>
             </div>
             <div
-              onClick={() => setActivePage('cases')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('cases');
+              }}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
               <FolderSearch2 className="h-4 w-4" />
@@ -60,7 +72,10 @@ export default function DashboardSidebar() {
               Mails
             </Link>
             <div
-              onClick={() => setActivePage('auctions')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('auctions');
+              }}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
               <Hammer className="h-4 w-4" />
@@ -72,14 +87,20 @@ export default function DashboardSidebar() {
           <div className="mt-4 flex flex-col gap-2">
             <Button
               className="w-[150px] self-center"
-              onClick={() => setActivePage('new-case')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('new-case');
+              }}
             >
               <Plus className="h-4 w-4" />
               Nuevo Caso
             </Button>
             <Button
               className="w-[150px] self-center"
-              onClick={() => setActivePage('new-auction')}
+              onClick={() => {
+                router.push('/dashboard');
+                setActivePage('new-auction');
+              }}
             >
               <Gavel className="h-4 w-4" />
               Nueva Subasta
