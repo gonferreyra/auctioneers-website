@@ -17,7 +17,7 @@ import { useEffect } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setUser, isAuthenticated } = useAuthStore((state) => state);
+  const { isAuthenticated } = useAuthStore((state) => state);
 
   const {
     register,
@@ -29,12 +29,12 @@ export default function LoginPage() {
 
   const { mutate: signIn, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: (userData) => {
-      setUser(userData);
+    onSuccess: () => {
       router.replace('/dashboard');
     },
     // server errrors
     onError: (error) => {
+      console.log(error);
       const errorMessage =
         'Hubo un error con el inicio de sesion. Contactar administrador.';
       if (error.message === undefined) {
