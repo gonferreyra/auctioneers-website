@@ -16,9 +16,12 @@ import {
 import { Plus, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { Auction } from '@/types/auction';
+import { useDashboardMenuStore } from '@/stores/useDashboardMenuStore';
 
 export default function NewAuctionForm() {
   const router = useRouter();
+  const setActivePage = useDashboardMenuStore((state) => state.setActivePage);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<Partial<Auction>>({
     title: '',
@@ -259,7 +262,14 @@ export default function NewAuctionForm() {
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            setActivePage('auctions');
+            router.push('/dashboard');
+          }}
+        >
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>

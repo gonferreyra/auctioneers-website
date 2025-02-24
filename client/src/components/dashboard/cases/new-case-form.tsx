@@ -22,6 +22,7 @@ import { useEffect } from 'react';
 import { queryClient } from '@/components/react-query-provider';
 import { Loader2 } from 'lucide-react';
 import { useCaseStore } from '@/stores/useCaseStore';
+import { useDashboardMenuStore } from '@/stores/useDashboardMenuStore';
 
 export default function NewCaseForm() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export default function NewCaseForm() {
     searchType,
     caseType: caseTypeFromStore,
   } = useCaseStore();
+  const setActivePage = useDashboardMenuStore((state) => state.setActivePage);
 
   const {
     register,
@@ -376,7 +378,14 @@ export default function NewCaseForm() {
       </div>
 
       <div className="flex justify-end gap-4">
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => {
+            setActivePage('cases');
+            router.push('/dashboard');
+          }}
+        >
           Cancelar
         </Button>
         <Button type="submit" disabled={isPending}>
