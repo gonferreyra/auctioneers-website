@@ -8,7 +8,6 @@ import {
   Package2,
   Plus,
   ShoppingCart,
-  Users,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
@@ -31,7 +30,7 @@ export default function DashboardSidebar() {
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            <div
+            <button
               onClick={() => {
                 router.push('/dashboard');
                 setActivePage('cases');
@@ -40,8 +39,8 @@ export default function DashboardSidebar() {
             >
               <Home className="h-4 w-4" />
               Home
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => {
                 router.push('/dashboard');
                 setActivePage('calendar');
@@ -53,8 +52,8 @@ export default function DashboardSidebar() {
               <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
                 6
               </Badge>
-            </div>
-            <div
+            </button>
+            <button
               onClick={() => {
                 router.push('/dashboard');
                 setActivePage('cases');
@@ -63,15 +62,12 @@ export default function DashboardSidebar() {
             >
               <FolderSearch2 className="h-4 w-4" />
               Casos
-            </div>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
+            </button>
+            {/* <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
               <Users className="h-4 w-4" />
               Mails
-            </Link>
-            <div
+            </button> */}
+            <button
               onClick={() => {
                 router.push('/dashboard');
                 setActivePage('auctions');
@@ -80,7 +76,7 @@ export default function DashboardSidebar() {
             >
               <Hammer className="h-4 w-4" />
               Subastas
-            </div>
+            </button>
           </nav>
 
           {/* <DashboardMainButtons /> */}
