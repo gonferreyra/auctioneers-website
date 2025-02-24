@@ -142,8 +142,14 @@ export const loginUser = async ({
     accessTokenSignOptions
   );
 
+  const userResponse = {
+    userName: user.userName,
+    email: user.email,
+    verified: user.verified,
+  };
+
   return {
-    user,
+    user: userResponse,
     refreshToken,
     accessToken,
   };

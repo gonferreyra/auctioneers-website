@@ -14,7 +14,11 @@ import {
 import { verifyToken } from '../utils/jwt';
 import SessionModel from '../models/session.model';
 import CustomError from '../utils/customError';
-import { fifteenMinutesFromNow, thirtyDaysFromNow } from '../utils/date';
+import {
+  fifteenMinutesFromNow,
+  thirtyDaysFromNow,
+  twoHoursFromNow,
+} from '../utils/date';
 
 const secure = process.env.NODE_ENV === 'production';
 
@@ -61,6 +65,7 @@ export const loginHandler = async (
       .status(200)
       .json({
         message: 'Login succesfull',
+        user,
       });
   } catch (error) {
     next(error);
@@ -102,7 +107,8 @@ export const refreshHandler = async (
 ) => {
   try {
     // validate request
-    const refreshToken = req.cookies.refreshToken as string | undefined;
+    const refreshToken = req.cookies.refreshToken;
+    console.log('Received refresh token:', refreshToken);
 
     if (!refreshToken) {
       throw new CustomError(401, 'Missing refresh token');
@@ -128,7 +134,7 @@ export const refreshHandler = async (
         sameSite: 'strict',
         httpOnly: true,
         secure,
-        expires: fifteenMinutesFromNow(),
+        expires: twoHoursFromNow(),
       })
       .json({
         message: 'Access token refreshed',
