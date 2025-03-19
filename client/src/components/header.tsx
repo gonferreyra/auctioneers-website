@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import { ModeToggle } from './mode-toggle';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 border-b bg-white/80 backdrop-blur-md">
+    <header className="fixed left-0 right-0 top-0 z-50 border-b backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link href="/" className="flex items-center space-x-2">
@@ -38,6 +39,7 @@ export default function Header() {
             <Link href="/login">
               <Button>Login</Button>
             </Link>
+            <ModeToggle />
           </nav>
 
           {/* Mobile Menu Button */}
@@ -80,6 +82,7 @@ export default function Header() {
             >
               Contact
             </Link>
+            <ModeToggle />
             <Button className="w-full">Sell</Button>
           </nav>
         )}

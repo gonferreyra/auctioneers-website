@@ -42,12 +42,10 @@ const auctions = [
 
 export default function AuctionGrid() {
   return (
-    <section className="bg-gray-50 py-20" id="auctions">
+    <section className="py-20" id="auctions">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-primary">
-            Featured Properties
-          </h2>
+          <h2 className="mb-4 text-3xl font-bold">Featured Properties</h2>
           <p className="mx-auto max-w-2xl text-gray-600">
             Discover exceptional real estate opportunities in our curated
             selection of upcoming auctions. Each property is carefully verified
@@ -59,7 +57,7 @@ export default function AuctionGrid() {
           {auctions.map((auction) => (
             <Card
               key={auction.id}
-              className="overflow-hidden border-2 border-gray-100 transition-shadow hover:shadow-lg"
+              className="overflow-hidden border-2 transition-shadow hover:shadow-lg"
             >
               <CardHeader className="p-0">
                 <div className="relative">
@@ -79,9 +77,7 @@ export default function AuctionGrid() {
                 </div>
               </CardHeader>
               <CardContent className="flex min-h-[200px] flex-col justify-between p-6">
-                <h3 className="mb-2 text-xl font-semibold text-primary">
-                  {auction.title}
-                </h3>
+                <h3 className="mb-2 text-xl font-semibold">{auction.title}</h3>
                 <p className="mb-4 text-gray-600">{auction.description}</p>
                 <div className="flex justify-between text-sm text-gray-500">
                   <div className="flex items-center">

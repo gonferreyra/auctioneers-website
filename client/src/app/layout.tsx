@@ -6,6 +6,7 @@ import FooterWrapper from '@/components/footer-wrapper';
 import ReactQueryProvider from '@/components/react-query-provider';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'sonner';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,9 +24,16 @@ export default function RootLayout({
     <ReactQueryProvider>
       <html lang="en" className="scroll-smooth">
         <body className={inter.className}>
-          <HeaderWrapper />
-          {children}
-          <FooterWrapper />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <HeaderWrapper />
+            {children}
+            <FooterWrapper />
+          </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
           <Toaster position="top-right" />
         </body>
