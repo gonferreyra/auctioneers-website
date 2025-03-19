@@ -24,6 +24,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { ModeToggle } from '../mode-toggle';
+import { DialogTitle } from '../ui/dialog';
 
 export default function DashboardHeader() {
   const router = useRouter();
@@ -38,13 +40,14 @@ export default function DashboardHeader() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
+          <DialogTitle className="hidden">Nav Menu</DialogTitle>
           <nav className="grid gap-2 text-lg font-medium">
             <Link
               href="#"
               className="flex items-center gap-2 text-lg font-semibold"
             >
               <Package2 className="h-6 w-6" />
-              <span className="sr-only">Acme Inc</span>
+              <span className="sr-only">Martillo</span>
             </Link>
             <Link
               href="#"
@@ -111,6 +114,7 @@ export default function DashboardHeader() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      <ModeToggle />
     </header>
   );
 }
