@@ -41,10 +41,22 @@ const AuctionModel = DB.define<IAuctionModel>(
     startingDate: {
       type: DataTypes.DATE,
       allowNull: false,
+      validate: {
+        isDate: true,
+        isAfter: new Date().toISOString(),
+      },
     },
     endingDate: {
       type: DataTypes.DATE,
       allowNull: false,
+      validate: {
+        isDate: true,
+        isLaterThanStartingDate(this: IAuctionModel, value: Date) {
+          if (value <= this.startingDate) {
+            throw new Error('Ending date must be later than starting date');
+          }
+        },
+      },
     },
     type: {
       type: DataTypes.STRING,

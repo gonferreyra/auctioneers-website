@@ -19,6 +19,13 @@ interface IVehiclleAuctionModel
   year: number;
   vehicleType: 'car' | 'pickup' | 'truck' | 'others';
   mileage: number;
+  descripcion: string;
+  images?: string[];
+  exhibition?: {
+    location: string;
+    startDate: Date;
+    endDate: Date;
+  };
 }
 
 const VehicleAuctionModel = DB.define<IVehiclleAuctionModel>(
@@ -57,6 +64,18 @@ const VehicleAuctionModel = DB.define<IVehiclleAuctionModel>(
     mileage: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    images: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    descripcion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    exhibition: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
   },
   {

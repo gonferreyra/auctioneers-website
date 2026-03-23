@@ -19,6 +19,13 @@ interface IPropertyAuctionModel
   bedrooms?: number;
   bathrooms?: number;
   propertyType: 'house' | 'apartment' | 'land' | 'commercial';
+  descripcion: string;
+  images?: string[];
+  exhibition?: {
+    location: string;
+    startDate: Date;
+    endDate: Date;
+  };
 }
 
 const PropertyAuctionModel = DB.define<IPropertyAuctionModel>(
@@ -56,6 +63,18 @@ const PropertyAuctionModel = DB.define<IPropertyAuctionModel>(
     },
     propertyType: {
       type: DataTypes.ENUM('house', 'apartment', 'land', 'commercial'),
+    },
+    images: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    descripcion: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    exhibition: {
+      type: DataTypes.JSON,
+      allowNull: true,
     },
   },
   {

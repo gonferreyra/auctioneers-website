@@ -118,3 +118,41 @@ export const createCaseSchema = baseCaseSchema.extend({
 });
 
 export const updateCaseSchema = createCaseSchema.partial();
+
+// Auctions
+
+export const baseAuctionSchema = z.object({
+  title: z.string(),
+  subtitle: z.string(),
+  startingDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
+  endingDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
+  type: z.enum(['property', 'vehicle']),
+});
+
+export const exhibitionSchema = z.object({
+  location: z.string(),
+  startDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
+  endDate: z.preprocess((val) => (typeof val === 'string' ? new Date(val) : val), z.date()),
+});
+
+export const propertyAuctionSchema = z.object({
+  address: z.string(),
+  squareMeters: z.number(),
+  bedrooms: z.number().optional(),
+  bathrooms: z.number().optional(),
+  propertyType: z.enum(['house', 'apartment', 'land', 'commercial']),
+  images: z.array(z.string().url()).optional(),
+  descripcion: z.string().optional(),
+  exhibition: exhibitionSchema.optional(),
+});
+
+export const vehicleAuctionSchema = z.object({
+  make: z.string(),
+  model: z.string(),
+  year: z.number(),
+  vehicleType: z.enum(['car', 'pickup', 'truck', 'others']),
+  mileage: z.number(),
+  images: z.array(z.string().url()).optional(),
+  descripcion: z.string().optional(),
+  exhibition: exhibitionSchema.optional(),
+});
