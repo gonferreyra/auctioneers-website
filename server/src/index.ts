@@ -13,6 +13,7 @@ import userRoutes from './routes/user.route';
 import sessionRoutes from './routes/session.route';
 import caseRoutes from './routes/case.route';
 import movementRoutes from './routes/movement.route';
+import auctionRoutes from './routes/auction.route';
 
 const app = express();
 
@@ -48,6 +49,9 @@ const Server = async () => {
   app.use('/sessions', authenticate, sessionRoutes);
   app.use('/cases', authenticate, caseRoutes);
   app.use('/movements', authenticate, movementRoutes);
+
+  // Auction routes
+  app.use('/auctions', auctionRoutes);
 
   // Error Handler Middleware
   app.use(errorHandler);
