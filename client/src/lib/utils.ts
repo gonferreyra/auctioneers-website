@@ -5,23 +5,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// make type for data
-export function transformData(data) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function transformData(data: any): any {
   if (Array.isArray(data)) {
-    return data.map(transformData); // If it's an array, transform every element
+    return data.map(transformData);
   }
 
-  if (data?.vehicleDetails) {
+  if (data.vehicleDetails) {
     data.specificData = data.vehicleDetails;
     delete data.vehicleDetails;
   }
 
-  if (data?.propertyDetails) {
+  if (data.propertyDetails) {
     data.specificData = data.propertyDetails;
     delete data.propertyDetails;
   }
 
-  if (data?.appraisalDetails) {
+  if (data.appraisalDetails) {
     data.specificData = data.appraisalDetails;
     delete data.appraisalDetails;
   }

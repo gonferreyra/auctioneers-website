@@ -21,17 +21,10 @@ import { createNewCase } from '@/lib/api';
 import { useEffect } from 'react';
 import { queryClient } from '@/components/react-query-provider';
 import { Loader2 } from 'lucide-react';
-import { useCaseStore } from '@/stores/useCaseStore';
 import { useDashboardMenuStore } from '@/stores/useDashboardMenuStore';
 
 export default function NewCaseForm() {
   const router = useRouter();
-  const {
-    currentPage,
-    debouncedValue,
-    searchType,
-    caseType: caseTypeFromStore,
-  } = useCaseStore();
   const setActivePage = useDashboardMenuStore((state) => state.setActivePage);
 
   const {
@@ -92,10 +85,6 @@ export default function NewCaseForm() {
     onSuccess: () => {
       queryClient.refetchQueries({
         queryKey: ['cases'],
-        currentPage,
-        debouncedValue,
-        searchType,
-        caseTypeFromStore,
       });
       toast.success('Caso creado correctamente');
       router.push('/dashboard');

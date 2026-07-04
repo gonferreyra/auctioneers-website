@@ -22,22 +22,22 @@ export default function Header() {
               height={50}
               alt="martillo-logo"
             />
-            <span className="text-xl font-bold">Auctions</span>
+            <span className="text-xl font-bold">Ferreyra Martilleros</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden items-center space-x-8 md:flex">
-            <a href="#auctions" className="text-gray-600 hover:text-gray-900">
-              Auctions
+            <a href="#subastas" className="text-gray-600 hover:text-gray-900">
+              Subastas
             </a>
-            <a href="#services" className="text-gray-600 hover:text-gray-900">
-              Services
+            <a href="#servicios" className="text-gray-600 hover:text-gray-900">
+              Servicios
             </a>
-            <a href="#contact" className="text-gray-600 hover:text-gray-900">
-              Contact
+            <a href="#contacto" className="text-gray-600 hover:text-gray-900">
+              Contacto
             </a>
             <Link href="/login">
-              <Button>Login</Button>
+              <Button>Ingresar</Button>
             </Link>
             <ModeToggle />
           </nav>
@@ -59,31 +59,24 @@ export default function Header() {
         {isMenuOpen && (
           <nav className="space-y-4 py-4 md:hidden">
             <Link
-              href="/auctions"
+              href="#subastas"
               className="block text-gray-600 hover:text-gray-900"
             >
-              Auctions
+              Subastas
             </Link>
             <Link
-              href="/services"
+              href="#servicios"
               className="block text-gray-600 hover:text-gray-900"
             >
-              Services
+              Servicios
             </Link>
             <Link
-              href="/about"
+              href="#contacto"
               className="block text-gray-600 hover:text-gray-900"
             >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="block text-gray-600 hover:text-gray-900"
-            >
-              Contact
+              Contacto
             </Link>
             <ModeToggle />
-            <Button className="w-full">Sell</Button>
           </nav>
         )}
       </div>
