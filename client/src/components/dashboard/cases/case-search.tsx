@@ -68,7 +68,7 @@ export default function CaseSearch() {
       <div className="flex flex-col gap-4 md:flex-row">
         <div className="flex-1">
           <Input
-            placeholder="Search cases..."
+            placeholder="Buscar casos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
@@ -157,8 +157,11 @@ export default function CaseSearch() {
                           : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {case_.status.charAt(0).toUpperCase() +
-                      case_.status.slice(1)}
+                    {case_.status === 'active'
+                      ? 'Activo'
+                      : case_.status === 'paralyzed'
+                        ? 'Paralizado'
+                        : 'Baja'}
                   </span>
                 </div>
               </Card>

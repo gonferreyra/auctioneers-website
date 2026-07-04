@@ -57,8 +57,11 @@ export default function CaseHeader({ caseData, isEditing }: CaseHeaderProps) {
                           : 'bg-gray-100 text-gray-800'
                     }`}
                   >
-                    {caseData.status.charAt(0).toUpperCase() +
-                      caseData.status.slice(1)}
+                    {caseData.status === 'active'
+                      ? 'Activo'
+                      : caseData.status === 'paralyzed'
+                        ? 'Paralizado'
+                        : 'Baja'}
                   </span>
                 </div>
               </div>

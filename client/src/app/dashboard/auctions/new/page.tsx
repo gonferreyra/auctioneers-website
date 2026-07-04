@@ -9,7 +9,7 @@ export default function NewAuctionPage() {
         <BackButton />
 
         <Card className="p-6">
-          <h1 className="mb-6 text-2xl font-bold">Create New Auction</h1>
+          <h1 className="mb-6 text-2xl font-bold">Crear Nueva Subasta</h1>
           <NewAuctionForm />
         </Card>
       </div>

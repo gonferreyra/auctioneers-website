@@ -22,7 +22,7 @@ export default function AuctionSearch() {
       <div className="flex gap-4">
         <div className="flex-1">
           <Input
-            placeholder="Search auctions..."
+            placeholder="Buscar subastas..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full"
@@ -30,7 +30,7 @@ export default function AuctionSearch() {
         </div>
         <Button className="bg-primary hover:bg-primary/90">
           <Search className="mr-2 h-4 w-4" />
-          Search
+          Buscar
         </Button>
       </div>
 
@@ -66,8 +66,11 @@ export default function AuctionSearch() {
                         : 'bg-gray-100 text-gray-800'
                   }`}
                 >
-                  {auction.status.charAt(0).toUpperCase() +
-                    auction.status.slice(1)}
+                  {auction.status === 'active'
+                    ? 'Activo'
+                    : auction.status === 'pending'
+                      ? 'Pendiente'
+                      : 'Cerrado'}
                 </span>
               </div>
             </Card>
@@ -76,7 +79,7 @@ export default function AuctionSearch() {
 
         {filteredAuctions.length === 0 && (
           <p className="py-8 text-center text-gray-600">
-            No auctions found matching your search criteria.
+            No se encontraron subastas que coincidan con tu búsqueda.
           </p>
         )}
       </div>

@@ -4,18 +4,14 @@ import { Button } from '@/components/ui/button';
 import { logout } from '@/lib/api';
 import {
   CircleUser,
-  FolderSearch2,
   Hammer,
   Home,
   Menu,
   Package2,
-  ShoppingCart,
-  Users,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 import Link from 'next/link';
-import { Badge } from '../ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,49 +32,25 @@ export default function DashboardHeader() {
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="shrink-0 md:hidden">
             <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle navigation menu</span>
+            <span className="sr-only">Abrir menú de navegación</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col">
-          <DialogTitle className="hidden">Nav Menu</DialogTitle>
+          <DialogTitle className="hidden">Menú de navegación</DialogTitle>
           <nav className="grid gap-2 text-lg font-medium">
             <Link
-              href="#"
+              href="/dashboard"
               className="flex items-center gap-2 text-lg font-semibold"
             >
               <Package2 className="h-6 w-6" />
               <span className="sr-only">Martillo</span>
             </Link>
             <Link
-              href="#"
+              href="/dashboard"
               className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
             >
               <Home className="h-5 w-5" />
-              Home
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <FolderSearch2 className="h-5 w-5" />
-              Casos
-            </Link>
-            <Link
-              href="#"
-              className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <Users className="h-5 w-5" />
-              Mails
+              Inicio
             </Link>
             <Link
               href="#"
@@ -95,11 +67,11 @@ export default function DashboardHeader() {
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
               <CircleUser className="h-5 w-5" />
-              <span className="sr-only">Toggle user menu</span>
+              <span className="sr-only">Abrir menú de usuario</span>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>My Cuenta</DropdownMenuLabel>
+            <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>Ajustes</DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -109,7 +81,7 @@ export default function DashboardHeader() {
                 router.push('/login');
               }}
             >
-              Logout
+              Cerrar sesión
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

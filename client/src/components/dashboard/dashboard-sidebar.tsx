@@ -1,16 +1,15 @@
 'use client';
 
 import {
+  Calendar,
   FolderSearch2,
   Gavel,
   Hammer,
   Home,
   Package2,
   Plus,
-  ShoppingCart,
 } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { useDashboardMenuStore } from '@/stores/useDashboardMenuStore';
 import { useRouter } from 'next/navigation';
@@ -38,7 +37,7 @@ export default function DashboardSidebar() {
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
               <Home className="h-4 w-4" />
-              Home
+              Inicio
             </button>
             <button
               onClick={() => {
@@ -47,11 +46,8 @@ export default function DashboardSidebar() {
               }}
               className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:cursor-pointer hover:text-primary"
             >
-              <ShoppingCart className="h-4 w-4" />
+              <Calendar className="h-4 w-4" />
               Calendario
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
             </button>
             <button
               onClick={() => {
@@ -63,10 +59,6 @@ export default function DashboardSidebar() {
               <FolderSearch2 className="h-4 w-4" />
               Casos
             </button>
-            {/* <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary">
-              <Users className="h-4 w-4" />
-              Mails
-            </button> */}
             <button
               onClick={() => {
                 router.push('/dashboard');
@@ -79,7 +71,6 @@ export default function DashboardSidebar() {
             </button>
           </nav>
 
-          {/* <DashboardMainButtons /> */}
           <div className="mt-4 flex flex-col gap-2">
             <Button
               className="w-[150px] self-center"

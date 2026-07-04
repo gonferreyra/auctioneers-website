@@ -256,7 +256,7 @@ export default function NewCaseForm() {
               <Textarea
                 {...register('specificData.itemToAppraise')}
                 id="itemToAppraise"
-                placeholder="Enter each item on a new line"
+                placeholder="Ingresar cada ítem en una nueva línea"
                 rows={4}
                 required
               />
@@ -327,12 +327,12 @@ export default function NewCaseForm() {
               render={({ field }) => (
                 <Select {...field} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder="Seleccionar estado" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="paralyzed">Paralyzed</SelectItem>
-                    <SelectItem value="closed">Closed</SelectItem>
+                    <SelectItem value="active">Activo</SelectItem>
+                    <SelectItem value="paralyzed">Paralizado</SelectItem>
+                    <SelectItem value="closed">Baja</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -347,7 +347,7 @@ export default function NewCaseForm() {
               render={({ field }) => (
                 <Select {...field} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select case type" />
+                    <SelectValue placeholder="Seleccionar tipo de juicio" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="vehicle">Rodado</SelectItem>
