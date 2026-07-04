@@ -15,7 +15,7 @@ type SignOptionsAndSecret = SignOptions & {
 };
 
 const defaults: SignOptions = {
-  audience: ['user'],
+  audience: 'user',
 };
 
 export const accessTokenSignOptions: SignOptionsAndSecret = {
@@ -48,9 +48,9 @@ export const verifyToken = <TPayload extends object = AccessTokenPayload>(
   const { secret = JWT_SECRET, ...verifyOpts } = options || {};
   try {
     const payload = jwt.verify(token, secret, {
-      ...defaults,
+      audience: 'user',
       ...verifyOpts,
-    }) as TPayload;
+    }) as unknown as TPayload;
     return {
       payload,
     };

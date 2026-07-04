@@ -15,7 +15,7 @@ import {
 import { Loader2, Plus } from 'lucide-react';
 import type { Case, CaseMovement } from '@/types/case';
 import MovementItem from './movement-items';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createNewMovement } from '@/lib/api';
@@ -47,12 +47,9 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
   });
 
   // search cache data
-  const { data: cachedCase, isLoading } = useQuery<{
+  const cachedCase = queryClient.getQueryData<{
     movements: CaseMovement[];
-  }>({
-    queryKey: ['case', caseData.id],
-    enabled: true,
-  });
+  }>(['case', caseData.id]);
   const cachedMovements = cachedCase?.movements || [];
 
   const { mutate: handleAddMovement, isPending } = useMutation({
@@ -136,20 +133,14 @@ export default function CaseMovements({ caseData }: CaseMovementsProps) {
       </div>
 
       <div className="space-y-4">
-        {isLoading ? (
-          <div className="flex justify-center py-4">
-            <Loader2 className="h-6 w-6 animate-spin" />
-          </div>
-        ) : (
-          cachedMovements?.map((movement, index) => (
-            <MovementItem
-              key={index}
-              movement={movement}
-              caseId={caseData.id}
-              caseInternNumber={caseData.internNumber}
-            />
-          ))
-        )}
+        {cachedMovements?.map((movement, index) => (
+          <MovementItem
+            key={index}
+            movement={movement}
+            caseId={caseData.id}
+            caseInternNumber={caseData.internNumber}
+          />
+        ))}
       </div>
     </Card>
   );
