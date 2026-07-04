@@ -4,16 +4,14 @@ import { Search, Shield, Handshake, Building } from 'lucide-react';
 
 export default function ServicesSection() {
   return (
-    <section className="py-20" id="services">
+    <section className="py-20" id="servicios">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-3xl font-bold">
-            Why List Your Property With Us?
+            ¿Querés vender en subasta?
           </h2>
           <p className="mx-auto max-w-2xl text-gray-600">
-            We connect premium properties with the most reputable auction
-            houses, ensuring maximum visibility and optimal results for your
-            sale.
+            Te acompañamos en todo el proceso, desde la tasación hasta el remate.
           </p>
         </div>
 
@@ -21,10 +19,12 @@ export default function ServicesSection() {
           <Card>
             <CardContent className="pt-6">
               <Building className="mb-4 h-12 w-12 text-primary" />
-              <h3 className="mb-2 text-xl font-semibold">Premium Properties</h3>
+              <h3 className="mb-2 text-xl font-semibold">
+                Tasación profesional
+              </h3>
               <p className="text-gray-600">
-                We showcase only the finest properties to ensure quality
-                listings.
+                Valuamos tu propiedad o vehículo con precisión y experiencia en
+                el mercado cordobés.
               </p>
             </CardContent>
           </Card>
@@ -32,9 +32,12 @@ export default function ServicesSection() {
           <Card>
             <CardContent className="pt-6">
               <Search className="mb-4 h-12 w-12 text-primary" />
-              <h3 className="mb-2 text-xl font-semibold">Maximum Exposure</h3>
+              <h3 className="mb-2 text-xl font-semibold">
+                Promoción y difusión
+              </h3>
               <p className="text-gray-600">
-                Connect with multiple auction houses and qualified buyers.
+                Damos máxima visibilidad a tu subasta a través de nuestros
+                canales y martilleros asociados.
               </p>
             </CardContent>
           </Card>
@@ -42,9 +45,12 @@ export default function ServicesSection() {
           <Card>
             <CardContent className="pt-6">
               <Shield className="mb-4 h-12 w-12 text-primary" />
-              <h3 className="mb-2 text-xl font-semibold">Verified Partners</h3>
+              <h3 className="mb-2 text-xl font-semibold">
+                Transparencia y seguridad
+              </h3>
               <p className="text-gray-600">
-                We work only with trusted and licensed auction houses.
+                Procesos claros y certificados, respaldados por más de 60 años
+                de trayectoria.
               </p>
             </CardContent>
           </Card>
@@ -52,17 +58,20 @@ export default function ServicesSection() {
           <Card>
             <CardContent className="pt-6">
               <Handshake className="mb-4 h-12 w-12 text-primary" />
-              <h3 className="mb-2 text-xl font-semibold">Expert Support</h3>
+              <h3 className="mb-2 text-xl font-semibold">
+                Acompañamiento personalizado
+              </h3>
               <p className="text-gray-600">
-                Professional guidance throughout the entire process.
+                Te guiamos en cada paso del proceso, desde el primer contacto
+                hasta el remate final.
               </p>
             </CardContent>
           </Card>
         </div>
 
         <div className="mt-12 text-center">
-          <a href="#contact" className="text-primary underline">
-            <Button size="lg">List Your Property</Button>
+          <a href="#contacto">
+            <Button size="lg">Quiero vender en subasta</Button>
           </a>
         </div>
       </div>

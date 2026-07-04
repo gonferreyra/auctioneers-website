@@ -7,6 +7,7 @@ import type { Case } from '@/types/case';
 import CaseDetail from '@/components/dashboard/cases/case-detail';
 import { getCaseById } from '@/lib/api';
 import { useCaseStore } from '@/stores/useCaseStore';
+import { queryClient } from '@/components/react-query-provider';
 import Loading from './loading';
 
 interface CasePageProps {
@@ -19,13 +20,16 @@ export default function CasePage({ params }: CasePageProps) {
   const { currentPage, debouncedValue, searchType, caseType } = useCaseStore();
 
   // Try to get cases from cache
-  const cachedCases = useQuery<{ cases: Case[] }>({
-    queryKey: ['cases', currentPage, debouncedValue, searchType, caseType],
-    enabled: false, // We don't want to refetch, just read cache
-  });
+  const cachedCases = queryClient.getQueryData<{ cases: Case[] }>([
+    'cases',
+    currentPage,
+    debouncedValue,
+    searchType,
+    caseType,
+  ]);
 
   // Search case in cache
-  const cachedCase = cachedCases?.data?.cases?.find(
+  const cachedCase = cachedCases?.cases?.find(
     (case_: Case) => case_.id === numberId,
   );
 

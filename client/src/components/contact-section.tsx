@@ -15,19 +15,17 @@ export default function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
     console.log(formData);
   };
 
   return (
-    <section className="py-20" id="contact">
+    <section className="py-20" id="contacto">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
           <div>
-            <h2 className="mb-6 text-3xl font-bold">Get in Touch</h2>
+            <h2 className="mb-6 text-3xl font-bold">Contactanos</h2>
             <p className="mb-8 text-gray-600">
-              Have questions about our auction platform? Want to learn more
-              about selling your services? We&apos;re here to help!
+              Consultanos sin compromiso. Estamos en Córdoba Capital.
             </p>
 
             <div className="space-y-6">
@@ -35,28 +33,36 @@ export default function ContactSection() {
                 <Mail className="mt-1 h-6 w-6 text-primary" />
                 <div className="ml-4">
                   <h3 className="font-semibold">Email</h3>
-                  <p className="text-gray-600">contact@proauctions.com</p>
+                  <p className="text-gray-600">
+                    info@ferreyramartilleros.com
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-start">
                 <Phone className="mt-1 h-6 w-6 text-primary" />
                 <div className="ml-4">
-                  <h3 className="font-semibold">Phone</h3>
-                  <p className="text-gray-600">+1 (555) 123-4567</p>
+                  <h3 className="font-semibold">Teléfono</h3>
+                  <p className="text-gray-600">351-3123123</p>
                 </div>
               </div>
 
               <div className="flex items-start">
                 <MapPin className="mt-1 h-6 w-6 text-primary" />
                 <div className="ml-4">
-                  <h3 className="font-semibold">Address</h3>
+                  <h3 className="font-semibold">Dirección</h3>
                   <p className="text-gray-600">
-                    123 Auction Street
+                    Av. Cordillera Nº 1234
                     <br />
-                    New York, NY 10001
+                    Córdoba, Capital
                   </p>
                 </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <p className="text-sm text-gray-500">
+                  Matrícula: M.P. 01-xxx
+                </p>
               </div>
             </div>
           </div>
@@ -68,7 +74,7 @@ export default function ContactSection() {
                   htmlFor="name"
                   className="mb-2 block text-sm font-medium"
                 >
-                  Name
+                  Nombre
                 </label>
                 <Input
                   id="name"
@@ -103,7 +109,7 @@ export default function ContactSection() {
                   htmlFor="message"
                   className="mb-2 block text-sm font-medium"
                 >
-                  Message
+                  Mensaje
                 </label>
                 <Textarea
                   id="message"
@@ -117,7 +123,7 @@ export default function ContactSection() {
               </div>
 
               <Button type="submit" className="w-full">
-                Send Message
+                Enviar mensaje
               </Button>
             </form>
           </div>

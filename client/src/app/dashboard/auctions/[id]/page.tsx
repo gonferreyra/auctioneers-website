@@ -1,3 +1,4 @@
+import { use } from 'react';
 import { auctions } from '@/lib/data/auctions';
 import BackButton from '@/components/dashboard/back-button';
 import AuctionDetail from '@/components/dashboard/auctions/auction-details';
@@ -9,11 +10,12 @@ export function generateStaticParams() {
 }
 
 interface AuctionPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default function AuctionPage({ params }: AuctionPageProps) {
-  const auctionData = auctions.find((auction) => auction.id === params.id);
+  const { id } = use(params);
+  const auctionData = auctions.find((auction) => auction.id === id);
 
   if (!auctionData) {
     return (

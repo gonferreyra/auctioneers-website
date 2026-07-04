@@ -13,43 +13,42 @@ import Image from 'next/image';
 const auctions = [
   {
     id: 1,
-    title: 'Luxury Apartment in Downtown Miami',
-    description: '2-bedroom luxury apartment with ocean views',
-    status: 'Finished',
-    date: 'Apr 15, 2024',
-    location: 'Miami, FL',
+    title: 'Casa en Nueva Córdoba',
+    description: 'Inmueble de 3 dormitorios con vistas a la ciudad',
+    status: 'Finalizada',
+    date: '15 Jun, 2025',
+    location: 'Córdoba, Capital',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=500',
   },
   {
     id: 2,
-    title: 'Commercial Space in Manhattan',
-    description: "Prime retail location in Manhattan's business district",
-    status: 'Upcoming',
-    date: 'Apr 20, 2024',
-    location: 'New York, NY',
+    title: 'Local Comercial en Centro',
+    description: 'Local comercial en la mejor zona de Córdoba',
+    status: 'Próxima',
+    date: '20 Jul, 2025',
+    location: 'Córdoba, Capital',
     image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=500',
   },
   {
     id: 3,
-    title: 'Beachfront Villa in Malibu',
-    description: 'Spectacular beachfront property with private access',
-    status: 'Upcoming',
-    date: 'Apr 25, 2024',
-    location: 'Malibu, CA',
+    title: 'Toyota Hilux 2022',
+    description: 'Vehículo 4x4 en excelente estado, un solo dueño',
+    status: 'Próxima',
+    date: '25 Jul, 2025',
+    location: 'Córdoba, Capital',
     image: 'https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?w=500',
   },
 ];
 
 export default function AuctionGrid() {
   return (
-    <section className="py-20" id="auctions">
+    <section className="py-20" id="subastas">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-3xl font-bold">Featured Properties</h2>
+          <h2 className="mb-4 text-3xl font-bold">Próximas subastas</h2>
           <p className="mx-auto max-w-2xl text-gray-600">
-            Discover exceptional real estate opportunities in our curated
-            selection of upcoming auctions. Each property is carefully verified
-            and ready for bidding.
+            Estas son algunas de las subastas próximas a realizarse. Hacé clic
+            para ver los detalles completos.
           </p>
         </div>
 
@@ -91,9 +90,9 @@ export default function AuctionGrid() {
                 </div>
               </CardContent>
               <CardFooter className="p-6 pt-0">
-                <Link href={`/auctions/${auction.id}`} className="w-full">
+                  <Link href={`/auctions/${auction.id}`} className="w-full">
                   <Button className="w-full bg-primary hover:bg-primary/90">
-                    View Details
+                    Ver detalles
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -103,13 +102,15 @@ export default function AuctionGrid() {
         </div>
 
         <div className="mt-12 text-center">
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-primary text-primary hover:bg-primary/10"
-          >
-            View All Properties
-          </Button>
+          <Link href="/subastas">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-primary text-primary hover:bg-primary/10"
+            >
+              Ver todas las subastas
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
