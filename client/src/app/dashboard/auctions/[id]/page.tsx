@@ -23,9 +23,9 @@ export default function AuctionPage({ params }: AuctionPageProps) {
         <div className="mx-auto max-w-4xl">
           <BackButton />
           <div className="rounded-lg border border-red-200 bg-red-50 p-4">
-            <h2 className="font-semibold text-red-800">Auction Not Found</h2>
+            <h2 className="font-semibold text-red-800">Subasta no encontrada</h2>
             <p className="text-red-600">
-              The requested auction could not be found.
+              La subasta solicitada no pudo ser encontrada.
             </p>
           </div>
         </div>

@@ -76,17 +76,16 @@ export default function NewAuctionForm() {
     try {
       // Validate required fields
       if (!formData.title || !formData.date || !formData.location) {
-        toast.error('Please fill in all required fields');
+        toast.error('Completá todos los campos obligatorios');
         return;
       }
 
-      // In a real app, this would be an API call
       console.log('Creating new auction:', formData);
 
-      toast.success('Auction created successfully');
+      toast.success('Subasta creada correctamente');
       router.push('/dashboard');
     } catch (error) {
-      toast.error('Failed to create auction');
+      toast.error('Error al crear la subasta');
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -97,34 +96,34 @@ export default function NewAuctionForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
         <div>
-          <Label htmlFor="title">Title *</Label>
+          <Label htmlFor="title">Título *</Label>
           <Input
             id="title"
             value={formData.title}
             onChange={(e) =>
               setFormData({ ...formData, title: e.target.value })
             }
-            placeholder="Enter auction title"
+            placeholder="Ingresar título de la subasta"
             required
           />
         </div>
 
         <div>
-          <Label htmlFor="titleDescription">Title Description</Label>
+          <Label htmlFor="titleDescription">Descripción del título</Label>
           <Textarea
             id="titleDescription"
             value={formData.titleDescription}
             onChange={(e) =>
               setFormData({ ...formData, titleDescription: e.target.value })
             }
-            placeholder="Enter a detailed description"
+            placeholder="Ingresar una descripción detallada"
             rows={3}
           />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
-            <Label htmlFor="status">Status</Label>
+            <Label htmlFor="status">Estado</Label>
             <Select
               value={formData.status}
               onValueChange={(value: Auction['status']) =>
@@ -132,18 +131,18 @@ export default function NewAuctionForm() {
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Seleccionar estado" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="closed">Closed</SelectItem>
+                <SelectItem value="active">Activo</SelectItem>
+                <SelectItem value="pending">Pendiente</SelectItem>
+                <SelectItem value="closed">Cerrado</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <Label htmlFor="date">Date *</Label>
+            <Label htmlFor="date">Fecha *</Label>
             <Input
               id="date"
               type="date"
@@ -157,25 +156,25 @@ export default function NewAuctionForm() {
         </div>
 
         <div>
-          <Label htmlFor="location">Location *</Label>
+          <Label htmlFor="location">Ubicación *</Label>
           <Input
             id="location"
             value={formData.location}
             onChange={(e) =>
               setFormData({ ...formData, location: e.target.value })
             }
-            placeholder="Enter auction location"
+            placeholder="Ingresar ubicación"
             required
           />
         </div>
 
         <div>
-          <Label>Images</Label>
+          <Label>Imágenes</Label>
           <div className="mb-2 flex gap-2">
             <Input
               value={newImage}
               onChange={(e) => setNewImage(e.target.value)}
-              placeholder="Enter Google Drive URL"
+              placeholder="Ingresar URL de Google Drive"
             />
             <Button type="button" onClick={handleAddImage}>
               <Plus className="h-4 w-4" />
@@ -202,14 +201,14 @@ export default function NewAuctionForm() {
         </div>
 
         <div>
-          <Label>Documents</Label>
+          <Label>Documentos</Label>
           <div className="mb-2 flex gap-2">
             <Input
               value={newDocument.name}
               onChange={(e) =>
                 setNewDocument({ ...newDocument, name: e.target.value })
               }
-              placeholder="Document name"
+              placeholder="Nombre del documento"
               className="flex-1"
             />
             <Input
@@ -217,7 +216,7 @@ export default function NewAuctionForm() {
               onChange={(e) =>
                 setNewDocument({ ...newDocument, url: e.target.value })
               }
-              placeholder="Document URL"
+              placeholder="URL del documento"
               className="flex-1"
             />
             <Button type="button" onClick={handleAddDocument}>
@@ -248,14 +247,14 @@ export default function NewAuctionForm() {
         </div>
 
         <div>
-          <Label htmlFor="details">Additional Details</Label>
+          <Label htmlFor="details">Detalles adicionales</Label>
           <Textarea
             id="details"
             value={formData.details}
             onChange={(e) =>
               setFormData({ ...formData, details: e.target.value })
             }
-            placeholder="Enter any additional details"
+            placeholder="Ingresar detalles adicionales"
             rows={4}
           />
         </div>
@@ -270,10 +269,10 @@ export default function NewAuctionForm() {
             router.push('/dashboard');
           }}
         >
-          Cancel
+          Cancelar
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          Create Auction
+          Crear Subasta
         </Button>
       </div>
     </form>

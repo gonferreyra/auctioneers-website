@@ -14,7 +14,7 @@ export default function BackButton() {
       className="mb-6"
     >
       <ArrowLeft className="mr-2 h-4 w-4" />
-      Back to Dashboard
+      Volver al inicio
     </Button>
   );
 }

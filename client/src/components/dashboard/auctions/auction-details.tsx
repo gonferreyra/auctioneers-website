@@ -87,18 +87,18 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
         !editedAuction.date ||
         !editedAuction.location
       ) {
-        toast.error('Please fill in all required fields');
+        toast.error('Completá todos los campos obligatorios');
         return;
       }
 
       // In a real app, this would be an API call
       console.log('Saving auction:', editedAuction);
 
-      toast.success('Auction updated successfully');
+      toast.success('Subasta actualizada correctamente');
       setIsEditing(false);
       setHasUnsavedChanges(false);
     } catch (error) {
-      toast.error('Failed to update auction');
+      toast.error('Error al actualizar la subasta');
       console.error(error);
     }
   };
@@ -119,7 +119,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
         <h1 className="text-2xl font-bold">{editedAuction.title}</h1>
         <div className="space-x-2">
           {!isEditing ? (
-            <Button onClick={() => setIsEditing(true)}>Edit Auction</Button>
+            <Button onClick={() => setIsEditing(true)}>Editar Subasta</Button>
           ) : (
             <>
               {hasUnsavedChanges && (
@@ -128,30 +128,30 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                   onClick={handleUndo}
                   className="border-yellow-600 text-yellow-600 hover:bg-yellow-50"
                 >
-                  Undo Changes
+                  Deshacer cambios
                 </Button>
               )}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">Cancelar</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                   <AlertDialogHeader>
-                    <AlertDialogTitle>Discard Changes?</AlertDialogTitle>
+                    <AlertDialogTitle>¿Descartar cambios?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      You have unsaved changes. Are you sure you want to discard
-                      them?
+                      Tenés cambios sin guardar. ¿Estás seguro de que querés
+                      descartarlos?
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
-                    <AlertDialogCancel>Continue Editing</AlertDialogCancel>
+                    <AlertDialogCancel>Seguir editando</AlertDialogCancel>
                     <AlertDialogAction onClick={handleCancel}>
-                      Discard Changes
+                      Descartar cambios
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
-              <Button onClick={handleSave}>Save Changes</Button>
+              <Button onClick={handleSave}>Guardar cambios</Button>
             </>
           )}
         </div>
@@ -163,7 +163,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
             {isEditing ? (
               <>
                 <div>
-                  <Label htmlFor="title">Title *</Label>
+                  <Label htmlFor="title">Título *</Label>
                   <Input
                     id="title"
                     value={editedAuction.title}
@@ -173,7 +173,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="titleDescription">Title Description</Label>
+                  <Label htmlFor="titleDescription">Descripción del título</Label>
                   <Textarea
                     id="titleDescription"
                     value={editedAuction.titleDescription}
@@ -185,7 +185,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status">Estado</Label>
                   <Select
                     value={editedAuction.status}
                     onValueChange={(value: Auction['status']) =>
@@ -193,18 +193,18 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                     }
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
+                      <SelectValue placeholder="Seleccionar estado" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="closed">Closed</SelectItem>
+                      <SelectItem value="active">Activo</SelectItem>
+                      <SelectItem value="pending">Pendiente</SelectItem>
+                      <SelectItem value="closed">Cerrado</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label htmlFor="date">Date *</Label>
+                  <Label htmlFor="date">Fecha *</Label>
                   <Input
                     id="date"
                     type="date"
@@ -215,7 +215,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Location *</Label>
+                  <Label htmlFor="location">Ubicación *</Label>
                   <Input
                     id="location"
                     value={editedAuction.location}
@@ -227,23 +227,23 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
             ) : (
               <>
                 <div>
-                  <Label>Title Description</Label>
+                  <Label>Descripción del título</Label>
                   <p className="text-gray-600">
                     {editedAuction.titleDescription}
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <div>
-                    <Label>Status</Label>
+                    <Label>Estado</Label>
                     <p className="text-gray-600">{editedAuction.status}</p>
                   </div>
                   <div>
-                    <Label>Date</Label>
+                    <Label>Fecha</Label>
                     <p className="text-gray-600">{editedAuction.date}</p>
                   </div>
                 </div>
                 <div>
-                  <Label>Location</Label>
+                  <Label>Ubicación</Label>
                   <p className="text-gray-600">{editedAuction.location}</p>
                 </div>
               </>
@@ -252,13 +252,13 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
 
           <div className="space-y-4">
             <div>
-              <Label>Images</Label>
+              <Label>Imágenes</Label>
               {isEditing && (
                 <div className="mb-2 flex gap-2">
                   <Input
                     value={newImage}
                     onChange={(e) => setNewImage(e.target.value)}
-                    placeholder="Enter image URL"
+                    placeholder="Ingresar URL de la imagen"
                   />
                   <Button type="button" onClick={handleAddImage}>
                     <Plus className="h-4 w-4" />
@@ -288,7 +288,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
             </div>
 
             <div>
-              <Label>Documents</Label>
+              <Label>Documentos</Label>
               {isEditing && (
                 <div className="mb-2 flex gap-2">
                   <Input
@@ -296,7 +296,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                     onChange={(e) =>
                       setNewDocument({ ...newDocument, name: e.target.value })
                     }
-                    placeholder="Document name"
+                    placeholder="Nombre del documento"
                     className="flex-1"
                   />
                   <Input
@@ -304,7 +304,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
                     onChange={(e) =>
                       setNewDocument({ ...newDocument, url: e.target.value })
                     }
-                    placeholder="Document URL"
+                    placeholder="URL del documento"
                     className="flex-1"
                   />
                   <Button type="button" onClick={handleAddDocument}>
@@ -338,7 +338,7 @@ export default function AuctionDetail({ auctionData }: AuctionDetailProps) {
             </div>
 
             <div>
-              <Label htmlFor="details">Additional Details</Label>
+              <Label htmlFor="details">Detalles adicionales</Label>
               {isEditing ? (
                 <Textarea
                   id="details"

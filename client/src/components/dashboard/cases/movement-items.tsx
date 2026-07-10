@@ -61,7 +61,7 @@ export default function MovementItem({
         };
       });
 
-      toast.success('Movement updated successfully');
+      toast.success('Movimiento actualizado correctamente');
     },
     onError: (error) => {
       toast.error(error.message);
@@ -129,7 +129,7 @@ export default function MovementItem({
                 onClick={handleCancel}
               >
                 <X className="mr-1 h-4 w-4" />
-                Cancel
+                Cancelar
               </Button>
               <Button
                 type="button"
